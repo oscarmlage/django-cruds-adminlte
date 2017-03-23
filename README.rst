@@ -2,7 +2,7 @@
 django-cruds
 =============================
 
-* Note: This version of django-cruds is based on bmihelac's one (https://github.com/bmihelac/django-cruds/)
+* Note: This version of django-cruds is based on `bmihelac's one <https://github.com/bmihelac/django-cruds/>`_
 
 django-cruds is simple drop-in django app that creates CRUD (Create, read,
 update and delete) views for existing models and apps.
@@ -72,13 +72,13 @@ CRUD Templates are::
     cruds/list.html
     cruds/update.html
 
-Templates are based in AdminLTE2 (https://almsaeedstudio.com/themes/AdminLTE/index2.html)
-and django-adminlte2 (https://github.com/adamcharnock/django-adminlte2). They're
+Templates are based in `AdminLTE2 <https://almsaeedstudio.com/themes/AdminLTE/index2.html>`_
+and `django-adminlte2 <https://github.com/adamcharnock/django-adminlte2>`_. They're
 ready to run with:
 
-* django-crispy-forms (https://django-crispy-forms.readthedocs.io/en/latest/)
-* select2 (https://select2.github.io/)
-* django-cropping-image (https://github.com/jonasundderwolf/django-image-cropping)
+* `django-crispy-forms <https://django-crispy-forms.readthedocs.io/en/latest/>`_
+* `select2 <https://select2.github.io/>`_
+* `django-cropping-image <https://github.com/jonasundderwolf/django-image-cropping>`_
 
 If you want to override the sidebar you can do it creating a file called
 ``templates/adminlte/lib/_main_sidebar.html`` inside your project and you can
