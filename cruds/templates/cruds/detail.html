@@ -1,0 +1,27 @@
+{% extends "cruds/base.html" %}
+{% load i18n %}
+{% load crud_tags %}
+
+{% block body %}
+  <h1>{{ object }}</h1>
+
+  {% if url_update %}
+    <p>
+      <a href="{{ url_update }}" class="btn btn-default">{% trans "Edit" %}</a>
+    </p>
+  {% endif %}
+
+
+  <table class="table">
+    <tbody>
+      {% crud_fields object fields %}
+    </tbody>
+  </table>
+
+
+  {% if url_list %}
+    <p>
+      <a href="{{ url_list }}" class="btn btn-default">{% trans "Back to list" %}</a>
+    </p>
+  {% endif %}
+{% endblock %}

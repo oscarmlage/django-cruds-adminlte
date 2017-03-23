@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% if not form.helper %}
+    {{ form.media }}
+{% endif %}
+
+<form action="." method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box-body row">
+        <div class="col-md-12">
+            {% if form.helper %}
+                {% crispy form %}
+            {% else %}
+                {{ form|crispy }}
+            {% endif %}
+        </div>
+    </div>
+
+
+    {% if not form.helper %}
+    <div class="box-footer">
+        <div class="form-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+                {% if url_delete %}
+                    <a href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</form>

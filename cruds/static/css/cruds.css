@@ -1,0 +1,29 @@
+.btn {
+    color: #fff !important;
+}
+
+.nav-tabs>li {
+    margin-bottom: -2px;
+}
+
+.select2-container .select2-selection--single {
+    height: 35px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px !important;
+    padding-left: 0px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 5px !important;
+}
+
+#submit-id-submit {
+    padding: 7px 12px !important;
+    background-color: #3c8dbc !important;
+}
+
+#submit-id-submit:hover {
+    background-color: #367fa9 !important;
+}

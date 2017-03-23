@@ -1,0 +1,9 @@
+/* Handle any CSS conflicts between the various libraries */
+
+/*
+The django admin css applies a blanket square style to 'ul li',
+this messes with our dropdown menus.
+*/
+ul.dropdown-menu li {
+    list-style: none;
+}

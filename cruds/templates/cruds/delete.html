@@ -1,0 +1,14 @@
+{% extends "cruds/base.html" %}
+{% load i18n %}
+
+{% block body %}
+  <h1>{% trans "Remove" %} {{ object }}?</h1>
+
+  <form action="." method="POST">
+    {% csrf_token %}
+
+    <p>
+      <button type="submit" class="btn btn-danger">{% trans "Confirm remove" %}</button>
+    </p>
+  </form>
+{% endblock %}
