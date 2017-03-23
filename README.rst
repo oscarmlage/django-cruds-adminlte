@@ -58,7 +58,7 @@ Is same as::
         reverse('testapp_author_update', kwargs={'pk': author.pk})
 
 If you want to override a form with some other crispy features you can add to
-your testapp.urls the following:
+your testapp.urls the following::
 
     urlpatterns = []
     urlpatterns += [
@@ -70,7 +70,7 @@ your testapp.urls the following:
             name='testapp_customer_update'),
     ]
 
-And define the AuthorForm with tabs or any other crispy feature in your app:
+And define the AuthorForm with tabs or any other crispy feature in your app::
 
     self.helper.layout = Layout(
         TabHolder(
@@ -93,7 +93,7 @@ And define the AuthorForm with tabs or any other crispy feature in your app:
 You will get something similar to this:
 
 .. image:: doc/cruds-form.png
-
+    :target: https://github.com/oscarmlage/django-cruds
 
 Templates
 ^^^^^^^^^
@@ -130,7 +130,7 @@ Install django-cruds::
 
 Then use it in a project, add ``cruds`` to ``INSTALLED_APPS``. Note that you
 will have to install ``crispy_forms`` and ``image_cropping`` if before the app
-if you want to use them:
+if you want to use them::
 
     pip install django-crispy-forms
     pip install easy-thumbnails
@@ -143,3 +143,24 @@ Requirements
 * Python 2.7+
 * Django >=1.4.2
 * django-crispy-forms
+
+
+Screenshots
+-----------
+
+.. image:: doc/cruds-list.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+.. image:: doc/cruds-select2.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+.. image:: doc/cruds-tabs.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+.. image:: doc/cruds-cropping.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+
+.. image:: doc/cruds-responsive.png
+    :target: https://github.com/oscarmlage/django-cruds
+
