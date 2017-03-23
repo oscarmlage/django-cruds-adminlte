@@ -57,6 +57,37 @@ Is same as::
 
         reverse('testapp_author_update', kwargs={'pk': author.pk})
 
+
+Templates
+^^^^^^^^^
+
+django-cruds views will append CRUD template name to a list of default
+candidate template names for given action.
+
+CRUD Templates are::
+
+    cruds/create.html
+    cruds/delete.html
+    cruds/detail.html
+    cruds/list.html
+    cruds/update.html
+
+Templates are based in AdminLTE2 (https://almsaeedstudio.com/themes/AdminLTE/index2.html)
+and django-adminlte2 (https://github.com/adamcharnock/django-adminlte2). They're
+ready to run with:
+
+* django-crispy-forms (https://django-crispy-forms.readthedocs.io/en/latest/)
+* select2 (https://select2.github.io/)
+* django-cropping-image (https://github.com/jonasundderwolf/django-image-cropping)
+
+If you want to override the sidebar you can do it creating a file called
+``templates/adminlte/lib/_main_sidebar.html`` inside your project and you can
+put there the contents you want.
+
+
+Override view with custom form
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 If you want to override a form with some other crispy features you can add to
 your testapp.urls the following::
 
@@ -95,31 +126,79 @@ You will get something similar to this:
 .. image:: doc/cruds-form.png
     :target: https://github.com/oscarmlage/django-cruds
 
-Templates
-^^^^^^^^^
+Crispy tabbed form sample
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-django-cruds views will append CRUD template name to a list of default
-candidate template names for given action.
+forms.py::
 
-CRUD Templates are::
+    class CustomerForm(forms.ModelForm):
 
-    cruds/create.html
-    cruds/delete.html
-    cruds/detail.html
-    cruds/list.html
-    cruds/update.html
+        class Meta:
+            model = Customer
+            fields = ['name', 'image', 'cropping']
+            widgets = {
+                'image': ImageCropWidget,
+            }
 
-Templates are based in AdminLTE2 (https://almsaeedstudio.com/themes/AdminLTE/index2.html)
-and django-adminlte2 (https://github.com/adamcharnock/django-adminlte2). They're
-ready to run with:
+        def __init__(self, *args, **kwargs):
+            super(CustomerForm, self).__init__(*args, **kwargs)
+            self.helper = FormHelper(self)
 
-* django-crispy-forms (https://django-crispy-forms.readthedocs.io/en/latest/)
-* select2 (https://select2.github.io/)
-* django-cropping-image (https://github.com/jonasundderwolf/django-image-cropping)
+            self.helper.layout = Layout(
+                TabHolder(
+                    Tab(
+                        _('Basic information'),
+                        Field('name', wrapper_class="col-md-6"),
+                        Field('address', wrapper_class="col-md-6"),
+                        Field('email', wrapper_class="col-md-12"),
+                    ),
+                    Tab(
+                        _('Other information'),
+                        Field('image', wrapper_class="col-md-6"),
+                        Field('cropping', wrapper_class="col-md-6"),
+                        Field('cif', wrapper_class="col-md-6"),
+                        Field('slug', wrapper_class="col-md-6")
+                    )
+                )
+            )
 
-If you want to override the sidebar you can do it creating a file called
-``templates/adminlte/lib/_main_sidebar.html`` inside your project and you can
-put there the contents you want.
+            self.helper.layout.append(
+                FormActions(
+                    Submit('submit', _('Submit'), css_class='btn btn-primary'),
+                    HTML("""{% load i18n %}<a class="btn btn-danger"
+                            href="{{ url_delete }}">{% trans 'Delete' %}</a>"""),
+                )
+            )
+
+
+Cropping sample
+^^^^^^^^^^^^^^^
+
+models.py::
+
+    from image_cropping import ImageCropField, ImageRatioField
+    class Customer(models.Model):
+        name = models.CharField(_('Customer'), max_length=200)
+        image = ImageCropField(upload_to='media/customers', blank=True)
+        cropping = ImageRatioField('image', '430x360')
+
+forms.py::
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'image', 'cropping']
+            widgets = {
+                'image': ImageCropWidget,
+            }
+
+
+Select2
+^^^^^^^
+
+By default all the select are automatically converted in select2.
+
 
 Quickstart
 ----------
@@ -136,13 +215,22 @@ if you want to use them::
     pip install easy-thumbnails
     pip install django-image-cropping
 
+Next step is to add the urls to your ``project.urls`` as was said above::
+
+    # django-cruds
+    from cruds.urls import crud_for_app
+    urlpatterns += crud_for_app('testapp')
+
+And you can start modeling your app, migrate it and directly browse to the urls
+described above, that's all.
 
 Requirements
 ------------
 
 * Python 2.7+
-* Django >=1.4.2
+* Django >=1.8
 * django-crispy-forms
+* django-image-cropping and easy-thumbnails (optional if you want to crop)
 
 
 Screenshots
