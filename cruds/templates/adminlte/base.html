@@ -15,6 +15,10 @@
         {% include 'adminlte/lib/_styles.html' %}
     {% endblock %}
 
+    {% block javascript %}
+        {% include 'adminlte/lib/_scripts.html' %}
+    {% endblock %}
+
     {% block extra_head %}{% endblock %}
 </head>
 <body class="hold-transition skin-blue sidebar-mini {% block body_class %}{% block bodyclass %}{% endblock %}{% endblock %}">
@@ -66,10 +70,6 @@
 
     </div>
 {% endblock body %}
-
-{% block javascript %}
-{% include 'adminlte/lib/_scripts.html' %}
-{% endblock %}
 
 {% block extra_foot %}{% endblock %}
 </body>

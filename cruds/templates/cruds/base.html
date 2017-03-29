@@ -20,6 +20,12 @@
         <script src="{% static "jquery/dist/jquery.min.js" %}"></script>
     {% endblock %}
 
+    {% block javascript %}
+        {% include 'adminlte/lib/_scripts.html' %}
+        <script type="text/javascript" src="{% static 'vendors/jquery-cookie/jquery.cookie.js' %}"></script>
+    {% endblock %}
+    {% block js %}{% endblock js %}
+
     {% block extra_head %}{% endblock %}
 </head>
 <body class="hold-transition skin-blue sidebar-mini {% block body_class %}base{% endblock body_class %}">
@@ -70,12 +76,6 @@
 
     </div>
 {% endblock body %}
-
-{% block javascript %}
-{% include 'adminlte/lib/_scripts.html' %}
-<script type="text/javascript" src="{% static 'vendors/jquery-cookie/jquery.cookie.js' %}"></script>
-{% endblock %}
-{% block js %}{% endblock js %}
 
 {% block extra_foot %}{% endblock %}
 </body>

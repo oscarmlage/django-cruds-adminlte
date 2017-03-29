@@ -2,9 +2,9 @@
 django-cruds
 =============================
 
-* Note: This version of django-cruds is based on `bmihelac's one <https://github.com/bmihelac/django-cruds/>`_
+* Note: This version of django-cruds is based on `bmihelac's one <https://github.com/bmihelac/django-cruds/>`_.
 
-django-cruds is simple drop-in django app that creates CRUD (Create, read,
+``django-cruds`` is simple drop-in django app that creates CRUD (Create, read,
 update and delete) views for existing models and apps.
 
 django-cruds goal is to make prototyping faster.
