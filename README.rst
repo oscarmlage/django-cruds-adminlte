@@ -285,7 +285,7 @@ CKEditor
 
 forms.py::
 
-    from cruds import ColorPickerWidget
+    from cruds import CKEditorWidget
 
     class CustomerForm(forms.ModelForm):
 
