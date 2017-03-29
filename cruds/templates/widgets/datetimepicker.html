@@ -1,11 +1,11 @@
 <script>
 $(function () {
-    $('.datetimepicker').datetimepicker()
+    $('.datetimepickerwidget').datetimepicker();
 });
 </script>
 <div class="input-group date">
     <div class="input-group-addon">
-        <i class="fa fa-calendar"></i>
+        <i class="fa {% if icon %}{{ icon }}{% else %}fa-calendar{% endif %}"></i>
     </div>
-    <input type="text" class="form-control datetimepicker" data-date-format="mm/dd/yyyy HH:ii:ss">
+    <input type="text" class="{{ class }}" data-date-format="{% if format %}{{ format }}{% else %}mm/dd/yyyy HH:ii:ss{% endif %}" />
 </div>

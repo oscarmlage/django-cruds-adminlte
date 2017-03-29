@@ -1,0 +1,19 @@
+<textarea {{ flatatt }} id="{{ id }}">{% if value %}{{ value }}{% endif %}</textarea>
+
+<script>
+$(function () {
+    CKEDITOR.replace('{{ id }}', {
+        language: '{% if lang %}{{ lang }}{% else %}en{% endif %}',
+        {% if customconfig %}customConfig: '{{ customconfig }}',{% endif %}
+    });
+
+    CKEDITOR.config.toolbar = [
+       ['Format','Font','FontSize','Bold','Italic','Underline','StrikeThrough','-',
+        'Undo','Redo','-','Cut','Copy','Paste','Find','Replace','-',
+        'Outdent','Indent','-','Print', '-','NumberedList','BulletedList','-',
+        'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-',
+        'Image','Table','-','Link','Smiley'], ['Source']
+    ] ;
+
+});
+</script>

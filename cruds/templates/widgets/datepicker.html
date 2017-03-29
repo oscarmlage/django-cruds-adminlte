@@ -1,13 +1,13 @@
 <script>
 $(function () {
-    $('.datepicker').datepicker({
+    $('.datepickerwidget').datepicker({
         autoclose: true
     });
 });
 </script>
 <div class="input-group date">
     <div class="input-group-addon">
-        <i class="fa fa-calendar"></i>
+        <i class="fa {% if icon %}{{ icon }}{% else %}fa-calendar{% endif %}"></i>
     </div>
-    <input type="text" class="form-control datepicker" data-date-format="mm/dd/yyyy">
+    <input type="text" class="{{ class }}" data-date-format="{% if format %}{{ format }}{% else %}mm/dd/yyyy{% endif %}" />
 </div>

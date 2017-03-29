@@ -1,6 +1,6 @@
 <script>
 $(function () {
-    $(".timepicker").timepicker({
+    $(".timepickerwidget").timepicker({
           showInputs: false
     });
 });
@@ -9,8 +9,8 @@ $(function () {
 <div class="bootstrap-timepicker">
     <div class="input-group">
         <div class="input-group-addon">
-            <i class="fa fa-clock-o"></i>
+            <i class="fa {% if icon %}{{ icon }}{% else %}fa-clock-o{% endif %}"></i>
         </div>
-        <input type="text" class="form-control timepicker">
+        <input type="text" class="{{ class }}">
     </div>
 </div>

@@ -213,7 +213,8 @@ forms.py::
             model = Customer
             fields = ['name', 'date']
             widgets = {
-                'date': DatePickerWidget,
+                'date': DatePickerWidget(attrs={'format': 'mm/dd/yyyy',
+                                                'icon': 'fa-calendar'}),
             }
 
 .. image:: doc/cruds-datepicker.png
@@ -233,7 +234,7 @@ forms.py::
             model = Customer
             fields = ['name', 'time']
             widgets = {
-                'time': TimePickerWidget,
+                'time': TimePickerWidget(attrs={'icon': 'fa-clock-o'}),
             }
 
 .. image:: doc/cruds-timepicker.png
@@ -253,7 +254,8 @@ forms.py::
             model = Customer
             fields = ['name', 'datetime']
             widgets = {
-                'datetime': DateTimePickerWidget,
+                'datetime': DateTimePickerWidget(attrs={'format': 'mm/dd/yyyy HH:ii:ss',
+                                                        'icon': 'fa-calendar'}),
             }
 
 .. image:: doc/cruds-datetimepicker.png
@@ -264,7 +266,7 @@ ColorPicker
 
 forms.py::
 
-    from cruds import ColorWidget
+    from cruds import ColorPickerWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -276,6 +278,25 @@ forms.py::
             }
 
 .. image:: doc/cruds-colorpicker.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+CKEditor
+^^^^^^^^^^
+
+forms.py::
+
+    from cruds import ColorPickerWidget
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'text']
+            widgets = {
+                'text': CKEditorWidget(attrs={'lang': 'es'}),
+            }
+
+.. image:: doc/cruds-ckeditor.png
     :target: https://github.com/oscarmlage/django-cruds
 
 
