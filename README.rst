@@ -200,6 +200,85 @@ Select2
 By default all the select are automatically converted in select2.
 
 
+DatePicker
+^^^^^^^^^^
+
+forms.py::
+
+    from cruds import DatePickerWidget
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'date']
+            widgets = {
+                'date': DatePickerWidget,
+            }
+
+.. image:: doc/cruds-datepicker.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+
+TimePicker
+^^^^^^^^^^
+
+forms.py::
+
+    from cruds import TimePickerWidget
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'time']
+            widgets = {
+                'time': TimePickerWidget,
+            }
+
+.. image:: doc/cruds-timepicker.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+
+DateTimePicker
+^^^^^^^^^^^^^^
+
+forms.py::
+
+    from cruds import DateTimePickerWidget
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'datetime']
+            widgets = {
+                'datetime': DateTimePickerWidget,
+            }
+
+.. image:: doc/cruds-datetimepicker.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+ColorPicker
+^^^^^^^^^^
+
+forms.py::
+
+    from cruds import ColorWidget
+
+    class CustomerForm(forms.ModelForm):
+
+        class Meta:
+            model = Customer
+            fields = ['name', 'color']
+            widgets = {
+                'color': ColorPickerWidget,
+            }
+
+.. image:: doc/cruds-colorpicker.png
+    :target: https://github.com/oscarmlage/django-cruds
+
+
 Quickstart
 ----------
 
