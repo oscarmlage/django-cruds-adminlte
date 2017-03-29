@@ -1,13 +1,11 @@
 <script>
 $(function () {
-    $('.datepicker').datepicker({
-        autoclose: true
-    });
+    $('.datetimepicker').datetimepicker()
 });
 </script>
 <div class="input-group date">
     <div class="input-group-addon">
         <i class="fa fa-calendar"></i>
     </div>
-    <input type="text" class="form-control datepicker" data-date-format="mm/dd/yyyy">
+    <input type="text" class="form-control datetimepicker" data-date-format="mm/dd/yyyy HH:ii:ss">
 </div>
