@@ -9,4 +9,3 @@ TODO
 
 * Fix the select2 width issue
 * inputmask
-* fix keep-old/post-new values in widgets

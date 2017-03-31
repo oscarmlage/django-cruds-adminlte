@@ -10,10 +10,15 @@ class DatePickerWidget(Widget):
     template_name = 'widgets/datepicker.html'
 
     def get_context(self, name, value, attrs=None):
-        return self.attrs
+        context = dict(self.attrs.items() + attrs.items())
+        context['name'] = name
+        if value is not None:
+            context['value'] = value
+        return context
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
+        print context
         return mark_safe(loader.render_to_string(self.template_name, context))
 
 
@@ -22,7 +27,11 @@ class TimePickerWidget(Widget):
     template_name = 'widgets/timepicker.html'
 
     def get_context(self, name, value, attrs=None):
-        return self.attrs
+        context = dict(self.attrs.items() + attrs.items())
+        context['name'] = name
+        if value is not None:
+            context['value'] = value
+        return context
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
@@ -34,7 +43,11 @@ class DateTimePickerWidget(Widget):
     template_name = 'widgets/datetimepicker.html'
 
     def get_context(self, name, value, attrs=None):
-        return self.attrs
+        context = dict(self.attrs.items() + attrs.items())
+        context['name'] = name
+        if value is not None:
+            context['value'] = value
+        return context
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
@@ -46,7 +59,11 @@ class ColorPickerWidget(Widget):
     template_name = 'widgets/colorpicker.html'
 
     def get_context(self, name, value, attrs=None):
-        return self.attrs
+        context = dict(self.attrs.items() + attrs.items())
+        context['name'] = name
+        if value is not None:
+            context['value'] = value
+        return context
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
@@ -59,11 +76,12 @@ class CKEditorWidget(Textarea):
 
     def get_context(self, name, value, attrs=None):
         self.attrs['flatatt'] = flatatt(self.attrs)
-        return self.attrs
+        context = dict(self.attrs.items() + attrs.items())
+        context['name'] = name
+        if value is not None:
+            context['value'] = value
+        return context
 
     def render(self, name, value, attrs=None, renderer=None):
         context = self.get_context(name, value, attrs)
-        context['id'] = attrs['id']
-        if value != '':
-            context['value'] = value
         return mark_safe(loader.render_to_string(self.template_name, context))
