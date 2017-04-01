@@ -48,7 +48,7 @@ It is also possible to add CRUD for one model::
       </tbody>
     </table>
 
-Use ``cruds.util.crud_url`` shortcut function to quickly get url for
+Use ``cruds_adminlte.util.crud_url`` shortcut function to quickly get url for
 instance for given action::
 
     crud_url(author, 'update')
@@ -205,7 +205,7 @@ DatePicker
 
 forms.py::
 
-    from cruds import DatePickerWidget
+    from cruds_adminlte import DatePickerWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -226,7 +226,7 @@ TimePicker
 
 forms.py::
 
-    from cruds import TimePickerWidget
+    from cruds_adminlte import TimePickerWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -246,7 +246,7 @@ DateTimePicker
 
 forms.py::
 
-    from cruds import DateTimePickerWidget
+    from cruds_adminlte import DateTimePickerWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -266,7 +266,7 @@ ColorPicker
 
 forms.py::
 
-    from cruds import ColorPickerWidget
+    from cruds_adminlte import ColorPickerWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -285,7 +285,7 @@ CKEditor
 
 forms.py::
 
-    from cruds import CKEditorWidget
+    from cruds_adminlte import CKEditorWidget
 
     class CustomerForm(forms.ModelForm):
 
@@ -307,9 +307,9 @@ Install django-cruds-adminlte::
 
     pip install django-cruds-adminlte
 
-Then use it in a project, add ``cruds`` to ``INSTALLED_APPS``. Note that you
-will have to install ``crispy_forms`` and ``image_cropping`` if before the app
-if you want to use them::
+Then use it in a project, add ``cruds_adminlte`` to ``INSTALLED_APPS``. Note
+that you will have to install ``crispy_forms`` and ``image_cropping`` if
+before the app if you want to use them::
 
     pip install django-crispy-forms
     pip install easy-thumbnails
