@@ -303,7 +303,7 @@ forms.py::
 Quickstart
 ----------
 
-Install django-cruds-adminlte::
+Install django-cruds-adminlte (`already in Pypi <https://pypi.python.org/pypi/django-cruds-adminlte>`_)::
 
     pip install django-cruds-adminlte
 
