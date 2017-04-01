@@ -1,13 +1,13 @@
 =============================
-django-cruds
+django-cruds-adminlte
 =============================
 
-* Note: This version of django-cruds is based on `bmihelac's one <https://github.com/bmihelac/django-cruds/>`_.
+* Note: This version of django-cruds-adminlte is based on `bmihelac's one <https://github.com/bmihelac/django-cruds-adminlte/>`_.
 
-``django-cruds`` is simple drop-in django app that creates CRUD (Create, read,
+``django-cruds-adminlte`` is simple drop-in django app that creates CRUD (Create, read,
 update and delete) views for existing models and apps.
 
-django-cruds goal is to make prototyping faster.
+django-cruds-adminlte goal is to make prototyping faster.
 
 
 Documentation
@@ -15,8 +15,8 @@ Documentation
 
 To add CRUD for whole app, add this to urls.py::
 
-    # django-cruds
-    from cruds.urls import crud_for_app
+    # django-cruds-adminlte
+    from cruds_adminlte.urls import crud_for_app
     urlpatterns += crud_for_app('testapp')
 
 This will create following urls and appropriate views (assuming
@@ -35,7 +35,7 @@ URL                                   name
 It is also possible to add CRUD for one model::
 
     from django.db.models.loading import get_model
-    from cruds.urls import crud_for_model
+    from cruds_adminlte.urls import crud_for_model
     urlpatterns += crud_for_model(get_model('testapp', 'Author'))
 
 ``crud_fields`` templatetag displays fields for an object::
@@ -61,7 +61,7 @@ Is same as::
 Templates
 ^^^^^^^^^
 
-django-cruds views will append CRUD template name to a list of default
+django-cruds-adminlte views will append CRUD template name to a list of default
 candidate template names for given action.
 
 CRUD Templates are::
@@ -124,7 +124,7 @@ And define the AuthorForm with tabs or any other crispy feature in your app::
 You will get something similar to this:
 
 .. image:: doc/cruds-form.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 Crispy tabbed form sample
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -218,7 +218,7 @@ forms.py::
             }
 
 .. image:: doc/cruds-datepicker.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
 TimePicker
@@ -238,7 +238,7 @@ forms.py::
             }
 
 .. image:: doc/cruds-timepicker.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
 DateTimePicker
@@ -259,7 +259,7 @@ forms.py::
             }
 
 .. image:: doc/cruds-datetimepicker.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 ColorPicker
 ^^^^^^^^^^
@@ -278,7 +278,7 @@ forms.py::
             }
 
 .. image:: doc/cruds-colorpicker.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 CKEditor
 ^^^^^^^^^^
@@ -297,15 +297,15 @@ forms.py::
             }
 
 .. image:: doc/cruds-ckeditor.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
 Quickstart
 ----------
 
-Install django-cruds::
+Install django-cruds-adminlte::
 
-    pip install django-cruds
+    pip install django-cruds-adminlte
 
 Then use it in a project, add ``cruds`` to ``INSTALLED_APPS``. Note that you
 will have to install ``crispy_forms`` and ``image_cropping`` if before the app
@@ -317,7 +317,7 @@ if you want to use them::
 
 Next step is to add the urls to your ``project.urls`` as was said above::
 
-    # django-cruds
+    # django-cruds-adminlte
     from cruds.urls import crud_for_app
     urlpatterns += crud_for_app('testapp')
 
@@ -337,18 +337,18 @@ Screenshots
 -----------
 
 .. image:: doc/cruds-list.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 .. image:: doc/cruds-select2.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 .. image:: doc/cruds-tabs.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 .. image:: doc/cruds-cropping.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
 .. image:: doc/cruds-responsive.png
-    :target: https://github.com/oscarmlage/django-cruds
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
 

@@ -13,7 +13,7 @@ from django.core.urlresolvers import (
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
-from cruds import utils
+from cruds_adminlte import utils
 
 
 register = template.Library()

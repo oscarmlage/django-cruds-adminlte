@@ -11,7 +11,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/oscarmlage/django-cruds/issues.
+Report bugs at https://github.com/oscarmlage/django-cruds-adminlte/issues.
 
 If you are reporting a bug, please include:
 
@@ -34,14 +34,14 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-django-cruds could always use more documentation, whether as part of the
-official django-cruds docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+django-cruds-adminlte could always use more documentation, whether as part of
+the official django-cruds-adminlte docs, in docstrings, or even on the web in
+blog posts, articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/oscarmlage/django-cruds/issues.
+The best way to send feedback is to file an issue at https://github.com/oscarmlage/django-cruds-adminlte/issues.
 
 If you are proposing a feature:
 

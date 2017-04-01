@@ -4,14 +4,12 @@
 import os
 import sys
 
-import cruds
-
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
-version = cruds.__version__
+version = 0.0.2
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
@@ -21,18 +19,17 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='django-cruds',
+    name='django-cruds-adminlte',
     version=version,
-    description="""django-cruds is simple drop-in django app that creates CRUD for faster prototyping.""",  # noqa
-    long_description=readme + '\n\n' + history,
+    description="""django-cruds-adminlte is simple drop-in django app that creates CRUD for faster prototyping.""",  # noqa
+    long_description=readme,
     author='Óscar M. Lage',
     author_email='info@oscarmlage.com',
-    url='https://github.com/oscarmlage/django-cruds',
+    url='https://github.com/oscarmlage/django-cruds-adminlte',
     packages=[
-        'cruds',
+        'cruds_adminlte',
     ],
     include_package_data=True,
     install_requires=[
@@ -40,7 +37,7 @@ setup(
     ],
     license="BSD",
     zip_safe=False,
-    keywords='django-cruds',
+    keywords='django-cruds-adminlte',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
