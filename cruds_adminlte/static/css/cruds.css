@@ -27,3 +27,15 @@
 #submit-id-submit:hover {
     background-color: #367fa9 !important;
 }
+
+.th-fieldtype-booleanfield {
+    text-align: center !important;
+}
+
+.td-fieldtype-booleanfield .true i{
+    color: green;
+}
+
+.td-fieldtype-booleanfield .false i{
+    color: red;
+}

@@ -1,6 +1,6 @@
 {% load crud_tags %}
 
-<div class="text-center">
+<div class="text-center {% if object|format_value:field == True %}true{% else %}false{% endif %}">
     {% if object|format_value:field == True %}
         <i class="fa fa-check-square"></i>
     {% else %}

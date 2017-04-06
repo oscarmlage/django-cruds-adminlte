@@ -24,7 +24,7 @@
                         <thead>
                             {% block thead %}
                             {% for field, field_name in fields.items %}
-                            <th>{{ field_name }}</th>
+                            <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
                             {% endfor %}
                             <th>{% trans "Actions" %}</th>
                             {% endblock thead %}
@@ -33,9 +33,9 @@
                           {% block tbody %}
                           {% for object in object_list %}
                             <tr>
-                              {% for field, typefield in fields_with_types.items %}
-                              <td>
-                                {% with column=typefield|lower|add:".html" %}
+                              {% for field, field_name in fields.items %}
+                              <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
+                                {% with column=field_name.1|lower|add:".html" %}
                                     {% include "cruds/columns/"|add:column %}
                                 {% endwith %}
                                 {# typefield #}

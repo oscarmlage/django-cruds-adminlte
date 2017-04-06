@@ -47,16 +47,9 @@ def get_fields(model, include=None):
     else:
         selected = [field for field in info.fields if field.editable]
     for field in selected:
-        fields[field.name] = field.verbose_name
-    return fields
-
-
-def get_fields_with_types(model):
-    fields = OrderedDict()
-    info = model._meta
-    selected = [field for field in info.fields if field.editable]
-    for field in selected:
-        fields[field.name] = model._meta.get_field(field.name).get_internal_type
+        fields[field.name] = [
+            field.verbose_name,
+            model._meta.get_field(field.name).get_internal_type]
     return fields
 
 

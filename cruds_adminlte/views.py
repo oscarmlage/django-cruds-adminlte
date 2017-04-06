@@ -31,7 +31,6 @@ class CRUDMixin(object):
         })
 
         context['fields'] = utils.get_fields(self.model)
-        context['fields_with_types'] = utils.get_fields_with_types(self.model)
 
         if hasattr(self, 'object') and self.object:
             for action in utils.INSTANCE_ACTIONS:
