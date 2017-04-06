@@ -85,6 +85,26 @@ If you want to override the sidebar you can do it creating a file called
 put there the contents you want.
 
 
+Override view with custom columns
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you take a look to the directory "templates/cruds/columns" you can see the
+different kinds of colums depending on the type of field:
+
+    autofield.html
+    booleanfield.html
+    charfield.html
+    datefield.html
+    datetimefield.html
+    filefield.html
+    textfield.html
+    timefield.html
+
+You can override the column type in lists pages with the custom html you want
+for your project. Just recreate the structure (templates/cruds/columns/) in your
+project and write your own html.
+
+
 Override view with custom form
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -171,7 +191,7 @@ forms.py::
             )
 
 
-Cropping sample
+Cropping widget
 ^^^^^^^^^^^^^^^
 
 models.py::
@@ -194,14 +214,14 @@ forms.py::
             }
 
 
-Select2
-^^^^^^^
+Select2 widget
+^^^^^^^^^^^^^^
 
 By default all the select are automatically converted in select2.
 
 
-DatePicker
-^^^^^^^^^^
+DatePicker widget
+^^^^^^^^^^^^^^^^^
 
 forms.py::
 
@@ -221,8 +241,8 @@ forms.py::
     :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
-TimePicker
-^^^^^^^^^^
+TimePicker widget
+^^^^^^^^^^^^^^^^^
 
 forms.py::
 
@@ -241,8 +261,8 @@ forms.py::
     :target: https://github.com/oscarmlage/django-cruds-adminlte
 
 
-DateTimePicker
-^^^^^^^^^^^^^^
+DateTimePicker widget
+^^^^^^^^^^^^^^^^^^^^^
 
 forms.py::
 
@@ -261,8 +281,8 @@ forms.py::
 .. image:: doc/cruds-datetimepicker.png
     :target: https://github.com/oscarmlage/django-cruds-adminlte
 
-ColorPicker
-^^^^^^^^^^
+ColorPicker widget
+^^^^^^^^^^^^^^^^^^
 
 forms.py::
 
@@ -280,8 +300,8 @@ forms.py::
 .. image:: doc/cruds-colorpicker.png
     :target: https://github.com/oscarmlage/django-cruds-adminlte
 
-CKEditor
-^^^^^^^^^^
+CKEditor widget
+^^^^^^^^^^^^^^^
 
 forms.py::
 

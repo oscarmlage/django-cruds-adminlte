@@ -51,6 +51,15 @@ def get_fields(model, include=None):
     return fields
 
 
+def get_fields_with_types(model):
+    fields = OrderedDict()
+    info = model._meta
+    selected = [field for field in info.fields if field.editable]
+    for field in selected:
+        fields[field.name] = model._meta.get_field(field.name).get_internal_type
+    return fields
+
+
 def crud_url(instance, action, prefix=None, additional_kwargs=None):
     """
     Shortcut function returns url for instance and action passing `pk` kwarg.

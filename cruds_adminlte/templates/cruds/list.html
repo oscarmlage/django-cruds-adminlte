@@ -33,9 +33,12 @@
                           {% block tbody %}
                           {% for object in object_list %}
                             <tr>
-                              {% for field in fields.keys %}
+                              {% for field, typefield in fields_with_types.items %}
                               <td>
-                                {{ object|format_value:field }}
+                                {% with column=typefield|lower|add:".html" %}
+                                    {% include "cruds/columns/"|add:column %}
+                                {% endwith %}
+                                {# typefield #}
                               </td>
                               {% endfor %}
                               <td>
