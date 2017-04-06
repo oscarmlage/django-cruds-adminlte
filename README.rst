@@ -89,7 +89,7 @@ Override view with custom columns
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you take a look to the directory "templates/cruds/columns" you can see the
-different kinds of colums depending on the type of field:
+different kinds of colums depending on the type of field::
 
     autofield.html
     booleanfield.html
