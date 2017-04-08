@@ -1,0 +1,65 @@
+{% load adminlte_helpers i18n %}
+<header class="main-header">
+    <!-- Logo -->
+    {% block logo %}
+    <a href="{% block logo_href %}/{% endblock %}" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini">{% block logo_text_small %}<b>A</b>LTE{% endblock %}</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg">{% block logo_text %}<b>Admin</b>LTE{% endblock %}</span>
+    </a>
+    {% endblock %}
+
+    <!-- Header Navbar: style can be found in header.less -->
+    {% block nav_bar %}
+    <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a>
+
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                {% block header_dropdowns %}
+                    {% if request.user.is_authenticated %}
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="{% avatar_url size=50 %}" class="user-image" alt="User Image">
+                                <span class="hidden-xs">{% firstof request.user.get_short_name request.user.get_username %}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% block user_header %}
+                                <li class="user-header">
+                                    <img src="{% avatar_url size=180 %}" class="img-circle" alt="User Image">
+                                    <p>
+                                        {% firstof request.user.get_short_name request.user.get_username %}
+                                        <small>Member since {{ request.user.date_joined }}</small>
+                                    </p>
+                                </li>
+                                {% endblock %}
+
+                                <!-- Menu Footer-->
+                                {% block menu_footer %}
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="{% block change_password_url %}{% url 'admin:password_change' %}{% endblock %}"
+                                           class="btn btn-default btn-flat">{% trans 'Change password' %}</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="{% block logout_url %}{% logout_url %}{% endblock %}" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                                {% endblock %}
+
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endblock header_dropdowns %}
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
+</header>

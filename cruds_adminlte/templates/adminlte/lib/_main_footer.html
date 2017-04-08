@@ -1,0 +1,18 @@
+<footer class="main-footer">
+    <div class="pull-right hidden-xs">
+        {% block footer_right %}
+            <b>Version</b> {% block version %}0.1{% endblock %}
+        {% endblock %}
+    </div>
+
+    {% block footer_left %}
+    {% block legal %}
+    <strong>Copyright &copy; {% now "Y" %}{% if not site %}.{% endif %}
+        {% if site %}
+            <a href="http://{{ site.domain }}">{{ site.name }}</a>
+        {% endif %}
+    </strong> All rights
+    reserved.
+    {% endblock %}
+    {% endblock %}
+</footer>

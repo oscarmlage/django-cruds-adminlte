@@ -1,0 +1,39 @@
+{% if pager and ROOT_MENU.current_menu.view_name %}
+    <ul class="pagination pagination-sm no-margin pull-right">
+        <li><a href="{% url ROOT_MENU.current_menu.view_name %}?page=1&{{ pager.url_params }}">&laquo;</a></li>
+        {% if pager.page > 2 %}
+            <li>
+                <a href="{% url ROOT_MENU.current_menu.view_name %}?page={{pager.page|add:-2}}&{{ pager.url_params }}">
+                    {{ pager.page | add:-2 }}
+                </a>
+            </li>
+        {% endif %}
+        {% if pager.page > 1 %}
+            <li>
+                <a href="{% url ROOT_MENU.current_menu.view_name %}?page={{pager.page|add:-1}}&{{ pager.url_params }}">
+                    {{ pager.page | add:-1 }}
+                </a>
+            </li>
+        {% endif %}
+        <li class="active"><a href="#">{{ pager.page }}</a></li>
+        {% if pager.has_next %}
+            <li>
+                <a href="{% url ROOT_MENU.current_menu.view_name %}?page={{pager.page|add:1}}&{{ pager.url_params }}">
+                    {{ pager.page | add:1 }}
+                </a>
+            </li>
+        {% endif %}
+        {% if pager.has_next_two %}
+            <li>
+                <a href="{% url ROOT_MENU.current_menu.view_name %}?page={{pager.page|add:2}}&{{ pager.url_params }}">
+                    {{ pager.page | add:2 }}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="{% url ROOT_MENU.current_menu.view_name %}?page={{pager.last_page}}&{{ pager.url_params }}">
+            &raquo;
+            </a>
+        </li>
+    </ul>
+{% endif %}

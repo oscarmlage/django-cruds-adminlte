@@ -1,0 +1,26 @@
+{% load static %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<script src="{% static "bootstrap/dist/js/bootstrap.min.js" %} "></script>
+<script src="{% static "admin-lte/dist/js/app.min.js" %}"></script>
+<script src="{% static "select2/js/select2.min.js" %}"></script>
+
+<script src="{% static 'input-mask/jquery.inputmask.js' %}"></script>
+<script src="{% static 'input-mask/jquery.inputmask.date.extensions.js' %}"></script>
+<script src="{% static 'input-mask/jquery.inputmask.extensions.js' %}"></script>
+
+
+<script src="{% static 'datepicker/bootstrap-datepicker.js' %}"></script>
+<script src="{% static 'colorpicker/bootstrap-colorpicker.min.js' %}"></script>
+<script src="{% static 'timepicker/bootstrap-timepicker.min.js' %}"></script>
+<script src="{% static 'datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+<script src="{% static 'icheck/icheck.min.js' %}"></script>
+
+<script src="{% static "js/cruds.js" %}"></script>
+{% endblock %}

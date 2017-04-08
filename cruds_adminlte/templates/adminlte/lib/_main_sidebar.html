@@ -1,0 +1,37 @@
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        {% block nav_links_ul %}
+        <ul class="sidebar-menu">
+            {% block nav_links_outer %}
+            <li class="header">{% block nav_heading %}MAIN NAVIGATION{% endblock %}</li>
+            {% block nav_links %}
+                {% for model in models %}
+                <li>
+                    <a href="{% url model.url %}">
+                        <i class="fa fa-dashboard"></i> <span>{{ model.plural }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-group"></i> <span>Sub menu</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-user"></i> Another link
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            {% endblock nav_links %}
+            {% endblock nav_links_outer %}
+        </ul>
+        {% endblock nav_links_ul %}
+    </section>
+    <!-- /.sidebar -->
+</aside>
