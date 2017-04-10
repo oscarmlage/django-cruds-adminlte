@@ -1,10 +1,10 @@
 {% extends "cruds/base.html" %}
 {% load i18n %}
 
-{% block body %}
+{% block content %}
   <h1>{% trans "Remove" %} {{ object }}?</h1>
 
-  <form action="." method="POST">
+  <form action="{{ url_delete }}" method="POST">
     {% csrf_token %}
 
     <p>
