@@ -9,9 +9,10 @@ Free as freedom will be 26/8/2016
 
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from django.urls.base import reverse_lazy, reverse
 from django.urls.exceptions import NoReverseMatch
+from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 
 from cruds_adminlte import utils
@@ -23,6 +24,7 @@ class CRUDMixin(object):
         """
         Adds available urls and names.
         """
+
         context = super(CRUDMixin, self).get_context_data(**kwargs)
         context.update({
             'model_verbose_name': self.model._meta.verbose_name,
@@ -49,6 +51,12 @@ class CRUDMixin(object):
 
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        for perm in self.perms:
+            if not request.user.has_perm(perm):
+                return HttpResponseForbidden()
+        return View.dispatch(self, request, *args, **kwargs)
+
 
 class CRUDView(object):
     model = None
@@ -57,7 +65,22 @@ class CRUDView(object):
     fields = '__all__'
     urlprefix = ""
     check_login = True
+    check_perms = True
     paginate_by = 10
+    update_form = None
+    add_form = None
+
+    """
+    It's obligatory this structure 
+        perms = {
+        'create': [],
+        'list': [],
+        'delete': [],
+        'update': [],
+        'detail': []
+        }
+    """
+    perms = None  # {''}
 
     #  DECORATORS
 
@@ -91,7 +114,8 @@ class CRUDView(object):
 
         class OCreateView(CRUDMixin, CreateViewClass):
             namespace = self.namespace
-
+            perms = self.perms['create']
+            form_class = self.add_form
         return OCreateView
 
     def get_detail_view_class(self):
@@ -102,6 +126,7 @@ class CRUDView(object):
 
         class ODetailView(CRUDMixin, ODetailViewClass):
             namespace = self.namespace
+            perms = self.perms['detail']
         return ODetailView
 
     def get_update_view_class(self):
@@ -112,6 +137,8 @@ class CRUDView(object):
 
         class OEditView(CRUDMixin, EditViewClass):
             namespace = self.namespace
+            perms = self.perms['update']
+            form_class = self.update_form
         return OEditView
 
     def get_list_view_class(self):
@@ -122,6 +149,7 @@ class CRUDView(object):
 
         class OListView(CRUDMixin, OListViewClass):
             namespace = self.namespace
+            perms = self.perms['list']
 
         return OListView
 
@@ -133,6 +161,7 @@ class CRUDView(object):
 
         class ODeleteView(CRUDMixin, ODeleteClass):
             namespace = self.namespace
+            perms = self.perms['delete']
         return ODeleteView
 
 #  INITIALIZERS
@@ -143,9 +172,12 @@ class CRUDView(object):
         if self.namespace:
             url = self.namespace + ":" + url
 
+        fields = self.fields
+        if self.add_form:
+            fields = None
         self.create = self.decorator_create(OCreateView.as_view(
             model=self.model,
-            fields=self.fields,
+            fields=fields,
             success_url=reverse_lazy(url),
             template_name=basename
         ))
@@ -164,9 +196,12 @@ class CRUDView(object):
             self.model, 'list', prefix=self.urlprefix)
         if self.namespace:
             url = self.namespace + ":" + url
+        fields = self.fields
+        if self.update_form:
+            fields = None
         self.update = self.decorator_update(OUpdateView.as_view(
             model=self.model,
-            fields=self.fields,
+            fields=fields,
             success_url=reverse_lazy(url),
             template_name=basename
         ))
@@ -199,6 +234,26 @@ class CRUDView(object):
                 self.model.__name__.lower())
         return ns
 
+    def initialize_perms(self):
+        if self.perms is None:
+            self.perms = {
+                'create': [],
+                'list': [],
+                'delete': [],
+                'update': [],
+                'detail': []
+
+            }
+        applabel = self.model._meta.app_label
+        name = self.model.__name__.lower()
+        if self.check_perms:
+            self.perms['create'].append("%s.add_%s" % (applabel, name))
+            self.perms['update'].append("%s.change_%s" % (applabel, name))
+            self.perms['delete'].append("%s.delete_%s" % (applabel, name))
+            # maybe other default perm can be here
+            self.perms['list'].append("%s.view_%s" % (applabel, name))
+            self.perms['detail'].append("%s.view_%s" % (applabel, name))
+
     def __init__(self, namespace=None, model=None, template_name_base=None):
         if namespace:
             self.namespace = namespace
@@ -209,6 +264,7 @@ class CRUDView(object):
 
         basename = self.get_base_name()
 
+        self.initialize_perms()
         self.initialize_create(basename + '/create.html')
         self.initialize_detail(basename + '/detail.html')
         self.initialize_update(basename + '/update.html')
