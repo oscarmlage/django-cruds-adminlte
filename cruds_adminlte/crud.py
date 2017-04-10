@@ -29,22 +29,27 @@ class CRUDMixin(object):
         context.update({
             'model_verbose_name': self.model._meta.verbose_name,
             'model_verbose_name_plural': self.model._meta.verbose_name_plural,
+            'namespace': self.namespace
         })
 
         context['fields'] = utils.get_fields(self.model)
         if hasattr(self, 'object') and self.object:
             for action in utils.INSTANCE_ACTIONS:
                 try:
-                    url = reverse(
-                        utils.crud_url_name(self.model, action),
-                        kwargs={'pk': self.object.pk})
+                    nurl = utils.crud_url_name(self.model, action)
+                    if self.namespace:
+                        nurl = self.namespace + ':' + nurl
+                    url = reverse(nurl, kwargs={'pk': self.object.pk})
                 except NoReverseMatch:
                     url = None
                 context['url_%s' % action] = url
 
         for action in utils.LIST_ACTIONS:
             try:
-                url = reverse(utils.crud_url_name(self.model, action))
+                nurl = utils.crud_url_name(self.model, action)
+                if self.namespace:
+                    nurl = self.namespace + ':' + nurl
+                url = reverse(nurl)
             except NoReverseMatch:
                 url = None
             context['url_%s' % action] = url
@@ -59,6 +64,101 @@ class CRUDMixin(object):
 
 
 class CRUDView(object):
+    """
+        CRUDView is a generic way to provide create, list, detail, update, delete views in one class,
+        you can inherit for it and manage login_required, model perms, pagination, update and add forms
+        how to use: 
+
+        In views 
+
+        .. code:: python
+
+            from testapp.models import Customer
+            from cruds_adminlte.crud import CRUDView
+            class Myclass(CRUDView):
+                model = Customer
+
+        In urls.py
+
+        myview = Myclass()
+        .. code:: python
+            urlpatterns = [
+                url('path', include(myview.get_urls()))  # also support namespace 
+            ]
+
+        The default behavior is check_login = True and check_perms=True but you can turn off with
+
+        .. code:: python
+            from testapp.models import Customer
+            from cruds_adminlte.crud import CRUDView
+
+            class Myclass(CRUDView):
+                model = Customer
+                check_login = False
+                check_perms = False
+
+        You also can defined extra perms with 
+
+        .. code:: python
+
+            class Myclass(CRUDView):
+                model = Customer
+                perms = { 'create': ['applabel.mycustom_perm'],
+                          'list': [],
+                          'delete': [],
+                          'update': [],
+                          'detail': []
+                        }
+        If check_perms = True we will add default django model perms
+         (<applabel>.[add|change|delete|view]_<model>) 
+
+        You can also overwrite add and update forms 
+
+        .. code:: python
+
+            class Myclass(CRUDView):
+                model = Customer
+                add_form = MyFormClass
+                update_form = MyFormClass  
+
+        And of course overwrite base template name
+
+        .. code:: python
+
+            class Myclass(CRUDView):
+                model = Customer
+                template_name_base = "mybase"   
+
+        Remember basename is generated like app_label/modelname and 
+        template loader search this structure
+
+        basename + '/create.html'
+        basename + '/detail.html'
+        basename + '/update.html'
+        basename + '/list.html'
+        basename + '/delete.html'
+
+        Using namespace 
+
+        In views 
+
+        .. code:: python
+
+            from testapp.models import Customer
+            from cruds_adminlte.crud import CRUDView
+            class Myclass(CRUDView):
+                model = Customer
+                namespace = "mynamespace"
+
+        In urls.py
+
+        myview = Myclass()
+        .. code:: python
+            urlpatterns = [
+                url('path', include(myview.get_urls(), namespace="mynamespace"))  
+            ]
+    """
+
     model = None
     template_name_base = "cruds"
     namespace = None
@@ -80,7 +180,7 @@ class CRUDView(object):
         'detail': []
         }
     """
-    perms = None  # {''}
+    perms = None
 
     #  DECORATORS
 

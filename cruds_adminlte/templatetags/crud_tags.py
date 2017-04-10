@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 import os.path
 
-from django.utils import six
-from django.db import models
 from django import template
 from django.core.urlresolvers import (
     NoReverseMatch,
     reverse,
 )
+from django.db import models
+from django.utils import six
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
@@ -28,11 +28,12 @@ def get_attr(obj, attr):
 
 
 @register.assignment_tag
-def crud_url(obj, action):
+def crud_url(obj, action, namespace=None):
     try:
-        url = reverse(
-            utils.crud_url_name(type(obj), action),
-            kwargs={'pk': obj.pk})
+        nurl = utils.crud_url_name(type(obj), action)
+        if namespace:
+            nurl = namespace + ':' + nurl
+        url = reverse(nurl, kwargs={'pk': obj.pk})
     except NoReverseMatch:
         url = None
     return url
