@@ -80,8 +80,8 @@ class CRUDView(object):
 
         In urls.py
 
-        myview = Myclass()
         .. code:: python
+            myview = Myclass()
             urlpatterns = [
                 url('path', include(myview.get_urls()))  # also support namespace 
             ]
@@ -129,8 +129,8 @@ class CRUDView(object):
                 model = Customer
                 template_name_base = "mybase"   
 
-        Remember basename is generated like app_label/modelname and 
-        template loader search this structure
+        Remember basename is generated like app_label/modelname if template_name_base is set as None and 
+        'cruds' by default so template loader search this structure
 
         basename + '/create.html'
         basename + '/detail.html'
