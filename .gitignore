@@ -38,5 +38,5 @@ output/*.html
 output/*/index.html
 
 # Sphinx
-docs/_build.settings/
+docs/_build
 .settings/
