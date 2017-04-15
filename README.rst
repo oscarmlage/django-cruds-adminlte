@@ -9,6 +9,48 @@ update and delete) views for existing models and apps.
 
 django-cruds-adminlte goal is to make prototyping faster.
 
+Installation
+-------------
+
+Via pip install 
+
+    pip install django-cruds-adminlte
+
+If you want full support then install dependencies 
+    pip install django-crispy-forms
+    pip install django-select2
+    pip install django-image-cropping
+    pip install easy-thumbnails
+
+
+Set in yours settings
+    
+    INSTALLED_APPS = [
+        ...
+    'crispy_forms',
+    'django_select2',
+    'easy_thumbnails',
+    'image_cropping',
+    'cruds_adminlte'
+    ]
+
+Configure template pack and jquery for image_cropping.
+Note: Template also import jquery so it's not necessary import custom IMAGE_CROPPING_JQUERY_URL
+
+    CRISPY_TEMPLATE_PACK = 'bootstrap3'
+    IMAGE_CROPPING_JQUERY_URL = None
+
+Configure internal IPs
+
+    INTERNAL_IPS = ('127.0.0.1',)
+
+Configure easy_thumbnails
+
+    from easy_thumbnails.conf import Settings as thumbnail_settings
+    THUMBNAIL_PROCESSORS = (
+        'image_cropping.thumbnail_processors.crop_corners',
+    ) + thumbnail_settings.THUMBNAIL_PROCESSORS
+
 
 Documentation
 -------------
@@ -25,16 +67,16 @@ there is a application named ``testapp`` with model ``Author``:
 ===================================== =====================
 URL                                   name
 ===================================== =====================
-/testapp/author/                      testapp_author_list
+/testapp/author/list/                 testapp_author_list
 /testapp/author/new/                  testapp_author_create
-/testapp/author/(?P<pk>\d+)/          testapp_author_detail
-/testapp/author/(?P<pk>\d+)/edit/     testapp_author_update
-/testapp/author/(?P<pk>\d+)/remove/   testapp_author_delete
+/testapp/author/(?P<pk>\d+)           testapp_author_detail
+/testapp/author/(?P<pk>\d+)/update/   testapp_author_update
+/testapp/author/(?P<pk>\d+)/delete/   testapp_author_delete
 ===================================== =====================
 
 It is also possible to add CRUD for one model::
 
-    from django.db.models.loading import get_model
+    from django.apps.apps import get_model
     from cruds_adminlte.urls import crud_for_model
     urlpatterns += crud_for_model(get_model('testapp', 'Author'))
 
