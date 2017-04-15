@@ -42,8 +42,11 @@ def get_fields(model, include=None):
     """
     fields = OrderedDict()
     info = model._meta
-    if include:
-        selected = [info.get_field_by_name(name)[0] for name in include]
+    if include:  # self.model._meta.get_field(fsm_field_name)
+        try:
+            selected = [info.get_field_by_name(name)[0] for name in include]
+        except:
+            selected = [info.get_field(name) for name in include]
     else:
         selected = [field for field in info.fields if field.editable]
     for field in selected:

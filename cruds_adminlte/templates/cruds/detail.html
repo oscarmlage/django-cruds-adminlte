@@ -1,27 +1,40 @@
 {% extends "cruds/base.html" %}
 {% load i18n %}
 {% load crud_tags %}
+{% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
+{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% trans "Detail of" %} {{ object }}{% endblock %}
 
-{% block body %}
-  <h1>{{ object }}</h1>
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
 
   {% if url_update %}
-    <p>
-      <a href="{{ url_update }}" class="btn btn-default">{% trans "Edit" %}</a>
-    </p>
+  <div class="box-header">
+      <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
+  </div>
   {% endif %}
-
-
+<div class="box-body">
+<div class="table-responsive">
   <table class="table">
+  	<thead>
+  		<th>{% trans 'Label' %}</th><th>{% trans 'Value' %}</th>
+  	</thead>
     <tbody>
       {% crud_fields object fields %}
     </tbody>
   </table>
-
-
+</div>
+</div>
   {% if url_list %}
-    <p>
-      <a href="{{ url_list }}" class="btn btn-default">{% trans "Back to list" %}</a>
-    </p>
+    <div class="box-footer">
+      <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
+   </div>
   {% endif %}
+  </div>
+  </div>
+  </div>
 {% endblock %}
