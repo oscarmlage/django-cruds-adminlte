@@ -47,11 +47,11 @@
                                       action={{ object.crud_delete_url }}
                                       method="post"
                                       onsubmit="return confirm('{% trans "Are you sure you want to delete" %} {{ object }}?')">{% csrf_token %}
-                                      {% crud_url object "update" as url %}
+                                      {% crud_url object "update" namespace as url %}
                                       {% if url %}
                                       <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
                                       {% endif %}
-                                      {% crud_url object "delete" as url_delete %}
+                                      {% crud_url object "delete" namespace as url_delete %}
                                       {% if url_delete %}
                                       <a href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
                                       {% endif %}

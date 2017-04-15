@@ -18,7 +18,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">{% trans "Edit" %} {{ model_verbose_name }}</h3>
             </div>
-            {% include "cruds/_form.html" %}
+            {% include "cruds/_form.html" with action='update' %}
         </div>
     </div>
 </div>

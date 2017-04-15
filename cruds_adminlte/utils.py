@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
-
 from collections import OrderedDict
+
+from django.core.urlresolvers import reverse
 
 
 ACTION_CREATE = 'create'
@@ -53,7 +53,7 @@ def get_fields(model, include=None):
     return fields
 
 
-def crud_url(instance, action, prefix=None, additional_kwargs=None):
+def crud_url(instance, action, prefix=None, namespace=None, additional_kwargs=None):
     """
     Shortcut function returns url for instance and action passing `pk` kwarg.
 
@@ -68,5 +68,7 @@ def crud_url(instance, action, prefix=None, additional_kwargs=None):
     if additional_kwargs is None:
         additional_kwargs = {}
     additional_kwargs['pk'] = instance.pk
-    return reverse(crud_url_name(instance._meta.model, action, prefix),
-                   kwargs=additional_kwargs)
+    url = crud_url_name(instance._meta.model, action, prefix)
+    if namespace:
+        url = namespace + ':' + url
+    return reverse(url, kwargs=additional_kwargs)
