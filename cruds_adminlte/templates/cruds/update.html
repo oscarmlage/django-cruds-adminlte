@@ -27,6 +27,7 @@
 			<h2 class="text-center"> {{inline.title}}</h2>
 		<div id="{{inline.name}}_father">
 			<div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
+				{% if 'list' in inline.views_available %}
 				<a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList" 
 				data-ajax="" data-success="function(){}"
 				data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
@@ -35,14 +36,18 @@
 				<script>
 				$("#{{inline.name}}_btn").click();
 				</script>
+				
+				{% endif %}
 			</div>
 			<div id="{{inline.name}}_editList"></div>
+			{% if 'create' in inline.views_available %}
 			<button class="btn btn-sucesss" 
 			data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}" 
 				data-replace-inner="#{{inline.name}}_editList" 
 				data-ajax="" data-success="function(){}" >
 				{% trans 'Create' %}
 			</button>
+			{% endif %}
 		</div>
 	
 			

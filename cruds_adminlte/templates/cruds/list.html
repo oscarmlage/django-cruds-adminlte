@@ -14,8 +14,11 @@
             <div class="box">
                 {% if url_create %}
                 <div class="box-header">
-                    <a href="{{ url_create }}" class="btn btn-primary">
+                	{% crud_url object "create" namespace as url %}
+                	{% if url and 'create' in views_available %}
+                    <a href="{{ url }}" class="btn btn-primary">
                         {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
+                    {%endif%}
                 </div>
                 {% endif %}
                 <div class="box-body">
@@ -44,15 +47,15 @@
                               <td>
 
 									{% crud_url object "detail" namespace as url %}
-                                      {% if url %}
+                                      {% if url and 'detail' in views_available %}
                                       <a href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
                                       {% endif %}
                                       {% crud_url object "update" namespace as url %}
-                                      {% if url %}
+                                      {% if url and 'update' in views_available %}
                                       <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
                                       {% endif %}
-                                      {% crud_url object "delete" namespace as url_delete %}
-                                      {% if url_delete %}
+                                      {% crud_url object "delete" namespace as url %}
+                                      {% if url and 'delete' in views_available %}
                                       <a href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
                                       {% endif %}
 

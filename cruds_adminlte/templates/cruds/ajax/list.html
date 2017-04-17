@@ -34,18 +34,20 @@
 								{%  crud_inline_url base_model object 'detail' namespace as url  %}
 									
 		
-                                  {% if url %}
+                                  {% if url and 'detail' in views_available %}
                                   <a data-ajax="" data-success="function(){}"
                                   data-replace-inner="#{{name}}_editList"
                                   href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
                                   {% endif %}
+                                  
                                   {%  crud_inline_url base_model object 'update' namespace as url  %}
-                                  {% if url %}
+                                  {% if url and 'update' in views_available %}
                                   <a data-ajax="" data-success="function(){}"
                                   data-replace-inner="#{{name}}_editList" href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
                                   {% endif %}
+                                  
                                   {%  crud_inline_url base_model object 'delete' namespace as url_delete %}
-                                  {% if url_delete %}
+                                  {% if url_delete and 'delete' in views_available  %}
                                   <a data-ajax="" data-success="function(){}"
                                   data-replace-inner="#{{name}}_myList" href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
                                   {% endif %}
