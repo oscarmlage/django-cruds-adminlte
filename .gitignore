@@ -39,3 +39,4 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+.settings/

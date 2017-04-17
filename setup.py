@@ -30,6 +30,8 @@ setup(
     url='https://github.com/oscarmlage/django-cruds-adminlte',
     packages=[
         'cruds_adminlte',
+	    'cruds_adminlte.templatetags',
+
     ],
     include_package_data=True,
     install_requires=[
