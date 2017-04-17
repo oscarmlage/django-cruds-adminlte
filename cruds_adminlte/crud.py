@@ -7,7 +7,7 @@ Free as freedom will be 26/8/2016
 '''
 
 
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from django.urls.base import reverse_lazy, reverse
@@ -31,8 +31,14 @@ class CRUDMixin(object):
             'model_verbose_name_plural': self.model._meta.verbose_name_plural,
             'namespace': self.namespace
         })
+        include = None
+        if hasattr(self, 'display_fields') and self.view_type == 'detail':
+            include = getattr(self, 'display_fields')
 
-        context['fields'] = utils.get_fields(self.model)
+        if hasattr(self, 'list_fields') and self.view_type == 'list':
+            include = getattr(self, 'list_fields')
+
+        context['fields'] = utils.get_fields(self.model, include=include)
         if hasattr(self, 'object') and self.object:
             for action in utils.INSTANCE_ACTIONS:
                 try:
@@ -53,7 +59,8 @@ class CRUDMixin(object):
             except NoReverseMatch:
                 url = None
             context['url_%s' % action] = url
-
+        if self.view_type in ['update', 'detail']:
+            context['inlines'] = self.inlines
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -169,6 +176,9 @@ class CRUDView(object):
     paginate_by = 10
     update_form = None
     add_form = None
+    display_fields = None
+    list_fields = None
+    inlines = None
 
     """
     It's obligatory this structure 
@@ -216,6 +226,7 @@ class CRUDView(object):
             namespace = self.namespace
             perms = self.perms['create']
             form_class = self.add_form
+            view_type = 'create'
         return OCreateView
 
     def get_detail_view_class(self):
@@ -227,6 +238,9 @@ class CRUDView(object):
         class ODetailView(CRUDMixin, ODetailViewClass):
             namespace = self.namespace
             perms = self.perms['detail']
+            view_type = 'detail'
+            display_fields = self.display_fields
+            inlines = self.inlines
         return ODetailView
 
     def get_update_view_class(self):
@@ -239,6 +253,8 @@ class CRUDView(object):
             namespace = self.namespace
             perms = self.perms['update']
             form_class = self.update_form
+            view_type = 'update'
+            inlines = self.inlines
         return OEditView
 
     def get_list_view_class(self):
@@ -250,6 +266,9 @@ class CRUDView(object):
         class OListView(CRUDMixin, OListViewClass):
             namespace = self.namespace
             perms = self.perms['list']
+            list_fields = self.list_fields
+            view_type = 'list'
+            paginate_by = self.paginate_by
 
         return OListView
 
@@ -262,6 +281,7 @@ class CRUDView(object):
         class ODeleteView(CRUDMixin, ODeleteClass):
             namespace = self.namespace
             perms = self.perms['delete']
+            view_type = 'delete'
         return ODeleteView
 
 #  INITIALIZERS
@@ -310,7 +330,6 @@ class CRUDView(object):
         OListView = self.get_list_view()
         self.list = self.decorator_list(OListView.as_view(
             model=self.model,
-            paginate_by=self.paginate_by,
             template_name=basename
         ))
 
@@ -375,30 +394,48 @@ class CRUDView(object):
 
         base_name = "%s/%s" % (self.model._meta.app_label,
                                self.model.__name__.lower())
-        return [
-            url("^%s/create$" % (base_name,),
-                self.create,
-                name=utils.crud_url_name(self.model, 'create', prefix=self.urlprefix)),
-            url('^%s/(?P<pk>\d+)$' % (base_name,),
-                self.detail,
-                name=utils.crud_url_name(self.model, 'detail', prefix=self.urlprefix)),
-            url("^%s/(?P<pk>\d+)/update$" % (base_name,),
-                self.update,
-                name=utils.crud_url_name(self.model, 'update', prefix=self.urlprefix)),
-
+        myurls = [
             url("^%s/list$" % (base_name,),
                 self.list,
                 name=utils.crud_url_name(self.model, 'list', prefix=self.urlprefix)),
-
-            url(r"^%s/(?P<pk>\d+)/delete$" % (base_name,),
+            url("^%s/create$" % (base_name,),
+                self.create,
+                name=utils.crud_url_name(self.model, 'create', prefix=self.urlprefix)),
+            url('^%s/(?P<pk>[^/]+)$' % (base_name,),
+                self.detail,
+                name=utils.crud_url_name(self.model, 'detail', prefix=self.urlprefix)),
+            url("^%s/(?P<pk>[^/]+)/update$" % (base_name,),
+                self.update,
+                name=utils.crud_url_name(self.model, 'update', prefix=self.urlprefix)),
+            url(r"^%s/(?P<pk>[^/]+)/delete$" % (base_name,),
                 self.delete,
                 name=utils.crud_url_name(self.model, 'delete', prefix=self.urlprefix)),
         ]
+        myurls += self.add_inlines(base_name)
+        return myurls
+
+    def add_inlines(self, base_name):
+        dev = []
+        if self.inlines:
+            for i, inline in enumerate(self.inlines):
+                klass = inline()
+                self.inlines[i] = klass
+                if self.namespace:
+                    dev.append(
+                        url('^inline/',
+                            include(klass.get_urls(), namespace=self.namespace))
+                    )
+                else:
+                    dev.append(
+                        url('^inline/', include(klass.get_urls()))
+
+                    )
+        return dev
 
 
 class UserCRUDView(CRUDView):
 
-    def get_create_view_class(self):
+    def get_create_view(self):
         View = super(UserCRUDView, self).get_create_view()
 
         class UCreateView(View):
@@ -410,7 +447,7 @@ class UserCRUDView(CRUDView):
                 return HttpResponseRedirect(self.get_success_url())
         return UCreateView
 
-    def get_update_view_class(self):
+    def get_update_view(self):
         View = super(UserCRUDView, self).get_update_view()
 
         class UUpdateView(View):
@@ -422,8 +459,8 @@ class UserCRUDView(CRUDView):
                 return HttpResponseRedirect(self.get_success_url())
         return UUpdateView
 
-    def get_list_view_class(self):
-        View = super(UserCRUDView, self).get_update_view()
+    def get_list_view(self):
+        View = super(UserCRUDView, self).get_list_view()
 
         class UListView(View):
 

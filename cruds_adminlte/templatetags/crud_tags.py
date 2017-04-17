@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os.path
 
+from cruds_adminlte import utils
 from django import template
 from django.core.urlresolvers import (
     NoReverseMatch,
@@ -12,8 +13,6 @@ from django.db import models
 from django.utils import six
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-
-from cruds_adminlte import utils
 
 
 register = template.Library()
@@ -34,6 +33,23 @@ def crud_url(obj, action, namespace=None):
         if namespace:
             nurl = namespace + ':' + nurl
         url = reverse(nurl, kwargs={'pk': obj.pk})
+    except NoReverseMatch:
+        url = None
+    return url
+
+
+@register.assignment_tag
+def crud_inline_url(obj, inline, action, namespace=None):
+
+    try:
+        nurl = utils.crud_url_name(type(inline), action)
+        if namespace:
+            nurl = namespace + ':' + nurl
+        if action in ['delete', 'update']:
+            url = reverse(nurl, kwargs={'model_id': obj.pk,
+                                        'pk': inline.pk})
+        else:
+            url = reverse(nurl, kwargs={'model_id': obj.pk})
     except NoReverseMatch:
         url = None
     return url
@@ -95,6 +111,7 @@ def crud_fields(obj, fields=None):
     elif isinstance(fields, six.string_types):
         field_names = [f.strip() for f in fields.split(',')]
         fields = utils.get_fields(type(obj), include=field_names)
+
     return {
         'object': obj,
         'fields': fields,

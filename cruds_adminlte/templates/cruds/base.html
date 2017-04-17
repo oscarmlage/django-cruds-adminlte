@@ -23,6 +23,9 @@
     {% block javascript %}
         {% include 'adminlte/lib/_scripts.html' %}
         <script type="text/javascript" src="{% static 'jquery-cookie/jquery.cookie.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.js' %}"></script>
+
     {% endblock %}
     {% block js %}{% endblock js %}
 

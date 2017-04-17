@@ -1,5 +1,6 @@
 {% extends "cruds/base.html" %}
 {% load i18n %}
+{% load crud_tags %}
 
 {% block title %}{% trans "Update" %} {{ model_verbose_name_plural|lower }}{% endblock %}
 {% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
@@ -13,13 +14,41 @@
             <i class="fa fa-angle-double-left"></i>
             {% trans "Back to" %} {{ model_verbose_name_plural|lower }}
         </a>
-        <br /><br />
+        <br /><br />        
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">{% trans "Edit" %} {{ model_verbose_name }}</h3>
             </div>
             {% include "cruds/_form.html" with action='update' %}
-        </div>
+
+          {% if inlines%}
+			<hr>
+			{% for inline in inlines%}
+			<h2 class="text-center"> {{inline.title}}</h2>
+		<div id="{{inline.name}}_father">
+			<div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
+				<a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList" 
+				data-ajax="" data-success="function(){}"
+				data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
+					<i class='fa fa-spinner fa-spin '></i>
+				</a>
+				<script>
+				$("#{{inline.name}}_btn").click();
+				</script>
+			</div>
+			<div id="{{inline.name}}_editList"></div>
+			<button class="btn btn-sucesss" 
+			data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}" 
+				data-replace-inner="#{{inline.name}}_editList" 
+				data-ajax="" data-success="function(){}" >
+				{% trans 'Create' %}
+			</button>
+		</div>
+	
+			
+			{% endfor %}
+        {% endif %}
+        </div>        
     </div>
 </div>
 {% endblock %}

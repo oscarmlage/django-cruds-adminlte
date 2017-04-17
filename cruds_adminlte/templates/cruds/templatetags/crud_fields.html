@@ -3,7 +3,7 @@
 {% for field, field_name in fields.items %}
   <tr>
     <th>
-      {{ field_name }}
+      {{ field_name.0 }}
     </th>
     <td>
       {{ object|format_value:field }}

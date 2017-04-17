@@ -1,0 +1,14 @@
+
+{% load i18n %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{% trans "New" %} {{ model_verbose_name }}</h3>
+            </div>
+            {% include "cruds/ajax/_form.html" with action='create' %}
+        </div>
+    </div>
+</div>
+
