@@ -37,12 +37,14 @@ class InlineAjaxCRUD(CRUDView):
             inline_field = self.inline_field
             base_model = self.base_model
             name = self.name
+            views_available = self.views_available[:]
 
             def get_context_data(self, **kwargs):
                 context = super(CreateView, self).get_context_data(**kwargs)
                 context['base_model'] = self.model_id
                 context['inline_model'] = self.model
                 context['name'] = self.name
+                context['views_available'] = self.views_available
                 return context
 
             def form_valid(self, form):
@@ -72,6 +74,16 @@ class InlineAjaxCRUD(CRUDView):
 
         class DetailView(djDetailView):
             inline_field = self.inline_field
+            views_available = self.views_available[:]
+            name = self.name
+
+            def get_context_data(self, **kwargs):
+                context = super(DetailView, self).get_context_data(**kwargs)
+                context['base_model'] = self.model_id
+                context['inline_model'] = self.object
+                context['name'] = self.name
+                context['views_available'] = self.views_available
+                return context
 
             def get(self, request, *args, **kwargs):
                 self.model_id = kwargs['model_id']
@@ -85,12 +97,14 @@ class InlineAjaxCRUD(CRUDView):
             inline_field = self.inline_field
             base_model = self.base_model
             name = self.name
+            views_available = self.views_available[:]
 
             def get_context_data(self, **kwargs):
                 context = super(UpdateView, self).get_context_data(**kwargs)
                 context['base_model'] = self.model_id
                 context['inline_model'] = self.object
                 context['name'] = self.name
+                context['views_available'] = self.views_available
                 return context
 
             def get(self, request, *args, **kwargs):
@@ -120,11 +134,13 @@ class InlineAjaxCRUD(CRUDView):
             inline_field = self.inline_field
             base_model = self.base_model
             name = self.name
+            views_available = self.views_available[:]
 
             def get_context_data(self, **kwargs):
                 context = super(ListView, self).get_context_data(**kwargs)
                 context['base_model'] = self.model_id
                 context['name'] = self.name
+                context['views_available'] = self.views_available
                 return context
 
             def get_queryset(self):
@@ -148,12 +164,14 @@ class InlineAjaxCRUD(CRUDView):
             inline_field = self.inline_field
             base_model = self.base_model
             name = self.name
+            views_available = self.views_available[:]
 
             def get_context_data(self, **kwargs):
                 context = super(DeleteView, self).get_context_data(**kwargs)
                 context['base_model'] = self.model_id
                 context['inline_model'] = self.object
                 context['name'] = self.name
+                context['views_available'] = self.views_available
                 return context
 
             def get(self, request, *args, **kwargs):

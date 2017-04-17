@@ -248,6 +248,7 @@ class CRUDView(object):
             perms = self.perms['create']
             form_class = self.add_form
             view_type = 'create'
+            views_available = self.views_available[:]
         return OCreateView
 
     def get_detail_view_class(self):
@@ -262,6 +263,7 @@ class CRUDView(object):
             view_type = 'detail'
             display_fields = self.display_fields
             inlines = self.inlines
+            views_available = self.views_available[:]
         return ODetailView
 
     def get_update_view_class(self):
@@ -276,6 +278,7 @@ class CRUDView(object):
             form_class = self.update_form
             view_type = 'update'
             inlines = self.inlines
+            views_available = self.views_available[:]
         return OEditView
 
     def get_list_view_class(self):
@@ -290,6 +293,7 @@ class CRUDView(object):
             list_fields = self.list_fields
             view_type = 'list'
             paginate_by = self.paginate_by
+            views_available = self.views_available[:]
 
         return OListView
 
@@ -303,6 +307,7 @@ class CRUDView(object):
             namespace = self.namespace
             perms = self.perms['delete']
             view_type = 'delete'
+            views_available = self.views_available[:]
         return ODeleteView
 
 #  INITIALIZERS
@@ -408,23 +413,22 @@ class CRUDView(object):
             self.template_name_base = template_name_base
 
         basename = self.get_base_name()
-
+        self.inicialize_views_available()
         self.initialize_perms()
         if 'create' in self.views_available:
             self.initialize_create(basename + '/create.html')
-            setattr(self.create, 'views_available', self.views_available)
+
         if 'detail' in self.views_available:
             self.initialize_detail(basename + '/detail.html')
-            setattr(self.detail, 'views_available', self.views_available)
+
         if 'update' in self.views_available:
             self.initialize_update(basename + '/update.html')
-            setattr(self.update, 'views_available', self.views_available)
+
         if 'list' in self.views_available:
             self.initialize_list(basename + '/list.html')
-            setattr(self.update, 'views_available', self.views_available)
+
         if 'delete' in self.views_available:
             self.initialize_delete(basename + '/delete.html')
-            setattr(self.delete, 'views_available', self.views_available)
 
     def get_urls(self):
 
