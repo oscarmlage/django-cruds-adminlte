@@ -23,7 +23,7 @@ class InlineAjaxCRUD(CRUDView):
     base_model = None
     template_name_base = "cruds/ajax"
     inline_field = None
-    list_fields = ['description', 'url']
+    list_fields = []
     title = ""
 
     def check_decorator(self, viewclass):
