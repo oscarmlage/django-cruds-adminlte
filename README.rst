@@ -12,11 +12,11 @@ django-cruds-adminlte goal is to make prototyping faster.
 Installation
 -------------
 
-Via pip install 
+Via pip install
 
     pip install django-cruds-adminlte
 
-If you want full support then install dependencies 
+If you want full support then install dependencies
     pip install django-crispy-forms
     pip install django-select2
     pip install django-image-cropping
@@ -24,7 +24,7 @@ If you want full support then install dependencies
 
 
 Set in yours settings
-    
+
     INSTALLED_APPS = [
         ...
     'crispy_forms',
