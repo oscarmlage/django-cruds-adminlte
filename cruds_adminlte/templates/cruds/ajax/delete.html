@@ -1,17 +1,39 @@
 {% load i18n %}
 {% load crud_tags %}
-  <h1>{% trans "Remove" %} {{ object }}?</h1>
 
-  <form
-  data-replace-inner="#{{name}}_editList"
-  data-ajax-submit="" data-refresh-inner="#{{name}}_myList" onsubmit="return false;"
-   action="{% crud_inline_url base_model object 'delete' namespace %}" method="POST">
-    {% csrf_token %}
+<!-- Modal -->
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">{% trans "Remove" %} {{ object }}?</h4>
+</div>
 
-    
-     <button type="submit" class="btn btn-danger">{% trans "Confirm remove" %}</button>
-   	 <a data-replace-inner="#{{name}}_myList" 
-		data-ajax="" data-success="function(){}"
-		data-href="{% crud_inline_url base_model object 'list' namespace %}"  class="btn btn-warning">{% trans "Cancel" %}</button>
-  </form>
+<div class="modal-body">
+    <p class="text-centered">{% trans "Do you really want to remove:" %} "{{ object }}"?</p>
+</div>
 
+<div class="modal-footer">
+    <form
+      id="{{name}}_{{object.pk}}_delete"
+      data-ajax-submit=""
+      data-refresh-inner="#{{name}}_myList"
+      action="{% crud_inline_url base_model object 'delete' namespace %}" method="POST">
+        {% csrf_token %}
+        <button
+          id="{{name}}_{{object.pk}}_delete_submit"
+          type="submit"
+          class="btn btn-danger"
+          data-dismiss="modal">{% trans "Confirm remove" %}</button>
+        <a data-href="{% crud_inline_url base_model object 'list' namespace %}"
+          data-ajax="" data-success="function(){}"
+          data-replace-inner="#{{name}}_myList"
+          class="btn btn-warning"
+          data-dismiss="modal">{% trans "Cancel" %}</a>
+    </form>
+</div>
+
+<script>
+    $('#delete_modal').modal('show');
+    $('#{{name}}_{{object.pk}}_delete_submit').click( function() {
+      $('#{{name}}_{{object.pk}}_delete').submit();
+    });
+</script>

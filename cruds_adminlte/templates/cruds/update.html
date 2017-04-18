@@ -22,33 +22,46 @@
             {% include "cruds/_form.html" with action='update' %}
 
           {% if inlines%}
-			<hr>
-			{% for inline in inlines%}
-			<h2 class="text-center"> {{inline.title}}</h2>
-		<div id="{{inline.name}}_father">
-			<div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
-				<a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList" 
-				data-ajax="" data-success="function(){}"
-				data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
-					<i class='fa fa-spinner fa-spin '></i>
-				</a>
-				<script>
-				$("#{{inline.name}}_btn").click();
-				</script>
-			</div>
-			<div id="{{inline.name}}_editList"></div>
-			<button class="btn btn-sucesss" 
-			data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}" 
-				data-replace-inner="#{{inline.name}}_editList" 
-				data-ajax="" data-success="function(){}" >
-				{% trans 'Create' %}
-			</button>
-		</div>
-	
-			
-			{% endfor %}
+            <div class="box-body row">
+                <div class="col-md-12">
+
+                    <div class="panel panel-default">
+                    {% for inline in inlines%}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{inline.title}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="{{inline.name}}_father">
+                            <div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
+                                <a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList"
+                                    data-ajax="" data-success="function(){}"
+                                    data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
+                                    <i class='fa fa-spinner fa-spin '></i>
+                                </a>
+                                <script>
+                                $("#{{inline.name}}_btn").click();
+                                </script>
+                            </div>
+                            <div id="{{inline.name}}_editList"></div>
+                            <button class="btn btn-success"
+                                data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}"
+
+                                id="#{{ name }}_{{ object.pk }}_add"
+                                data-replace-inner="#edit_modal_inner"
+
+
+                                data-replace-inner="#{{inline.name}}_editList"
+                                data-ajax="" data-success="function(){}" >
+                                {% trans 'Create' %}
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
         {% endif %}
-        </div>        
+        </div>
     </div>
 </div>
 {% endblock %}

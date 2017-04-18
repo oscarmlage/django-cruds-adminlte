@@ -5,11 +5,14 @@
     {{ form.media }}
 {% endif %}
 
-<form action="{% crud_inline_url base_model inline_model action namespace %}" 
-method="POST" enctype="multipart/form-data"
-data-replace-inner="#{{name}}_editList"
-data-ajax-submit="" data-refresh-inner="#{{name}}_myList" onsubmit="return false;"
->
+<form
+    id="{{name}}_{{object.pk}}_addedit"
+    action="{% crud_inline_url base_model inline_model action namespace %}"
+    method="POST" enctype="multipart/form-data"
+    data-replace-inner="#{{name}}_editList"
+    data-ajax-submit=""
+    data-refresh-inner="#{{name}}_myList"
+    onsubmit="return false;">
     {% csrf_token %}
     <div class="box-body row">
         <div class="col-md-12">
@@ -26,12 +29,26 @@ data-ajax-submit="" data-refresh-inner="#{{name}}_myList" onsubmit="return false
     <div class="box-footer">
         <div class="form-group">
             <div class="controls">
-                <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
-               
-                <a href="javascript::void(0);" onclick="$('#{{name}}_editList').html('');" class="btn btn-danger">{% trans "Cancel" %}</a>
-                
+                <button
+                    id="{{name}}_{{object.pk}}_addedit_submit"
+                    type="submit"
+                    class="btn btn-primary">{% trans "Submit" %}</button>
+                <a href="javascript::void(0);"
+                    onclick="$('#{{name}}_editList').html('');"
+                    class="btn btn-danger"
+                    data-dismiss="modal">{% trans "Cancel" %}</a>
             </div>
         </div>
     </div>
     {% endif %}
 </form>
+
+
+<script>
+  $('#edit_modal').modal('show');
+  $('#{{name}}_{{object.pk}}_addedit_submit').click( function(e) {
+    e.preventDefault();
+    $('#{{name}}_{{object.pk}}_addedit').submit();
+    $('#edit_modal').modal('hide');
+  });
+</script>
