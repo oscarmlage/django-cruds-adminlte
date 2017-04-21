@@ -85,8 +85,13 @@ Online Resources
 * For reporting a bug use `GitHub Issues`_
 
 
+Screenshots
+===========
+
+.. include::  ../doc/screenshots.rst
+    :start-line: 5
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
-.. _`Documentation`: http://django-cruds-adminlte.readthedocs.org/
+.. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
 .. _`GitHub Issues`: https://github.com/oscarmlage/django-cruds-adminlte/issues/
 
