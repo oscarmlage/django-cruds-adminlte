@@ -24,6 +24,9 @@ You can override the column type in lists pages with the custom html you want
 for your project. Just recreate the structure (templates/cruds/columns/) in your
 project and write your own html.
 
+.. image:: images/cruds-columns.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
 
 .. _forms:
 
