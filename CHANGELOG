@@ -1,0 +1,57 @@
+=========
+Changelog
+=========
+
+0.0.3
+------
+* ``e4e3f0b`` - (HEAD -> master, origin/master, origin/HEAD) Add bootstrap
+                modal windows to inline behavior
+* ``23b111f`` - Fixes some inline_crud errors
+* ``7a6ae01`` - Some pep8 cosmetics
+* ``e8bed1d`` - Merge pull request #12 from luisza/ajax_inline
+* ``bc1992a`` - Merge pull request #11 from luisza/pip_package
+* ``eeceeb2`` - New Inline ajax functionality
+* ``542c6ff`` - Adding templatetags
+* ``d81441d`` - remove IDE .settings/
+* ``f367bdb`` - Adding templates and static to pip package
+* ``e93741d`` - Merge remote-tracking branch 'upstream/master'
+* ``70fe2c1`` - Merge pull request #9 from luisza/new_crud_system
+* ``72faa04`` - Removing old code sample related to ckeditor, fixes #10
+* ``b6a7a41`` - Fix documentation
+* ``baa5568`` - Namespace full support
+* ``fa57be6`` - Adding forms
+* ``e9fd050`` - Requirements for project
+* ``007c7ac`` - New CRUD System without test or docs
+* ``df2a868`` - Fixed bad link to jquery-cookie (added to static)
+* ``c220cd7`` - Fixed bad link to jquery-cookie (added to static)
+* ``af58e34`` - Added some missing stuff due to bad .gitignore. Fixes #8
+* ``907b288`` - Improve columns related code
+* ``3da9be8`` - Fixed documentation
+* ``a14e7ec`` - Added support for columns in list pages
+* ``636734b`` - Updated documentation with Pypi link. Fixes #6
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.3...master
+
+0.0.2
+------
+* ``9ce4da4`` - (tag: 0.0.2) Minor changes in setup.py
+* ``6fd30e3`` - Updated README.rst
+* ``e89bda0`` - Massive refactor, changed name django-cruds to
+                django-cruds-adminlte, the app now is cruds_adminlte (instead
+                of cruds). Deleted orphan references to django-compressor.
+                Fixed setup.py references to HISTORY.rst. Fixes #5
+* ``53c2c49`` - Updated TODO.rst
+* ``abbe074`` - Fixes #1 (problem with old db values)
+* ``56ca599`` - Added CONTRIBUTING.rst, glad if someone joins to the project
+* ``1ac4467`` - Fixed documentation typo
+* ``6faf248`` - Added CKEditorWidget
+* ``a936206`` - Documentation updated
+* ``bb21eeb`` - Added datetimepicker, Fixed timepicker
+* ``aa01a09`` - Adding DatePickerWidget, TimePickerWidget and ColorPickerWidget
+                to custom forms
+* ``1314604`` - Impproved documentation a bit
+* ``d4075fd`` - Impproved documentation a bit
+* ``d641a8f`` - Added some screenshots to the documentation
+* ``b2cb152`` - Adding basic documentation
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.2...0.0.3
