@@ -89,7 +89,6 @@ Screenshots
 ===========
 
 .. include::  docs/screenshots.rst
-    :start-line: 5
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
