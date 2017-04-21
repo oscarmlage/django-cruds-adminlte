@@ -88,7 +88,22 @@ Online Resources
 Screenshots
 ===========
 
-.. include::  docs/screenshots.rst
+.. image:: docs/images/cruds-list.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
+.. image:: docs/images/cruds-select2.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
+.. image:: docs/images/cruds-tabs.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
+.. image:: docs/images/cruds-cropping.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
+
+.. image:: docs/images/cruds-responsive.png
+    :target: https://github.com/oscarmlage/django-cruds-adminlte
+
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
