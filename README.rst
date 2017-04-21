@@ -89,20 +89,30 @@ Screenshots
 ===========
 
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-list.png
-    :target: https://github.com/oscarmlage/django-cruds-adminlte
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-list.png
 
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-select2.png
-    :target: https://github.com/oscarmlage/django-cruds-adminlte
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-select2.png
 
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-tabs.png
-    :target: https://github.com/oscarmlage/django-cruds-adminlte
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-tabs.png
 
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-cropping.png
-    :target: https://github.com/oscarmlage/django-cruds-adminlte
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-cropping.png
 
+.. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-inline.png
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-inline.png
+
+.. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-ckeditor.png
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-ckeditor.png
+
+.. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-custom-sidebar.png
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-custom-sidebar.png
 
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-responsive.png
-    :target: https://github.com/oscarmlage/django-cruds-adminlte
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-responsive.png
+
+
 
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte

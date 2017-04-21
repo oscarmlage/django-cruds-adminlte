@@ -28,6 +28,19 @@ They're ready to run with:
 * `select2 <https://select2.github.io/>`_
 * `django-cropping-image <https://github.com/jonasundderwolf/django-image-cropping>`_
 
+You will probably want to override some templates, check the ``TEMPLATES``
+config in your settings file and ensure you have your custom ``templates``
+dir in ``DIRS``: ::
+
+    TEMPLATES = [
+        {
+            'BACKEND': ...
+            'DIRS': [normpath(join(dirname(dirname(abspath(__file__))),
+                              'demo', 'templates')),],
+            ...
+        }
+    ]
+
 If you want to override the sidebar you can do it creating a file called
 ``templates/adminlte/lib/_main_sidebar.html`` inside your project and you can
 put there the contents you want.

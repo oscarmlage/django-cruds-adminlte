@@ -18,6 +18,7 @@ before the app if you want to use them::
     pip install django-crispy-forms
     pip install easy-thumbnails
     pip install django-image-cropping
+    pip install djangoajax
 
 Next step is to add the urls to your ``project.urls`` as was said above::
 
@@ -50,6 +51,7 @@ packages prior to installation in your environment:
     pip install django-select2
     pip install django-image-cropping
     pip install easy-thumbnails
+    pip install djangoajax
 
 
 .. _getting-the-code:
@@ -93,6 +95,7 @@ project's settings: ::
     'django_select2',
     'easy_thumbnails',
     'image_cropping',
+    'django_ajax',
     'cruds_adminlte'
   )
 
