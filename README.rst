@@ -88,7 +88,7 @@ Online Resources
 Screenshots
 ===========
 
-.. include::  ../doc/screenshots.rst
+.. include::  doc/screenshots.rst
     :start-line: 5
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
