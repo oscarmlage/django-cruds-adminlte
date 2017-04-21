@@ -113,8 +113,6 @@ Screenshots
     :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-responsive.png
 
 
-
-
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
 .. _`GitHub Issues`: https://github.com/oscarmlage/django-cruds-adminlte/issues/

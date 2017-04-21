@@ -13,14 +13,14 @@ Install django-cruds-adminlte (`already in Pypi <https://pypi.python.org/pypi/dj
 
 Then use it in a project, add ``cruds_adminlte`` to ``INSTALLED_APPS``. Note
 that you will have to install ``crispy_forms`` and ``image_cropping`` if
-before the app if you want to use them::
+before the app if you want to use them: ::
 
     pip install django-crispy-forms
     pip install easy-thumbnails
     pip install django-image-cropping
     pip install djangoajax
 
-Next step is to add the urls to your ``project.urls`` as was said above::
+Next step is to add the urls to your ``project.urls`` as was said above: ::
 
     # django-cruds-adminlte
     from cruds.urls import crud_for_app
@@ -43,9 +43,10 @@ The django-cruds-adminlte works thanks to:
 * Django >=1.8
 * django-crispy-forms
 * django-image-cropping and easy-thumbnails (optional if you want to crop)
+* djangoajax (for the inlines stuff)
 
 If you want full support then install dependencies make sure to install these
-packages prior to installation in your environment:
+packages prior to installation in your environment: ::
 
     pip install django-crispy-forms
     pip install django-select2
