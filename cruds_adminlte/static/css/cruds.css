@@ -19,6 +19,12 @@
     top: 5px !important;
 }
 
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus,
+input[type=url]:focus, input[type=number]:focus, textarea:focus,
+select:focus, .vTextField:focus {
+    border-color: #3c8dbc !important;
+}
+
 #submit-id-submit {
     padding: 7px 12px !important;
     background-color: #3c8dbc !important;

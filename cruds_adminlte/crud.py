@@ -13,7 +13,8 @@ from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from django.urls.base import reverse_lazy, reverse
 from django.urls.exceptions import NoReverseMatch
 from django.views import View
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
+from django.views.generic import (ListView, CreateView, DeleteView,
+                                  UpdateView, DetailView)
 
 from cruds_adminlte import utils
 
@@ -82,11 +83,13 @@ class CRUDMixin(object):
 
 class CRUDView(object):
     """
-        CRUDView is a generic way to provide create, list, detail, update, delete views in one class,
-        you can inherit for it and manage login_required, model perms, pagination, update and add forms
-        how to use: 
+        CRUDView is a generic way to provide create, list, detail, update,
+        delete views in one class,
+        you can inherit for it and manage login_required, model perms,
+        pagination, update and add forms
+        how to use:
 
-        In views 
+        In views
 
         .. code:: python
 
@@ -100,10 +103,12 @@ class CRUDView(object):
         .. code:: python
             myview = Myclass()
             urlpatterns = [
-                url('path', include(myview.get_urls()))  # also support namespace 
+                url('path', include(myview.get_urls()))  # also support
+                                                         # namespace
             ]
 
-        The default behavior is check_login = True and check_perms=True but you can turn off with
+        The default behavior is check_login = True and check_perms=True but
+        you can turn off with
 
         .. code:: python
             from testapp.models import Customer
@@ -114,7 +119,7 @@ class CRUDView(object):
                 check_login = False
                 check_perms = False
 
-        You also can defined extra perms with 
+        You also can defined extra perms with
 
         .. code:: python
 
@@ -127,16 +132,16 @@ class CRUDView(object):
                           'detail': []
                         }
         If check_perms = True we will add default django model perms
-         (<applabel>.[add|change|delete|view]_<model>) 
+         (<applabel>.[add|change|delete|view]_<model>)
 
-        You can also overwrite add and update forms 
+        You can also overwrite add and update forms
 
         .. code:: python
 
             class Myclass(CRUDView):
                 model = Customer
                 add_form = MyFormClass
-                update_form = MyFormClass  
+                update_form = MyFormClass
 
         And of course overwrite base template name
 
@@ -144,9 +149,10 @@ class CRUDView(object):
 
             class Myclass(CRUDView):
                 model = Customer
-                template_name_base = "mybase"   
+                template_name_base = "mybase"
 
-        Remember basename is generated like app_label/modelname if template_name_base is set as None and 
+        Remember basename is generated like app_label/modelname if
+        template_name_base is set as None and
         'cruds' by default so template loader search this structure
 
         basename + '/create.html'
@@ -156,9 +162,9 @@ class CRUDView(object):
         basename + '/delete.html'
         Note: also import <applabel>/<model>/<basename>/<view type>.html
 
-        Using namespace 
+        Using namespace
 
-        In views 
+        In views
 
         .. code:: python
 
@@ -174,7 +180,8 @@ class CRUDView(object):
 
             myview = Myclass()
             urlpatterns = [
-                url('path', include(myview.get_urls(), namespace="mynamespace"))  
+                url('path', include(myview.get_urls(),
+                                    namespace="mynamespace"))
             ]
 
         If you want to filter views add views_available list
@@ -202,7 +209,7 @@ class CRUDView(object):
     views_available = None
 
     """
-    It's obligatory this structure 
+    It's obligatory this structure
         perms = {
         'create': [],
         'list': [],
@@ -468,7 +475,8 @@ class CRUDView(object):
                 if self.namespace:
                     dev.append(
                         url('^inline/',
-                            include(klass.get_urls(), namespace=self.namespace))
+                            include(klass.get_urls(),
+                                    namespace=self.namespace))
                     )
                 else:
                     dev.append(

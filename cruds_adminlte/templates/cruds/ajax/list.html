@@ -4,67 +4,77 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <div class="box">
-
-            <div class="box-body">
-                <table id="datatable" class="table table-bordered table-hover">
-                {% if object_list %}
-                    <thead>
-                        {% block thead %}
-                        {% for field, field_name in fields.items %}
-                        <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
-                        {% endfor %}
-                        <th>{% trans "Actions" %}</th>
-                        {% endblock thead %}
-                    </thead>
-                    <tbody>
-                      {% block tbody %}
-                      {% for object in object_list %}
-                        <tr>
-                          {% for field, field_name in fields.items %}
-                          <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
-                            {% with column=field_name.1|lower|add:".html" %}
-                                {% include "cruds/columns/"|add:column %}
-                            {% endwith %}
-                            {# typefield #}
-                          </td>
-                          {% endfor %}
-                          <td>
-
-								{%  crud_inline_url base_model object 'detail' namespace as url  %}
-									
-		
-                                  {% if url and 'detail' in views_available %}
-                                  <a data-ajax="" data-success="function(){}"
-                                  data-replace-inner="#{{name}}_editList"
-                                  href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
-                                  {% endif %}
-                                  
-                                  {%  crud_inline_url base_model object 'update' namespace as url  %}
-                                  {% if url and 'update' in views_available %}
-                                  <a data-ajax="" data-success="function(){}"
-                                  data-replace-inner="#{{name}}_editList" href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
-                                  {% endif %}
-                                  
-                                  {%  crud_inline_url base_model object 'delete' namespace as url_delete %}
-                                  {% if url_delete and 'delete' in views_available  %}
-                                  <a data-ajax="" data-success="function(){}"
-                                  data-replace-inner="#{{name}}_myList" href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
-                                  {% endif %}
-
-                          </td>
-                        </tr>
-                      {% endfor %}
-                      {% endblock tbody %}
-                    </tbody>
-                {% else %}
-                  <thead><th></th></thead>
-                  <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
-                {% endif %}
-                </table>
-            </div>
-            <div class="box-footer"></div>
-        </div>
+        <table id="datatable" class="table table-bordered table-hover">
+        {% if object_list %}
+            <thead>
+                {% block thead %}
+                {% for field, field_name in fields.items %}
+                <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
+                {% endfor %}
+                <th>{% trans "Actions" %}</th>
+                {% endblock thead %}
+            </thead>
+            <tbody>
+              {% block tbody %}
+              {% for object in object_list %}
+                <tr>
+                  {% for field, field_name in fields.items %}
+                  <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
+                    {% with column=field_name.1|lower|add:".html" %}
+                        {% include "cruds/columns/"|add:column %}
+                    {% endwith %}
+                    {# typefield #}
+                  </td>
+                  {% endfor %}
+                  <td>
+                      {%  crud_inline_url base_model object 'detail' namespace as url  %}
+                      {% if url and 'detail' in views_available %}
+                        <a data-ajax="" data-success="function(){}"
+                          id="#{{ name }}_{{ object.pk }}_show"
+                          data-replace-inner="#{{name}}_editList"
+                          href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
+                      {% endif %}
+                      {%  crud_inline_url base_model object 'update' namespace as url  %}
+                      {% if url and 'update' in views_available %}
+                        <a data-ajax="" data-success="function(){}"
+                          id="#{{ name }}_{{ object.pk }}_edit"
+                          data-replace-inner="#edit_modal_inner"
+                          href="{{ url }}"
+                          class="btn btn-primary">
+                          {% trans "Edit" %}</a>
+                      {% endif %}
+                      {%  crud_inline_url base_model object 'delete' namespace as url %}
+                      {% if url and 'delete' in views_available %}
+                        <a data-ajax="" data-success="function(){}"
+                          id="#{{ name }}_{{ object.pk }}_delete"
+                          data-replace-inner="#delete_modal_inner"
+                          href="{{ url }}"
+                          class="btn btn-danger">{% trans "Delete" %}</a>
+                      {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              {% endblock tbody %}
+            </tbody>
+        {% else %}
+          <thead><th></th></thead>
+          <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
+        {% endif %}
+        </table>
     </div>
 </div>
 
+
+<div class="modal in" id="delete_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" id="delete_modal_inner">
+    </div>
+  </div>
+</div>
+
+<div class="modal in" id="edit_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" id="edit_modal_inner">
+    </div>
+  </div>
+</div>
