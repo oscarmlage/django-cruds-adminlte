@@ -49,8 +49,8 @@ class InlineAjaxCRUD(CRUDView):
                 self.object = form.save(commit=False)
                 setattr(self.object, self.inline_field, self.model_id)
                 self.object.save()
-                url = crud_inline_url(
-                    self.model_id, self.object, 'list', self.namespace)
+                crud_inline_url(self.model_id,
+                                self.object, 'list', self.namespace)
 
                 return HttpResponse(""" """)
 
@@ -102,8 +102,8 @@ class InlineAjaxCRUD(CRUDView):
                 self.object = form.save(commit=False)
                 setattr(self.object, self.inline_field, self.model_id)
                 self.object.save()
-                url = crud_inline_url(
-                    self.model_id, self.object, 'list', self.namespace)
+                crud_inline_url(self.model_id,
+                                self.object, 'list', self.namespace)
 
                 return HttpResponse(""" """)
 

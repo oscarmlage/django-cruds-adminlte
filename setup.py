@@ -24,13 +24,14 @@ setup(
     name='django-cruds-adminlte',
     version=version,
     description="""django-cruds-adminlte is simple drop-in django app that creates CRUD for faster prototyping.""",  # noqa
+    test_suite="run_tests.run_tests",
     long_description=readme,
     author='Óscar M. Lage',
     author_email='info@oscarmlage.com',
     url='https://github.com/oscarmlage/django-cruds-adminlte',
     packages=[
         'cruds_adminlte',
-	    'cruds_adminlte.templatetags',
+        'cruds_adminlte.templatetags',
 
     ],
     include_package_data=True,
