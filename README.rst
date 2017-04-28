@@ -7,7 +7,7 @@ update and delete) views for existing models and apps.
 
 ``django-cruds-adminlte goal`` is to make prototyping faster.
 
-* Note: This version of ``django-cruds-adminlte`` is based on `bmihelac's one <https://github.com/bmihelac/django-cruds-adminlte/>`_.
+* Note: This version of ``django-cruds-adminlte`` is based on `bmihelac's one <https://github.com/bmihelac/django-cruds/>`_.
 
 
 .. _historygoal:

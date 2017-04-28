@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.test.testcases import TestCase
 
-from cruds.utils import get_fields
+from cruds_adminlte.utils import get_fields
 
 from tests.testapp.models import (
     Author,
