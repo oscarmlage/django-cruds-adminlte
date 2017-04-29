@@ -56,7 +56,7 @@
                                       {% endif %}
                                       {% crud_url object "delete" namespace as url %}
                                       {% if url and 'delete' in views_available %}
-                                      <a href="{{ url_delete }}" class="btn btn-danger">{% trans "Delete" %}</a>
+                                      <a href="{{ url }}" class="btn btn-danger">{% trans "Delete" %}</a>
                                       {% endif %}
 
                               </td>

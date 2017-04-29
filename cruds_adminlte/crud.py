@@ -71,6 +71,8 @@ class CRUDMixin(object):
         if self.view_type in ['update', 'detail']:
             context['inlines'] = self.inlines
 
+        if 'object' not in context:
+            context['object'] = self.model
         context['views_available'] = self.views_available
         return context
 

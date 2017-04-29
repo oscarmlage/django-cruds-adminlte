@@ -32,7 +32,10 @@ def crud_url(obj, action, namespace=None):
         nurl = utils.crud_url_name(type(obj), action)
         if namespace:
             nurl = namespace + ':' + nurl
-        url = reverse(nurl, kwargs={'pk': obj.pk})
+        if action in utils.LIST_ACTIONS:
+            url = reverse(nurl)
+        else:
+            url = reverse(nurl, kwargs={'pk': obj.pk})
     except NoReverseMatch:
         url = None
     return url
