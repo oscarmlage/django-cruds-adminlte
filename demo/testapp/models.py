@@ -5,12 +5,17 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from image_cropping import ImageCropField, ImageRatioField
+from testapp.presentation import InvoicePresentation
 
 
 # Create your models here.
 class Autor(models.Model):
     name = models.CharField(max_length=200)
-
+    class Meta:
+        ordering = ('pk',)
+        permissions = (
+            ("view_author", "Can see available Authors"),
+            )
 
 class Addresses(models.Model):
     autor = models.ForeignKey(Autor, related_name="Autor")
@@ -18,6 +23,12 @@ class Addresses(models.Model):
     city = models.CharField(max_length=100)
     status = models.BooleanField(_("Status"), help_text=_('Active?'),
                                  default=True)
+    
+    class Meta:
+        ordering = ('pk',)
+        permissions = (
+            ("view_addresses", "Can see available Addresses"),
+            )
 
 
 class Customer(models.Model):
@@ -32,6 +43,12 @@ class Customer(models.Model):
     date = models.DateField()
     time = models.TimeField()
     datetime = models.DateTimeField()
+    
+    class Meta:
+        ordering = ('pk',)
+        permissions = (
+            ("view_customer", "Can see available customers"),
+            )
 
 
 def last_number():
@@ -42,7 +59,7 @@ def last_number():
         return 1
 
 
-class Invoice(models.Model):
+class Invoice(models.Model, InvoicePresentation):
 
     customer = models.ForeignKey(Customer, related_name="customer")
     registered = models.BooleanField(_("Registered"),
@@ -72,8 +89,12 @@ class Invoice(models.Model):
         return str(self.invoice_number) + "->" + str(self.date)
 
     class Meta:
+        ordering = ('pk',)
         verbose_name = _('Invoice')
         verbose_name_plural = _('Invoices')
+        permissions = (
+            ("view_invoice", "Can see available Invoices"),
+            )
 
 
 class Line(models.Model):
@@ -90,5 +111,9 @@ class Line(models.Model):
         return self.reference + " " + self.quantity + "x" + self.unit_price
 
     class Meta:
+        ordering = ('pk',)
         verbose_name = _('Line')
         verbose_name_plural = _('Lines')
+        permissions = (
+            ("view_line", "Can see available lines"),
+            )

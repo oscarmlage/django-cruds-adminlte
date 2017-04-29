@@ -141,3 +141,11 @@ THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
 ) + thumbnail_settings.THUMBNAIL_PROCESSORS
 IMAGE_CROPPING_JQUERY_URL = None
+
+LOGIN_REDIRECT_URL = '/login'
+
+TIME_FORMAT= 'h:i A'
+DATETIME_FORMAT='m/d/Y H:i:s'
+DATE_FORMAT="m/d/Y"
+
+TIME_INPUT_FORMATS = ['%I:%M %p']

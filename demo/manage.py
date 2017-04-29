@@ -3,6 +3,8 @@ import os
 import sys
 
 if __name__ == "__main__":
+    crud_install = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, crud_install)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
     try:
         from django.core.management import execute_from_command_line
