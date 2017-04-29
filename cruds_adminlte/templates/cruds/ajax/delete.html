@@ -21,8 +21,7 @@
         <button
           id="{{name}}_{{object.pk}}_delete_submit"
           type="submit"
-          class="btn btn-danger"
-          data-dismiss="modal">{% trans "Confirm remove" %}</button>
+          class="btn btn-danger">{% trans "Confirm remove" %}</button>
         <a data-href="{% crud_inline_url base_model object 'list' namespace %}"
           data-ajax="" data-success="function(){}"
           data-replace-inner="#{{name}}_myList"
@@ -34,6 +33,6 @@
 <script>
     $('#delete_modal').modal('show');
     $('#{{name}}_{{object.pk}}_delete_submit').click( function() {
-      $('#{{name}}_{{object.pk}}_delete').submit();
+        $('#delete_modal').modal('hide');
     });
 </script>

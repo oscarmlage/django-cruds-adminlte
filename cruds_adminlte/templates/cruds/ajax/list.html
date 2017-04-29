@@ -34,6 +34,7 @@
                           data-replace-inner="#{{name}}_editList"
                           href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
                       {% endif %}
+
                       {%  crud_inline_url base_model object 'update' namespace as url  %}
                       {% if url and 'update' in views_available %}
                         <a data-ajax="" data-success="function(){}"
@@ -43,8 +44,10 @@
                           class="btn btn-primary">
                           {% trans "Edit" %}</a>
                       {% endif %}
+
                       {%  crud_inline_url base_model object 'delete' namespace as url %}
                       {% if url and 'delete' in views_available %}
+
                         <a data-ajax="" data-success="function(){}"
                           id="#{{ name }}_{{ object.pk }}_delete"
                           data-replace-inner="#delete_modal_inner"

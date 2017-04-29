@@ -12,6 +12,7 @@
     data-replace-inner="#{{name}}_editList"
     data-ajax-submit=""
     data-refresh-inner="#{{name}}_myList"
+    data-success="success"
     onsubmit="return false;">
     {% csrf_token %}
     <div class="box-body row">
@@ -25,7 +26,6 @@
     </div>
 
 
-    {% if not form.helper %}
     <div class="box-footer">
         <div class="form-group">
             <div class="controls">
@@ -40,15 +40,19 @@
             </div>
         </div>
     </div>
-    {% endif %}
 </form>
 
 
 <script>
-  $('#edit_modal').modal('show');
-  $('#{{name}}_{{object.pk}}_addedit_submit').click( function(e) {
-    e.preventDefault();
-    $('#{{name}}_{{object.pk}}_addedit').submit();
-    $('#edit_modal').modal('hide');
-  });
+    {% if form.helper %}
+    $(".modal select:first").val(1).trigger('change.select2');
+    $(".modal select:first").parent().parent().hide();
+    {% endif %}
+
+    function success() {
+        $('#edit_modal').modal('hide');
+    }
+
+    $('.modal #submit-id-submit').parent().parent().remove(); // FIXME: Remove the crispy buttons
+    $('#edit_modal').modal('show');
 </script>
