@@ -28,7 +28,7 @@
                   {% endfor %}
                   <td>
                       {%  crud_inline_url base_model object 'detail' namespace as url  %}
-                      {% if url %}
+                      {% if url and 'detail' in views_available %}
                         <a data-ajax="" data-success="function(){}"
                           id="#{{ name }}_{{ object.pk }}_show"
                           data-replace-inner="#{{name}}_editList"
@@ -36,7 +36,7 @@
                       {% endif %}
 
                       {%  crud_inline_url base_model object 'update' namespace as url  %}
-                      {% if url %}
+                      {% if url and 'update' in views_available %}
                         <a data-ajax="" data-success="function(){}"
                           id="#{{ name }}_{{ object.pk }}_edit"
                           data-replace-inner="#edit_modal_inner"
@@ -45,12 +45,13 @@
                           {% trans "Edit" %}</a>
                       {% endif %}
 
-                      {%  crud_inline_url base_model object 'delete' namespace as url_delete %}
-                      {% if url_delete %}
+                      {%  crud_inline_url base_model object 'delete' namespace as url %}
+                      {% if url and 'delete' in views_available %}
+
                         <a data-ajax="" data-success="function(){}"
                           id="#{{ name }}_{{ object.pk }}_delete"
                           data-replace-inner="#delete_modal_inner"
-                          href="{{ url_delete }}"
+                          href="{{ url }}"
                           class="btn btn-danger">{% trans "Delete" %}</a>
                       {% endif %}
                   </td>
@@ -65,6 +66,7 @@
         </table>
     </div>
 </div>
+
 
 <div class="modal in" id="delete_modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">

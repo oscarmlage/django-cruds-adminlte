@@ -24,7 +24,7 @@ class CustomerForm(forms.ModelForm):
                                             'icon': 'fa-calendar'}),
             'time': TimePickerWidget(attrs={'icon': 'fa-clock-o'}),
             'datetime': DateTimePickerWidget(
-                attrs={'format': 'mm/dd/yyyy HH:ii:ss',
+                attrs={'format': 'mm/dd/yyyy hh:ii:ss',
                        'icon': 'fa-calendar'}),
             'color': ColorPickerWidget,
             'information': CKEditorWidget(attrs={'lang': 'es'}),

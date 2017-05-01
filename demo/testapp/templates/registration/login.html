@@ -1,0 +1,17 @@
+{% extends 'cruds/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Login" %}{% endblock %}
+{% block page_name %} {% trans "Login" %} {% endblock %}
+{% block page_description %}{% trans "Demostration login" %} {% endblock %}
+
+{% block content %}
+
+  <h2>Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+
+{% endblock %}

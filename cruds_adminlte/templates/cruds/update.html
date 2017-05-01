@@ -32,7 +32,9 @@
                     </div>
                     <div class="panel-body">
                         <div id="{{inline.name}}_father">
+            				{% if 'list' in inline.views_available %}
                             <div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
+                             
                                 <a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList"
                                     data-ajax="" data-success="function(){}"
                                     data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
@@ -42,7 +44,9 @@
                                 $("#{{inline.name}}_btn").click();
                                 </script>
                             </div>
+                            {% endif %}
                             <div id="{{inline.name}}_editList"></div>
+                            {% if 'create' in inline.views_available %}
                             <button class="btn btn-success"
                                 data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}"
 
@@ -54,6 +58,7 @@
                                 data-ajax="" data-success="function(){}" >
                                 {% trans 'Create' %}
                             </button>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

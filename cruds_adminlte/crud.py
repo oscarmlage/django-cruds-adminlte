@@ -21,6 +21,14 @@ from cruds_adminlte import utils
 
 class CRUDMixin(object):
 
+    def get_template_names(self):
+        dev = []
+        base_name = "%s/%s/" % (self.model._meta.app_label,
+                                self.model.__name__.lower())
+        dev.append(base_name + self.template_name)
+        dev.append(self.template_name)
+        return dev
+
     def get_context_data(self, **kwargs):
         """
         Adds available urls and names.
@@ -62,6 +70,10 @@ class CRUDMixin(object):
             context['url_%s' % action] = url
         if self.view_type in ['update', 'detail']:
             context['inlines'] = self.inlines
+
+        if 'object' not in context:
+            context['object'] = self.model
+        context['views_available'] = self.views_available
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -150,6 +162,7 @@ class CRUDView(object):
         basename + '/update.html'
         basename + '/list.html'
         basename + '/delete.html'
+        Note: also import <applabel>/<model>/<basename>/<view type>.html
 
         Using namespace
 
@@ -165,12 +178,21 @@ class CRUDView(object):
 
         In urls.py
 
-        myview = Myclass()
         .. code:: python
+
+            myview = Myclass()
             urlpatterns = [
                 url('path', include(myview.get_urls(),
                                     namespace="mynamespace"))
             ]
+
+        If you want to filter views add views_available list
+
+        .. code:: python
+            class Myclass(CRUDView):
+                model = Customer
+                views_available=['create', 'list', 'delete', 'update', 'detail']
+
     """
 
     model = None
@@ -186,6 +208,7 @@ class CRUDView(object):
     display_fields = None
     list_fields = None
     inlines = None
+    views_available = None
 
     """
     It's obligatory this structure
@@ -234,6 +257,7 @@ class CRUDView(object):
             perms = self.perms['create']
             form_class = self.add_form
             view_type = 'create'
+            views_available = self.views_available[:]
         return OCreateView
 
     def get_detail_view_class(self):
@@ -248,6 +272,7 @@ class CRUDView(object):
             view_type = 'detail'
             display_fields = self.display_fields
             inlines = self.inlines
+            views_available = self.views_available[:]
         return ODetailView
 
     def get_update_view_class(self):
@@ -262,6 +287,7 @@ class CRUDView(object):
             form_class = self.update_form
             view_type = 'update'
             inlines = self.inlines
+            views_available = self.views_available[:]
         return OEditView
 
     def get_list_view_class(self):
@@ -276,6 +302,7 @@ class CRUDView(object):
             list_fields = self.list_fields
             view_type = 'list'
             paginate_by = self.paginate_by
+            views_available = self.views_available[:]
 
         return OListView
 
@@ -289,6 +316,7 @@ class CRUDView(object):
             namespace = self.namespace
             perms = self.perms['delete']
             view_type = 'delete'
+            views_available = self.views_available[:]
         return ODeleteView
 
 #  INITIALIZERS
@@ -380,6 +408,11 @@ class CRUDView(object):
             self.perms['list'].append("%s.view_%s" % (applabel, name))
             self.perms['detail'].append("%s.view_%s" % (applabel, name))
 
+    def inicialize_views_available(self):
+        if self.views_available is None:
+            self.views_available = [
+                'create', 'list', 'delete', 'update', 'detail']
+
     def __init__(self, namespace=None, model=None, template_name_base=None):
         if namespace:
             self.namespace = namespace
@@ -389,40 +422,49 @@ class CRUDView(object):
             self.template_name_base = template_name_base
 
         basename = self.get_base_name()
-
+        self.inicialize_views_available()
         self.initialize_perms()
-        self.initialize_create(basename + '/create.html')
-        self.initialize_detail(basename + '/detail.html')
-        self.initialize_update(basename + '/update.html')
-        self.initialize_list(basename + '/list.html')
-        self.initialize_delete(basename + '/delete.html')
+        if 'create' in self.views_available:
+            self.initialize_create(basename + '/create.html')
+
+        if 'detail' in self.views_available:
+            self.initialize_detail(basename + '/detail.html')
+
+        if 'update' in self.views_available:
+            self.initialize_update(basename + '/update.html')
+
+        if 'list' in self.views_available:
+            self.initialize_list(basename + '/list.html')
+
+        if 'delete' in self.views_available:
+            self.initialize_delete(basename + '/delete.html')
 
     def get_urls(self):
 
         base_name = "%s/%s" % (self.model._meta.app_label,
                                self.model.__name__.lower())
-        myurls = [
-            url("^%s/list$" % (base_name,),
-                self.list,
-                name=utils.crud_url_name(self.model, 'list',
-                                         prefix=self.urlprefix)),
-            url("^%s/create$" % (base_name,),
-                self.create,
-                name=utils.crud_url_name(self.model, 'create',
-                                         prefix=self.urlprefix)),
-            url('^%s/(?P<pk>[^/]+)$' % (base_name,),
-                self.detail,
-                name=utils.crud_url_name(self.model, 'detail',
-                                         prefix=self.urlprefix)),
-            url("^%s/(?P<pk>[^/]+)/update$" % (base_name,),
-                self.update,
-                name=utils.crud_url_name(self.model, 'update',
-                                         prefix=self.urlprefix)),
-            url(r"^%s/(?P<pk>[^/]+)/delete$" % (base_name,),
-                self.delete,
-                name=utils.crud_url_name(self.model, 'delete',
-                                         prefix=self.urlprefix)),
-        ]
+        myurls = []
+        if 'list' in self.views_available:
+            myurls.append(url("^%s/list$" % (base_name,),
+                              self.list,
+                              name=utils.crud_url_name(self.model, 'list', prefix=self.urlprefix)))
+        if 'create' in self.views_available:
+            myurls.append(url("^%s/create$" % (base_name,),
+                              self.create,
+                              name=utils.crud_url_name(self.model, 'create', prefix=self.urlprefix)))
+        if 'detail' in self.views_available:
+            myurls.append(url('^%s/(?P<pk>[^/]+)$' % (base_name,),
+                              self.detail,
+                              name=utils.crud_url_name(self.model, 'detail', prefix=self.urlprefix)))
+        if 'update' in self.views_available:
+            myurls.append(url("^%s/(?P<pk>[^/]+)/update$" % (base_name,),
+                              self.update,
+                              name=utils.crud_url_name(self.model, 'update', prefix=self.urlprefix)))
+        if 'delete' in self.views_available:
+            myurls.append(url(r"^%s/(?P<pk>[^/]+)/delete$" % (base_name,),
+                              self.delete,
+                              name=utils.crud_url_name(self.model, 'delete', prefix=self.urlprefix)))
+
         myurls += self.add_inlines(base_name)
         return myurls
 

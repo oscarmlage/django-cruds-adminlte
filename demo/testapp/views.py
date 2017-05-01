@@ -7,7 +7,11 @@ from cruds_adminlte.inline_crud import InlineAjaxCRUD
 
 from .models import Autor, Addresses, Line, Invoice
 from .forms import InvoiceForm, LineForm, AddressesForm
+from django.views.generic.base import TemplateView
 
+
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
 class Address_AjaxCRUD(InlineAjaxCRUD):
     model = Addresses
@@ -57,3 +61,4 @@ class InvoiceCRUD(CRUDView):
                       'subtotal', 'subtotal_iva', 'subtotal_retentions',
                       'total']
     inlines = [Lines_AjaxCRUD]
+    views_available=['create', 'list', 'detail']
