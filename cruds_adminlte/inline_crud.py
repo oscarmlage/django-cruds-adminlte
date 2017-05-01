@@ -201,22 +201,33 @@ class InlineAjaxCRUD(CRUDView):
         if 'list' in self.views_available:
             myurls.append(url("^%s/(?P<model_id>[^/]+)/list$" % (base_name,),
                               self.list,
-                              name=utils.crud_url_name(self.model, 'list', prefix=self.urlprefix)))
+                              name=utils.crud_url_name(
+                                  self.model, 'list', prefix=self.urlprefix)))
         if 'create' in self.views_available:
             myurls.append(url("^%s/(?P<model_id>[^/]+)/create$" % (base_name,),
                               self.create,
-                              name=utils.crud_url_name(self.model, 'create', prefix=self.urlprefix)))
+                              name=utils.crud_url_name(
+                                  self.model, 'create', prefix=self.urlprefix))
+                          )
         if 'detail' in self.views_available:
-            myurls.append(url('^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)$' % (base_name,),
+            myurls.append(url('^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)$' %
+                              (base_name,),
                               self.detail,
-                              name=utils.crud_url_name(self.model, 'detail', prefix=self.urlprefix)))
+                              name=utils.crud_url_name(
+                                  self.model, 'detail', prefix=self.urlprefix))
+                          )
         if 'update' in self.views_available:
-            myurls.append(url("^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)/update$" % (base_name,),
+            myurls.append(url("^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)/update$" %
+                              (base_name,),
                               self.update,
-                              name=utils.crud_url_name(self.model, 'update', prefix=self.urlprefix)))
+                              name=utils.crud_url_name(
+                                  self.model, 'update', prefix=self.urlprefix))
+                          )
         if 'delete' in self.views_available:
             myurls.append(url(r"^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)/delete$" % (base_name,),
                               self.delete,
-                              name=utils.crud_url_name(self.model, 'delete', prefix=self.urlprefix)))
+                              name=utils.crud_url_name(
+                                  self.model, 'delete', prefix=self.urlprefix))
+                          )
 
         return myurls

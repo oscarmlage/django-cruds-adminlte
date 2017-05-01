@@ -19,7 +19,7 @@ from django.contrib import admin
 
 from cruds_adminlte.urls import crud_for_app
 from testapp.forms import CustomerForm, InvoiceForm, LineForm, AddressesForm
-from testapp.views import AutorCRUD, InvoiceCRUD,  IndexView
+from testapp.views import AutorCRUD, InvoiceCRUD, IndexView
 from django.contrib.auth import views as auth_views
 
 
@@ -29,11 +29,11 @@ invoicecrud = InvoiceCRUD()
 ns = crud_for_app('testapp', check_perms=True, namespace="ns")
 
 urlpatterns = [
-    url(r'^$', IndexView.as_view() ),
-    
-     url(r'^accounts/login/$', auth_views.login, name='login'),
+    url(r'^$', IndexView.as_view()),
+
+    url(r'^accounts/login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
-    
+
     url(r'^admin/', admin.site.urls),
     url(r'^select2/', include('django_select2.urls')),
     url('^namespace/', include(ns, namespace='ns')),
