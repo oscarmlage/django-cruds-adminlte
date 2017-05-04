@@ -11,11 +11,13 @@ from testapp.presentation import InvoicePresentation
 # Create your models here.
 class Autor(models.Model):
     name = models.CharField(max_length=200)
+
     class Meta:
         ordering = ('pk',)
         permissions = (
             ("view_author", "Can see available Authors"),
-            )
+        )
+
 
 class Addresses(models.Model):
     autor = models.ForeignKey(Autor, related_name="Autor")
@@ -23,12 +25,12 @@ class Addresses(models.Model):
     city = models.CharField(max_length=100)
     status = models.BooleanField(_("Status"), help_text=_('Active?'),
                                  default=True)
-    
+
     class Meta:
         ordering = ('pk',)
         permissions = (
             ("view_addresses", "Can see available Addresses"),
-            )
+        )
 
 
 class Customer(models.Model):
@@ -43,12 +45,12 @@ class Customer(models.Model):
     date = models.DateField()
     time = models.TimeField()
     datetime = models.DateTimeField()
-    
+
     class Meta:
         ordering = ('pk',)
         permissions = (
             ("view_customer", "Can see available customers"),
-            )
+        )
 
 
 def last_number():
@@ -94,7 +96,7 @@ class Invoice(models.Model, InvoicePresentation):
         verbose_name_plural = _('Invoices')
         permissions = (
             ("view_invoice", "Can see available Invoices"),
-            )
+        )
 
 
 class Line(models.Model):
@@ -116,4 +118,4 @@ class Line(models.Model):
         verbose_name_plural = _('Lines')
         permissions = (
             ("view_line", "Can see available lines"),
-            )
+        )

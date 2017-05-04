@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.apps import apps
-from django.conf.urls import url
 
 
 from .crud import CRUDView
@@ -30,14 +29,14 @@ def crud_for_model(model, urlprefix=None, namespace=None,
         check_perms = mycheck_perms
         update_form = myupdate_form
         add_form = myadd_form
-        views_available=views
-        
+        views_available = views
+
     nc = NOCLASS()
     return nc.get_urls()
 
 
 def crud_for_app(app_label, urlprefix=None, namespace=None,
-                 login_required=False, check_perms=False, 
+                 login_required=False, check_perms=False,
                  modelforms={}, views=None):
     """
     Returns list of ``url`` items to CRUD an app.

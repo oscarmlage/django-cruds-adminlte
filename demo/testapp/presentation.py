@@ -5,10 +5,11 @@ Created on 29 abr. 2017
 '''
 from django.utils.html import format_html
 
+
 class InvoicePresentation:
-    
+
     def get_description1_display(self):
         return format_html(self.description1)
-    
+
     def get_description2_display(self):
         return format_html(self.description2)

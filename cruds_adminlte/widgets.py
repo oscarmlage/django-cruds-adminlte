@@ -1,4 +1,3 @@
-from django.contrib.admin.templatetags import admin_static
 from django.forms.utils import flatatt
 from django.forms.widgets import Widget, Textarea
 from django.template import loader
@@ -18,7 +17,7 @@ class DatePickerWidget(Widget):
         if value is not None:
             context['value'] = value
         if 'format' not in context:
-            context['format']='mm/dd/yyyy'
+            context['format'] = 'mm/dd/yyyy'
         context['djformat'] = settings.DATE_FORMAT
         return context
 
@@ -40,7 +39,7 @@ class TimePickerWidget(Widget):
             context['value'] = value
         if 'format' not in context:
             context['format'] = 'HH:ii P'
-        context['djformat'] = settings.TIME_FORMAT    
+        context['djformat'] = settings.TIME_FORMAT
         return context
 
     def render(self, name, value, attrs=None, renderer=None):
@@ -61,9 +60,9 @@ class DateTimePickerWidget(Widget):
             context['value'] = value
 
         if 'format' not in context:
-            context['format']='mm/dd/yyyy hh:ii:ss'
+            context['format'] = 'mm/dd/yyyy hh:ii:ss'
         context['djformat'] = settings.DATETIME_FORMAT
-        
+
         return context
 
     def render(self, name, value, attrs=None, renderer=None):

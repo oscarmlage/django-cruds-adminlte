@@ -13,6 +13,7 @@ from django.views.generic.base import TemplateView
 class IndexView(TemplateView):
     template_name = 'index.html'
 
+
 class Address_AjaxCRUD(InlineAjaxCRUD):
     model = Addresses
     base_model = Autor
@@ -61,4 +62,4 @@ class InvoiceCRUD(CRUDView):
                       'subtotal', 'subtotal_iva', 'subtotal_retentions',
                       'total']
     inlines = [Lines_AjaxCRUD]
-    views_available=['create', 'list', 'detail']
+    views_available = ['create', 'list', 'detail']
