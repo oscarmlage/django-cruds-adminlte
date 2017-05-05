@@ -1,4 +1,4 @@
-{% extends "cruds/base.html" %}
+{% extends template_father %}
 {% load i18n %}
 {% load crud_tags %}
 {% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
@@ -12,7 +12,7 @@
         <div class="col-xs-12">
             <div class="box">
 
-  {% if url_update and 'update' in views_available %}
+  {% if url_update and 'update' in views_available and crud_perms.update %}
   <div class="box-header">
       <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
   </div>
@@ -29,7 +29,7 @@
   </table>
 </div>
 </div>
-  {% if url_list and 'list' in views_available %}
+  {% if url_list and 'list' in views_available and crud_perms.list %}
     <div class="box-footer">
       <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
    </div>

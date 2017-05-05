@@ -17,6 +17,9 @@ from django.views.generic import (ListView, CreateView, DeleteView,
                                   UpdateView, DetailView)
 
 from cruds_adminlte import utils
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
 
 
 class CRUDMixin(object):
@@ -74,6 +77,22 @@ class CRUDMixin(object):
         if 'object' not in context:
             context['object'] = self.model
         context['views_available'] = self.views_available
+        
+        user = self.request.user
+        available_perms={}
+        for perm in self.all_perms:
+            if self.check_perms:
+                if  perm in self.views_available:
+                    available_perms[perm]=all([user.has_perm(x) for x in self.all_perms[perm] ])
+                    
+                else:
+                    available_perms[perm]=False
+            else:
+                available_perms[perm]=True
+            
+        
+        context['crud_perms'] = available_perms
+        context['template_father'] = self.template_father
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -209,6 +228,7 @@ class CRUDView(object):
     list_fields = None
     inlines = None
     views_available = None
+    template_father = "cruds/base.html"
 
     """
     It's obligatory this structure
@@ -255,9 +275,13 @@ class CRUDView(object):
         class OCreateView(CRUDMixin, CreateViewClass):
             namespace = self.namespace
             perms = self.perms['create']
+            all_perms = self.perms
             form_class = self.add_form
             view_type = 'create'
             views_available = self.views_available[:]
+            check_perms = self.check_perms
+            template_father=self.template_father
+            
         return OCreateView
 
     def get_detail_view_class(self):
@@ -269,10 +293,14 @@ class CRUDView(object):
         class ODetailView(CRUDMixin, ODetailViewClass):
             namespace = self.namespace
             perms = self.perms['detail']
+            all_perms = self.perms
             view_type = 'detail'
             display_fields = self.display_fields
             inlines = self.inlines
             views_available = self.views_available[:]
+            check_perms=self.check_perms
+            template_father = self.template_father
+            
         return ODetailView
 
     def get_update_view_class(self):
@@ -285,9 +313,13 @@ class CRUDView(object):
             namespace = self.namespace
             perms = self.perms['update']
             form_class = self.update_form
+            all_perms = self.perms
             view_type = 'update'
             inlines = self.inlines
             views_available = self.views_available[:]
+            check_perms = self.check_perms
+            template_father=self.template_father
+            
         return OEditView
 
     def get_list_view_class(self):
@@ -299,10 +331,13 @@ class CRUDView(object):
         class OListView(CRUDMixin, OListViewClass):
             namespace = self.namespace
             perms = self.perms['list']
+            all_perms = self.perms
             list_fields = self.list_fields
             view_type = 'list'
             paginate_by = self.paginate_by
             views_available = self.views_available[:]
+            check_perms=self.check_perms
+            template_father=self.template_father
 
         return OListView
 
@@ -315,8 +350,11 @@ class CRUDView(object):
         class ODeleteView(CRUDMixin, ODeleteClass):
             namespace = self.namespace
             perms = self.perms['delete']
+            all_perms = self.perms
             view_type = 'delete'
             views_available = self.views_available[:]
+            check_perms = self.check_perms
+            template_father = self.template_father
         return ODeleteView
 
 #  INITIALIZERS
@@ -388,6 +426,17 @@ class CRUDView(object):
                 self.model.__name__.lower())
         return ns
 
+    def check_create_perm(self, applabel, name):
+        model = ContentType.objects.get(app_label=applabel, model=name)
+        if not Permission.objects.filter( content_type=model,
+                                          codename="view_%s" % (name,)
+                                          ).exists():
+            Permission.objects.create( content_type=model,
+                                          codename="view_%s" % (name,),
+                                          name = _("Can see available %s"%(name,))
+                                    )
+            
+
     def initialize_perms(self):
         if self.perms is None:
             self.perms = {
@@ -401,6 +450,7 @@ class CRUDView(object):
         applabel = self.model._meta.app_label
         name = self.model.__name__.lower()
         if self.check_perms:
+            self.check_create_perm(applabel, name)
             self.perms['create'].append("%s.add_%s" % (applabel, name))
             self.perms['update'].append("%s.change_%s" % (applabel, name))
             self.perms['delete'].append("%s.delete_%s" % (applabel, name))

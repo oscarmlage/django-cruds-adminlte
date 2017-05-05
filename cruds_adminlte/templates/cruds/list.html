@@ -1,4 +1,4 @@
-{% extends "cruds/base.html" %}
+{% extends template_father %}
 {% load i18n %}
 {% load crud_tags %}
 
@@ -15,7 +15,7 @@
                 {% if url_create %}
                 <div class="box-header">
                 	{% crud_url object "create" namespace as url %}
-                	{% if url and 'create' in views_available %}
+                	{% if url and 'create' in views_available and crud_perms.create %}
                     <a href="{{ url }}" class="btn btn-primary">
                         {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
                     {%endif%}
@@ -45,20 +45,20 @@
                               </td>
                               {% endfor %}
                               <td>
-
+{% block actions%}
 									{% crud_url object "detail" namespace as url %}
-                                      {% if url and 'detail' in views_available %}
+                                      {% if url and 'detail' in views_available and crud_perms.detail %}
                                       <a href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
                                       {% endif %}
                                       {% crud_url object "update" namespace as url %}
-                                      {% if url and 'update' in views_available %}
+                                      {% if url and 'update' in views_available and crud_perms.update %}
                                       <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
                                       {% endif %}
                                       {% crud_url object "delete" namespace as url %}
-                                      {% if url and 'delete' in views_available %}
+                                      {% if url and 'delete' in views_available and crud_perms.delete %}
                                       <a href="{{ url }}" class="btn btn-danger">{% trans "Delete" %}</a>
                                       {% endif %}
-
+{% endblock %}
                               </td>
                             </tr>
                           {% endfor %}
