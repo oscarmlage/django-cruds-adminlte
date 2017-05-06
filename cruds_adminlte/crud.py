@@ -427,7 +427,7 @@ class CRUDView(object):
         return ns
 
     def check_create_perm(self, applabel, name):
-        model = ContentType.objects.get(app_label=applabel, model=name)
+        model, created = ContentType.objects.get_or_create(app_label=applabel, model=name)
         if not Permission.objects.filter( content_type=model,
                                           codename="view_%s" % (name,)
                                           ).exists():
