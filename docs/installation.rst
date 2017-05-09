@@ -127,14 +127,14 @@ Configure :mod:`easy_thumbnails`: ::
 
 Configure the default time and datetime: ::
 
-	TIME_FORMAT= 'h:i A'
-	DATETIME_FORMAT='m/d/Y H:i:s'
-	DATE_FORMAT="m/d/Y"
+    TIME_FORMAT= 'h:i A'
+    DATETIME_FORMAT='m/d/Y H:i:s'
+    DATE_FORMAT="m/d/Y"
 
-	TIME_INPUT_FORMATS = ['%I:%M %p']
+    TIME_INPUT_FORMATS = ['%I:%M %p']
 
 .. warning::
-	Datetime and time depends on `USE_TZ` attribute, so changes there impact in all django timezone management 
+    Datetime and time depends on `USE_TZ` attribute, so changes there impact in all django timezone management
 
 .. _urls:
 

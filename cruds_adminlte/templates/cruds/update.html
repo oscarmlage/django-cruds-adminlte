@@ -34,9 +34,9 @@
                     </div>
                     <div class="panel-body">
                         <div id="{{inline.name}}_father">
-            				{% if 'list' in inline.views_available %}
+                            {% if 'list' in inline.views_available %}
                             <div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
-                             
+
                                 <a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList"
                                     data-ajax="" data-success="function(){}"
                                     data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">

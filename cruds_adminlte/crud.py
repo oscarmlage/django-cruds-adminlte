@@ -77,20 +77,20 @@ class CRUDMixin(object):
         if 'object' not in context:
             context['object'] = self.model
         context['views_available'] = self.views_available
-        
+
         user = self.request.user
-        available_perms={}
+        available_perms = {}
         for perm in self.all_perms:
             if self.check_perms:
-                if  perm in self.views_available:
-                    available_perms[perm]=all([user.has_perm(x) for x in self.all_perms[perm] ])
-                    
+                if perm in self.views_available:
+                    available_perms[perm] = all(
+                        [user.has_perm(x) for x in self.all_perms[perm]])
+
                 else:
-                    available_perms[perm]=False
+                    available_perms[perm] = False
             else:
-                available_perms[perm]=True
-            
-        
+                available_perms[perm] = True
+
         context['crud_perms'] = available_perms
         context['template_father'] = self.template_father
         return context
@@ -210,7 +210,8 @@ class CRUDView(object):
         .. code:: python
             class Myclass(CRUDView):
                 model = Customer
-                views_available=['create', 'list', 'delete', 'update', 'detail']
+                views_available = ['create', 'list', 'delete',
+                                   'update', 'detail']
 
     """
 
@@ -280,8 +281,8 @@ class CRUDView(object):
             view_type = 'create'
             views_available = self.views_available[:]
             check_perms = self.check_perms
-            template_father=self.template_father
-            
+            template_father = self.template_father
+
         return OCreateView
 
     def get_detail_view_class(self):
@@ -298,9 +299,9 @@ class CRUDView(object):
             display_fields = self.display_fields
             inlines = self.inlines
             views_available = self.views_available[:]
-            check_perms=self.check_perms
+            check_perms = self.check_perms
             template_father = self.template_father
-            
+
         return ODetailView
 
     def get_update_view_class(self):
@@ -318,8 +319,8 @@ class CRUDView(object):
             inlines = self.inlines
             views_available = self.views_available[:]
             check_perms = self.check_perms
-            template_father=self.template_father
-            
+            template_father = self.template_father
+
         return OEditView
 
     def get_list_view_class(self):
@@ -336,8 +337,8 @@ class CRUDView(object):
             view_type = 'list'
             paginate_by = self.paginate_by
             views_available = self.views_available[:]
-            check_perms=self.check_perms
-            template_father=self.template_father
+            check_perms = self.check_perms
+            template_father = self.template_father
 
         return OListView
 
@@ -427,15 +428,15 @@ class CRUDView(object):
         return ns
 
     def check_create_perm(self, applabel, name):
-        model, created = ContentType.objects.get_or_create(app_label=applabel, model=name)
-        if not Permission.objects.filter( content_type=model,
-                                          codename="view_%s" % (name,)
-                                          ).exists():
-            Permission.objects.create( content_type=model,
-                                          codename="view_%s" % (name,),
-                                          name = _("Can see available %s"%(name,))
-                                    )
-            
+        model, created = ContentType.objects.get_or_create(
+            app_label=applabel, model=name)
+        if not Permission.objects.filter(content_type=model,
+                                         codename="view_%s" % (name,)
+                                         ).exists():
+            Permission.objects.create(
+                content_type=model,
+                codename="view_%s" % (name,),
+                name=_("Can see available %s" % (name,)))
 
     def initialize_perms(self):
         if self.perms is None:
