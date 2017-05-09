@@ -2,6 +2,41 @@
 Changelog
 =========
 
+0.0.4
+------
+
+* ``df6cbcf`` - (HEAD -> master, origin/master, origin/HEAD) PEP8 cosmetics
+* ``cdbb7d4`` - Merge pull request #26 from luisza/perm_fixes
+* ``b50d8a5`` - fixed contentype not found on migrations
+* ``616a75c`` - fixed permission and allow inherit of other base template
+* ``eed91a9`` - Merge branch 'master' into docs
+* ``16e89e3`` - Update CRUDViews documentation
+* ``d788b6d`` - PEP8 cosmetics
+* ``dbcee00`` - Merge pull request #24 from luisza/demo_fixes
+* ``48b1d42`` - Adding demo site and fix input time format
+* ``1a7f4a1`` - Fix str not _meta in list view
+* ``c99f2ba`` - Filter views and demo site
+* ``c26132a`` - Added demo site
+* ``c4a3055`` - Adding tests structure
+* ``159981f`` - Inline forms running properly in modal. Errors are well formatted now. Fixes #22
+* ``c4a830f`` - Fixing MANIFEST
+* ``6aa9676`` - Merge master
+* ``dd24b8f`` - Documentation minor issue fixed (2)
+* ``999dafb`` - Documentation minor issue fixed
+* ``7f803d0`` - Documentation improved, new screenshot images for inlines
+* ``6a8acc1`` - Adding cruds-columns screenshot to documentation
+* ``8b879af`` - Change documentation theme for RTD
+* ``5d50505`` - Improve README.rst with screenshots (6)
+* ``ea59ff4`` - Improve README.rst with screenshots (5, github does not allow include in README.rst for security reasons)
+* ``0f60b87`` - Improve README.rst with screenshots (4)
+* ``8d540e5`` - Improve README.rst with screenshots (3)
+* ``fe702d8`` - Improve README.rst with screenshots (2)
+* ``6e6d7b1`` - Improve README.rst with screenshots
+* ``b26d90d`` - Documentation organized (fixes #13)
+* ``b54ea2b`` - Documentation organized (fixes #13)
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.4...master
+
 0.0.3
 ------
 * ``e4e3f0b`` - (HEAD -> master, origin/master, origin/HEAD) Add bootstrap
