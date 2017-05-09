@@ -34,6 +34,7 @@ Components
 .. toctree::
 
    components
+   usage
 
 Screenshots
 -----------
