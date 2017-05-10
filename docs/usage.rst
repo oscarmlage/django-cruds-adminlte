@@ -107,7 +107,10 @@ performance, if split_space_search is True then ' ' is used
         split_space_search = ' ' # default False
 
 .. note:: 'icontains' is not set by default as django admin does, so you need
-to set if not equal search is wanted
+          to set if not equal search is wanted
+
+.. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
 
 
 Overwrite forms

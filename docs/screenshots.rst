@@ -20,6 +20,9 @@ Screenshots
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-ckeditor.png
     :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-ckeditor.png
 
+.. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
+    :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
+
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-custom-sidebar.png
     :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-custom-sidebar.png
 
