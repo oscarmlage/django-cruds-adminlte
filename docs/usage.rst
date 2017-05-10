@@ -68,7 +68,8 @@ You also can defined extra perms with
                   'detail': []
                 }
 
-If check_perms = True we will add default django model perms  (<applabel>.[add|change|delete|view]_<model>) ej. mytestapp.add_mymodel
+If check_perms = True we will add default django model perms
+(<applabel>.[add|change|delete|view]_<model>) ej. mytestapp.add_mymodel
 
 .. warning::
     applabel.view_model are not part of django perms, so needs to be create
@@ -87,21 +88,26 @@ If check_perms = True we will add default django model perms  (<applabel>.[add|c
     applabel.view_model is used by default for list perm, so if it's not
     created then list view raise 503 permission denied (with screen in browser)
 
+
 Searching
 ------------
 
-As django admin does **search_fields** are available, and you can filter using doble underscore (__) to search across objects.
+As django admin does, **search_fields** are available, and you can filter using
+double underscore (__) to search across the objects.
 
-**split_space_search** split search text in parts using the string provided, this can be usefull to have better results but have impact in search performance, if split_space_search is True then ' ' is used
+**split_space_search** split search text in parts using the string provided,
+this can be usefull to have better results but have impact in search
+performance, if split_space_search is True then ' ' is used
 
 .. code:: python
 
     class Myclass(CRUDView):
         model = Customer
         search_fields = ['description__icontains']
-        split_space_search = ' ' # default False 
+        split_space_search = ' ' # default False
 
-.. note::  icontains is not set by default as django admin does, so you need to set if not equal search is wanted
+.. note:: 'icontains' is not set by default as django admin does, so you need
+to set if not equal search is wanted
 
 
 Overwrite forms
@@ -115,6 +121,7 @@ You can also overwrite add and update forms
         model = Customer
         add_form = MyFormClass
         update_form = MyFormClass
+
 
 Overwrite templates
 ----------------------

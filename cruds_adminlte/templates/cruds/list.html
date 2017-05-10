@@ -12,33 +12,36 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
-                {% if url_create %}
-                <div class="box-header">
-                	{% crud_url object "create" namespace as url %}
-                	{% if url and 'create' in views_available and crud_perms.create %}
-                    <a href="{{ url }}" class="btn btn-primary">
-                        {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
-                    {%endif%}
-                </div>
-                {% endif %}
-                <div class="box-body">
- {% if search %}
-            <div class="row">
-                <form action="" method="get">
 
-<div class="col-lg-6">
-    <div class="input-group">
-      <input type="text" name="q" value="{{q}}" class="form-control" placeholder="{% trans 'Search for...' %}">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">
-        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        </button>
-      </span>
-    </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->               	
-                </form>
-</div> <br>
-{% endif %}
+                <div class="box-header">
+                  <div class="row">
+                    {% if url_create %}
+                    <div class="col-lg-6">
+                        {% crud_url object "create" namespace as url %}
+                        {% if url and 'create' in views_available and crud_perms.create %}
+                          <a href="{{ url }}" class="btn btn-primary">
+                              {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
+                          {%endif%}
+                    </div>
+                    {% endif %}
+                    {% if search %}
+                    <div class="col-lg-6">
+                        <form action="" method="get">
+                            <div class="input-group">
+                                <input type="text" name="q" value="{{q}}" class="form-control" placeholder="{% trans 'Search for...' %}">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-flat" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
                     {% if object_list %}
                         <thead>
