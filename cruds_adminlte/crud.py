@@ -20,6 +20,7 @@ from cruds_adminlte import utils
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.query_utils import Q
 
 
 class CRUDMixin(object):
@@ -71,6 +72,11 @@ class CRUDMixin(object):
             except NoReverseMatch:
                 url = None
             context['url_%s' % action] = url
+            
+        if self.view_type == 'list' and 'q' in self.request.GET:
+            context['q'] = self.request.GET.get('q', '')
+            context['search'] = self.search_fields is not None
+            
         if self.view_type in ['update', 'detail']:
             context['inlines'] = self.inlines
 
@@ -230,6 +236,9 @@ class CRUDView(object):
     inlines = None
     views_available = None
     template_father = "cruds/base.html"
+    search_fields = None
+    split_space_search = False
+    
 
     """
     It's obligatory this structure
@@ -339,6 +348,31 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            search_fields = self.search_fields
+            split_space_search = self.split_space_search
+            
+            def get_queryset(self):
+                
+                if self.split_space_search is True:
+                    self.split_space_search = ' '
+                
+                query = super(OListView, self).get_queryset()
+                if self.search_fields and 'q' in self.request.GET:
+                    q=self.request.GET.get('q')
+                    if self.split_space_search:
+                        q=q.split(self.split_space_search)
+                    elif q:
+                        q=[q]
+                    sfilter=None
+                    for field in self.search_fields:
+                        for qsearch in q:
+                            if sfilter is None:
+                                sfilter = Q(**{field: qsearch})
+                            else:
+                                sfilter |= Q(**{field: qsearch})
+                    if sfilter is not None:
+                        query = query.filter(sfilter)
+                return query
 
         return OListView
 
