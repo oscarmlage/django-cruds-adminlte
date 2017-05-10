@@ -47,8 +47,8 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
 
 class InvoiceCRUD(CRUDView):
     model = Invoice
-    check_login = True
-    check_perms = True
+    check_login = False
+    check_perms = False
     add_form = InvoiceForm
     update_form = InvoiceForm
     fields = ['customer', 'registered', 'sent', 'paid', 'date',
@@ -63,3 +63,5 @@ class InvoiceCRUD(CRUDView):
                       'total']
     inlines = [Lines_AjaxCRUD]
     views_available = ['create', 'list', 'detail']
+    search_fields = ['description1__icontains']
+    split_space_search = True
