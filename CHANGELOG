@@ -2,6 +2,18 @@
 Changelog
 =========
 
+0.0.5
+------
+
+* ``a87c87c`` - (HEAD -> master, origin/master, origin/HEAD) Added some screenshot to the documentation (2)
+* ``96bdb58`` - Added some screenshot to the documentation
+* ``dfa74ce`` - PEP8 cosmetic + some minor fixes related to search feature
+* ``9ffcf51`` - Merge pull request #28 from luisza/search
+* ``6dd38ff`` - Search feature
+* ``4a64ca0`` - Typo fixed, thanks to Matej Vadnjal (@matejv) for noticing
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.5...master
+
 0.0.4
 ------
 
