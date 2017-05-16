@@ -14,7 +14,7 @@
 
   {% if url_update and 'update' in views_available and crud_perms.update %}
   <div class="box-header">
-      <a href="{{ url_update }}" class="btn btn-primary" >{% trans "Edit" %}</a>
+      <a href="{{ url_update }}{{getparams}}" class="btn btn-primary" >{% trans "Edit" %}</a>
   </div>
   {% endif %}
 <div class="box-body">
@@ -31,7 +31,7 @@
 </div>
   {% if url_list and 'list' in views_available and crud_perms.list %}
     <div class="box-footer">
-      <a href="{{ url_list }}" class="btn btn-primary">{% trans "Back to list" %}</a>
+      <a href="{{ url_list }}{{getparams}}" class="btn btn-primary">{% trans "Back to list" %}</a>
    </div>
   {% endif %}
   </div>

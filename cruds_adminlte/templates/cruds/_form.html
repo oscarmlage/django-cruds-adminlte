@@ -5,7 +5,7 @@
     {{ form.media }}
 {% endif %}
 
-<form action="{% if action == 'create'%}{{url_create}}{%else%}{{url_update}}{% endif %}" method="POST" enctype="multipart/form-data">
+<form action="{% if action == 'create'%}{{url_create}}{%else%}{{url_update}}{% endif %}{{getparams}}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="box-body row">
         <div class="col-md-12">
