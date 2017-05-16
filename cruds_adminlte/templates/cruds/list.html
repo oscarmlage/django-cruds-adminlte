@@ -19,7 +19,7 @@
                     <div class="col-lg-6">
                         {% crud_url object "create" namespace as url %}
                         {% if url and 'create' in views_available and crud_perms.create %}
-                          <a href="{{ url }}" class="btn btn-primary">
+                          <a href="{{ url }}{{getparams}}" class="btn btn-primary">
                               {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
                           {%endif%}
                     </div>
@@ -68,15 +68,15 @@
                                 {% block actions%}
                                   {% crud_url object "detail" namespace as url %}
                                     {% if url and 'detail' in views_available and crud_perms.detail %}
-                                    <a href="{{ url }}" class="btn btn-success">{% trans "Show" %}</a>
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-success">{% trans "Show" %}</a>
                                     {% endif %}
                                     {% crud_url object "update" namespace as url %}
                                     {% if url and 'update' in views_available and crud_perms.update %}
-                                    <a href="{{ url }}" class="btn btn-primary">{% trans "Edit" %}</a>
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-primary">{% trans "Edit" %}</a>
                                     {% endif %}
                                     {% crud_url object "delete" namespace as url %}
                                     {% if url and 'delete' in views_available and crud_perms.delete %}
-                                    <a href="{{ url }}" class="btn btn-danger">{% trans "Delete" %}</a>
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-danger">{% trans "Delete" %}</a>
                                     {% endif %}
                                 {% endblock %}
                               </td>

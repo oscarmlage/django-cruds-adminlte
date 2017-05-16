@@ -4,7 +4,7 @@
 {% block content %}
   <h1>{% trans "Remove" %} {{ object }}?</h1>
 
-  <form action="{{ url_delete }}" method="POST">
+  <form action="{{ url_delete }}{{getparams}}" method="POST">
     {% csrf_token %}
 
     <p>
