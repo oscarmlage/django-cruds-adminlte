@@ -424,6 +424,8 @@ class CRUDView(object):
                                 sfilter |= Q(**{field: qsearch})
                     if sfilter is not None:
                         query = query.filter(sfilter)
+                if self.related_fields:
+                    query= query.filter(**self.context_rel)
                 return query
 
         return OListView
