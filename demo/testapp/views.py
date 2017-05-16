@@ -51,6 +51,7 @@ class InvoiceCRUD(CRUDView):
     check_perms = False
     add_form = InvoiceForm
     update_form = InvoiceForm
+    related_fields = ['customer']
     fields = ['customer', 'registered', 'sent', 'paid', 'date',
               'invoice_number', 'description1', 'description2', 'subtotal',
               'subtotal_iva', 'subtotal_retentions', 'total']
