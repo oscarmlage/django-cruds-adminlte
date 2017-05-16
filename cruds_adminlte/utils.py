@@ -56,7 +56,8 @@ def get_fields(model, include=None):
     return fields
 
 
-def crud_url(instance, action, prefix=None, namespace=None, additional_kwargs=None):
+def crud_url(instance, action, prefix=None, namespace=None,
+             additional_kwargs=None):
     """
     Shortcut function returns url for instance and action passing `pk` kwarg.
 
@@ -75,6 +76,7 @@ def crud_url(instance, action, prefix=None, namespace=None, additional_kwargs=No
     if namespace:
         url = namespace + ':' + url
     return reverse(url, kwargs=additional_kwargs)
+
 
 def get_related_class_field(obj, field):
     objfield = obj._meta.get_field(field)

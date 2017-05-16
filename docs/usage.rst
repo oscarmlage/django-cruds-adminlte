@@ -182,21 +182,24 @@ In urls.py
 
 Namespace in views and urls needs to match, or url match problem are raise.
 
-Related fields 
+Related fields
 ----------------
 
-A common scenario is that you have a model with a foreignkey to other model that is the main of your view so you want to pass the main model as parameter to a crud views to filter and create using it as main reference, and always save the foreignkey with the main model object.
+A common scenario is that you have a model with a foreignkey to other model
+that is the main of your view so you want to pass the main model as parameter
+to a crud views to filter and create using it as main reference, and always
+save the foreignkey with the main model object.
 
-For example 
+For example
 In models
 
 .. code:: python
 
-	class Author(models.Model):
-		name=models.CharField(max_length=150)
-	class Book(models.Model):
-		author = models.ForeignKey(Author):
-		name=models.CharField(max_length=150)
+    class Author(models.Model):
+        name=models.CharField(max_length=150)
+    class Book(models.Model):
+        author = models.ForeignKey(Author):
+        name=models.CharField(max_length=150)
 
 In views
 
@@ -205,11 +208,12 @@ In views
     from cruds_adminlte.crud import CRUDView
     class Myclass(CRUDView):
         model = Book
-		related_fields = ['autor']
+        related_fields = ['autor']
 
 So with this you now have management of author's book.
 
-.. warning:: we provide all internal references but you need to create the first author to book list|create|update|detail|delete reference.
+.. warning:: we provide all internal references but you need to create the
+first author to book list|create|update|detail|delete reference.
 
 
 Decorators

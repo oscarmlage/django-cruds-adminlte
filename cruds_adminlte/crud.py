@@ -24,7 +24,6 @@ from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 
 
-
 class CRUDMixin(object):
 
     def get_template_names(self):
@@ -104,27 +103,27 @@ class CRUDMixin(object):
 
         context['crud_perms'] = available_perms
         context['template_father'] = self.template_father
-        
+
         context.update(self.context_rel)
-        context['getparams']=self.getparams
+        context['getparams'] = self.getparams
         return context
 
     def dispatch(self, request, *args, **kwargs):
         self.related_fields = self.related_fields or []
         self.context_rel = {}
-        getparams=[]
-        self.getparams=''
+        getparams = []
+        self.getparams = ''
         for related in self.related_fields:
             if self.request.GET.get(related, False) is not False:
-                Classrelated = utils.get_related_class_field(self.model, related)
-                self.context_rel[related] =  get_object_or_404(Classrelated, 
-                                        pk=self.request.GET.get(related, '0')
-                                             )
-                getparams.append("%s=%s" %( related, 
-                                           str(self.context_rel[related].pk)))
-           
+                Classrelated = utils.get_related_class_field(
+                    self.model, related)
+                self.context_rel[related] = get_object_or_404(
+                    Classrelated, pk=self.request.GET.get(related, '0'))
+                getparams.append("%s=%s" % (
+                    related, str(self.context_rel[related].pk)))
+
         if getparams:
-            self.getparams="?"+"&".join(getparams)
+            self.getparams = "?" + "&".join(getparams)
         for perm in self.perms:
             if not request.user.has_perm(perm):
                 return HttpResponseForbidden()
@@ -315,12 +314,13 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
+
             def form_valid(self, form):
                 if not self.related_fields:
                     return super(OCreateView, self).form_valid(form)
-                
+
                 self.object = form.save(commit=False)
-                for  key, value in self.context_rel.items():
+                for key, value in self.context_rel.items():
                     setattr(self.object, key, value)
                 self.object.save()
                 return HttpResponseRedirect(self.get_success_url())
@@ -367,13 +367,13 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
-            
+
             def form_valid(self, form):
                 if not self.related_fields:
-                    return super( OEditView, self).form_valid(form)
-                
+                    return super(OEditView, self).form_valid(form)
+
                 self.object = form.save(commit=False)
-                for  key, value in self.context_rel.items():
+                for key, value in self.context_rel.items():
                     setattr(self.object, key, value)
                 self.object.save()
                 return HttpResponseRedirect(self.get_success_url())
@@ -381,7 +381,7 @@ class CRUDView(object):
             def get_success_url(self):
                 url = super(OEditView, self).get_success_url()
                 return url + self.getparams
-            
+
         return OEditView
 
     def get_list_view_class(self):
@@ -426,7 +426,7 @@ class CRUDView(object):
                     if sfilter is not None:
                         query = query.filter(sfilter)
                 if self.related_fields:
-                    query= query.filter(**self.context_rel)
+                    query = query.filter(**self.context_rel)
                 return query
 
         return OListView
@@ -446,11 +446,11 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
-            
+
             def get_success_url(self):
                 url = super(ODeleteView, self).get_success_url()
                 return url + self.getparams
-            
+
         return ODeleteView
 
 #  INITIALIZERS
