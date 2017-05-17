@@ -588,8 +588,11 @@ class CRUDView(object):
     def get_urls(self):
 
         pre = ""
-        if self.cruds_url:
-            pre = "%s/" % self.cruds_url
+        try:
+            if self.cruds_url:
+                pre = "%s/" % self.cruds_url
+        except AttributeError:
+            pre = ""
         base_name = "%s%s/%s" % (pre, self.model._meta.app_label,
                                  self.model.__name__.lower())
         myurls = []

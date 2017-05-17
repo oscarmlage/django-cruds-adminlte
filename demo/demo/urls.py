@@ -54,8 +54,9 @@ custom_forms = {
 }
 
 urlpatterns += crud_for_app('testapp', login_required=True,
-                            check_perms=True, modelforms=custom_forms)
-urlpatterns += crud_for_app('auth')
+                            check_perms=True, modelforms=custom_forms,
+                            cruds_url='lte')
+urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
 if settings.DEBUG:
     import debug_toolbar
