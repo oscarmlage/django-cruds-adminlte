@@ -82,6 +82,8 @@ Online Resources
 
 * `Code repository`_
 * `Documentation`_
+* `Pypi`_
+* `DjangoPackages`_
 * For reporting a bug use `GitHub Issues`_
 
 
@@ -115,5 +117,7 @@ Screenshots
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
+.. _`Pypi`: http://django-cruds-adminlte.readthedocs.io/
 .. _`GitHub Issues`: https://github.com/oscarmlage/django-cruds-adminlte/issues/
+.. _`DjangoPackages`: https://djangopackages.org/packages/p/cruds/
 
