@@ -117,7 +117,7 @@ Screenshots
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
-.. _`Pypi`: http://django-cruds-adminlte.readthedocs.io/
+.. _`Pypi`: https://pypi.python.org/pypi/django-cruds-adminlte/
 .. _`GitHub Issues`: https://github.com/oscarmlage/django-cruds-adminlte/issues/
 .. _`DjangoPackages`: https://djangopackages.org/packages/p/cruds/
 
