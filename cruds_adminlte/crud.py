@@ -587,8 +587,11 @@ class CRUDView(object):
 
     def get_urls(self):
 
-        base_name = "%s/%s" % (self.model._meta.app_label,
-                               self.model.__name__.lower())
+        pre = ""
+        if self.cruds_url:
+            pre = "%s/" % self.cruds_url
+        base_name = "%s%s/%s" % (pre, self.model._meta.app_label,
+                                 self.model.__name__.lower())
         myurls = []
         if 'list' in self.views_available:
             myurls.append(url("^%s/list$" % (base_name,),

@@ -10,7 +10,7 @@ from .crud import CRUDView
 def crud_for_model(model, urlprefix=None, namespace=None,
                    login_required=False, check_perms=False,
                    add_form=None,
-                   update_form=None, views=None):
+                   update_form=None, views=None, cruds_url=None):
     """
     Returns list of ``url`` items to CRUD a model.
     """
@@ -20,6 +20,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
     mycheck_perms = check_perms
     myadd_form = add_form
     myupdate_form = update_form
+    mycruds_url = cruds_url
 
     class NOCLASS(CRUDView):
         model = mymodel
@@ -30,6 +31,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
         update_form = myupdate_form
         add_form = myadd_form
         views_available = views
+        cruds_url = mycruds_url
 
     nc = NOCLASS()
     return nc.get_urls()
@@ -37,7 +39,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
 
 def crud_for_app(app_label, urlprefix=None, namespace=None,
                  login_required=False, check_perms=False,
-                 modelforms={}, views=None):
+                 modelforms={}, views=None, cruds_url=None):
     """
     Returns list of ``url`` items to CRUD an app.
     """
@@ -59,5 +61,6 @@ def crud_for_app(app_label, urlprefix=None, namespace=None,
                                namespace, login_required, check_perms,
                                add_form=add_form,
                                update_form=update_form,
-                               views=views)
+                               views=views,
+                               cruds_url=cruds_url)
     return urls
