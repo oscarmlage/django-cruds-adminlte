@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="box-body">
-                    <table id="datatable" class="table table-bordered table-hover">
+                    <table id="datatable" class="table table-responsive table-bordered table-hover">
                     {% if object_list %}
                         <thead>
                             {% block thead %}
@@ -65,7 +65,7 @@
                               </td>
                               {% endfor %}
                               <td>
-                                {% block actions%}
+                                {% block actions %}
                                   {% crud_url object "detail" namespace as url %}
                                     {% if url and 'detail' in views_available and crud_perms.detail %}
                                     <a href="{{ url }}{{getparams}}" class="btn btn-success">{% trans "Show" %}</a>
@@ -90,6 +90,25 @@
                     {% endif %}
                     </table>
                 </div>
+                {% if is_paginated %}
+                <div class="col-lg-12">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="paginate_button">
+                            <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+                        </li>
+                    {% endif %}
+                        <li class="paginate_button">
+                            <span>{% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}.</span>
+                        </li>
+                    {% if page_obj.has_next %}
+                        <li class="paginate_button">
+                            <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+                        </li>
+                    {% endif %}
+                </ul>
+                </div>
+                {% endif %}
                 <div class="box-footer"></div>
             </div>
         </div>

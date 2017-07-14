@@ -50,6 +50,8 @@ def get_fields(model, include=None):
     else:
         selected = [field for field in info.fields if field.editable]
     for field in selected:
+        if field.__class__.__name__ == 'ManyToOneRel':
+            field.verbose_name = field.related_name
         fields[field.name] = [
             field.verbose_name,
             model._meta.get_field(field.name).get_internal_type]
