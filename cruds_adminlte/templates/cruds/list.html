@@ -38,8 +38,35 @@
                         </form>
                     </div>
                     {% endif %}
-                  </div>
-                </div>
+                    </div>
+                    
+                    
+                    {% if filters %}
+                    
+                    
+ <aside class="control-sidebar control-sidebar-light">
+                     <form action="" method="get">
+                    <table class="table">
+                    	{% for filter in filters %}
+                    		{{filter.render }}
+                    	{% endfor %}
+                    </div></div>
+                    {% endif%}
+        			</table>
+        			<input type="submit" class="btn btn-info" />
+                    </form>
+ 
+      </aside>
+
+      <div class="control-sidebar-bg"></div>
+                    
+                    
+                    <div class="row">
+                    <div class="col-lg-6">
+                    
+                    <button class="btn btn-default" data-toggle="control-sidebar">{% trans 'Filter objects'%}</button>
+
+                </div></div>
 
                 <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">

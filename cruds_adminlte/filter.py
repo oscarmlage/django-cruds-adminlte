@@ -1,6 +1,28 @@
 from django.contrib import admin
+import collections
+import six
+from django.core.exceptions import ImproperlyConfigured, FieldDoesNotExist
+from django.forms.models import modelform_factory
+from django.forms.forms import Form
 
-class FormFilter(admin.ListFilter):
+
+class CRUDFilter(object):
+
+    def __init__(self, model, field):
+        self.model = model
+
+        if isinstance(field, six.string_types):
+            self.field = field
+            self.field_manager = self._find_filter_class(self.field)
+        if isinstance(field, collections.Iterable):
+            self.field = field[0]
+            self.field_manager = field[0]
+
+    def _find_filter_class(self, field):
+        pass
+
+
+class FormFilterAdmin(admin.ListFilter):
     template = "filter/forms.html"
     form = None
     form_instance = None
@@ -99,3 +121,61 @@ class FormFilter(admin.ListFilter):
     def queryset(self, request, queryset):
         query_filters = self.get_filters()
         return queryset.filter(**query_filters)
+
+
+class FormFilter:
+    form = None
+
+    def __init__(self, request, form=None):
+        self.form = form
+        self.request = request
+        self.form_instance = form(request.GET)
+
+        for key in self.form_instance.fields:
+            print(key, self.form_instance.fields[key])
+            self.form_instance.fields[key].required = False
+
+    def get_cleaned_fields(self):
+        values = {}
+        self.form_instance.is_valid()
+        for value in self.form_instance.cleaned_data:
+            if value:
+                values[value] = self.form_instance.cleaned_data[value]
+        return values
+
+    def render(self):
+        form = self.form(self.request.GET)
+        form._errors = {}
+        return form
+
+    def get_filter(self, queryset):
+        clean_value = self.get_cleaned_fields()
+        if clean_value:
+            queryset = queryset.filter(**clean_value)
+        return queryset
+
+
+def get_filters(model, list_filter, request):
+    fields = []
+    forms = []
+    for field in list_filter:
+        if type(field) in [
+            six.string_types,
+            six.text_type,
+            six.binary_type
+
+        ]:
+            # this is a model field
+            try:
+                model._meta.get_field(field)
+                fields.append(field)
+            except FieldDoesNotExist:
+                pass
+        else:
+            forms.append(field(request))
+
+    if fields:
+        form = modelform_factory(model, fields=fields)
+        forms.insert(0, FormFilter(request, form=form))
+
+    return forms

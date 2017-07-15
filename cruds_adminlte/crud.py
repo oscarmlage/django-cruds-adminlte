@@ -22,7 +22,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
-
+from cruds_adminlte.filter import get_filters
 
 
 class CRUDMixin(object):
@@ -35,17 +35,35 @@ class CRUDMixin(object):
         dev.append(self.template_name)
         return dev
 
-    def get_context_data(self, **kwargs):
-        """
-        Adds available urls and names.
-        """
+    def get_search_fields(self, context):
+        try:
+            context['search'] = self.search_fields
+        except AttributeError:
+            context['search'] = False
+        if self.view_type == 'list' and 'q' in self.request.GET:
+            context['q'] = self.request.GET.get('q', '')
 
-        context = super(CRUDMixin, self).get_context_data(**kwargs)
-        context.update({
-            'model_verbose_name': self.model._meta.verbose_name,
-            'model_verbose_name_plural': self.model._meta.verbose_name_plural,
-            'namespace': self.namespace
-        })
+    def get_filters(self, context):
+        if self.view_type == 'list' and self.list_filter:
+            filters = get_filters(self.model, self.list_filter, self.request)
+            context['filters'] = filters
+
+    def get_check_perms(self, context):
+        user = self.request.user
+        available_perms = {}
+        for perm in self.all_perms:
+            if self.check_perms:
+                if perm in self.views_available:
+                    available_perms[perm] = all(
+                        [user.has_perm(x) for x in self.all_perms[perm]])
+
+                else:
+                    available_perms[perm] = False
+            else:
+                available_perms[perm] = True
+        context['crud_perms'] = available_perms
+
+    def get_urls_and_fields(self, context):
         include = None
         if hasattr(self, 'display_fields') and self.view_type == 'detail':
             include = getattr(self, 'display_fields')
@@ -75,55 +93,52 @@ class CRUDMixin(object):
                 url = None
             context['url_%s' % action] = url
 
-        try:
-            context['search'] = self.search_fields
-        except AttributeError:
-            context['search'] = False
-        if self.view_type == 'list' and 'q' in self.request.GET:
-            context['q'] = self.request.GET.get('q', '')
+    def get_context_data(self, **kwargs):
+        """
+        Adds available urls and names.
+        """
+
+        context = super(CRUDMixin, self).get_context_data(**kwargs)
+        context.update({
+            'model_verbose_name': self.model._meta.verbose_name,
+            'model_verbose_name_plural': self.model._meta.verbose_name_plural,
+            'namespace': self.namespace
+        })
 
         if self.view_type in ['update', 'detail']:
             context['inlines'] = self.inlines
 
         if 'object' not in context:
             context['object'] = self.model
+
+        self.get_urls_and_fields(context)
+        self.get_check_perms(context)
+        self.get_search_fields(context)
+        self.get_filters(context)
+
         context['views_available'] = self.views_available
-
-        user = self.request.user
-        available_perms = {}
-        for perm in self.all_perms:
-            if self.check_perms:
-                if perm in self.views_available:
-                    available_perms[perm] = all(
-                        [user.has_perm(x) for x in self.all_perms[perm]])
-
-                else:
-                    available_perms[perm] = False
-            else:
-                available_perms[perm] = True
-
-        context['crud_perms'] = available_perms
         context['template_father'] = self.template_father
-        
+
         context.update(self.context_rel)
-        context['getparams']=self.getparams
+        context['getparams'] = self.getparams
         return context
 
     def dispatch(self, request, *args, **kwargs):
         self.related_fields = self.related_fields or []
         self.context_rel = {}
-        getparams=[]
-        self.getparams=''
+        getparams = []
+        self.getparams = ''
         for related in self.related_fields:
             Classrelated = utils.get_related_class_field(self.model, related)
-            self.context_rel[related] =  get_object_or_404(Classrelated, 
-                                    pk=self.request.GET.get(related, '0')
-                                         )
-            getparams.append("%s=%s" %( related, 
-                                       str(self.context_rel[related].pk)))
-           
+            self.context_rel[related] = get_object_or_404(Classrelated,
+                                                          pk=self.request.GET.get(
+                                                              related, '0')
+                                                          )
+            getparams.append("%s=%s" % (related,
+                                        str(self.context_rel[related].pk)))
+
         if getparams:
-            self.getparams="?"+"&".join(getparams)
+            self.getparams = "?" + "&".join(getparams)
         for perm in self.perms:
             if not request.user.has_perm(perm):
                 return HttpResponseForbidden()
@@ -261,6 +276,7 @@ class CRUDView(object):
     search_fields = None
     split_space_search = False
     related_fields = None
+    list_filter = None
 
     """
     It's obligatory this structure
@@ -314,12 +330,13 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
+
             def form_valid(self, form):
                 if not self.related_fields:
                     return super(OCreateView, self).form_valid(form)
-                
+
                 self.object = form.save(commit=False)
-                for  key, value in self.context_rel.items():
+                for key, value in self.context_rel.items():
                     setattr(self.object, key, value)
                 self.object.save()
                 return HttpResponseRedirect(self.get_success_url())
@@ -366,13 +383,13 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
-            
+
             def form_valid(self, form):
                 if not self.related_fields:
-                    return super( OEditView, self).form_valid(form)
-                
+                    return super(OEditView, self).form_valid(form)
+
                 self.object = form.save(commit=False)
-                for  key, value in self.context_rel.items():
+                for key, value in self.context_rel.items():
                     setattr(self.object, key, value)
                 self.object.save()
                 return HttpResponseRedirect(self.get_success_url())
@@ -380,7 +397,7 @@ class CRUDView(object):
             def get_success_url(self):
                 url = super(OEditView, self).get_success_url()
                 return url + self.getparams
-            
+
         return OEditView
 
     def get_list_view_class(self):
@@ -402,13 +419,20 @@ class CRUDView(object):
             search_fields = self.search_fields
             split_space_search = self.split_space_search
             related_fields = self.related_fields
+            list_filter = self.list_filter
 
-            def get_queryset(self):
+            def get_listfilter_queryset(self, queryset):
+                if self.list_filter:
+                    filters = get_filters(
+                        self.model, self.list_filter, self.request)
+                    for filter in filters:
+                        queryset = filter.get_filter(queryset)
+                return queryset
 
+            def search_queryset(self, query):
                 if self.split_space_search is True:
                     self.split_space_search = ' '
 
-                query = super(OListView, self).get_queryset()
                 if self.search_fields and 'q' in self.request.GET:
                     q = self.request.GET.get('q')
                     if self.split_space_search:
@@ -425,8 +449,15 @@ class CRUDView(object):
                     if sfilter is not None:
                         query = query.filter(sfilter)
                 if self.related_fields:
-                    query= query.filter(**self.context_rel)
+                    query = query.filter(**self.context_rel)
+
                 return query
+
+            def get_queryset(self):
+                queryset = super(OListView, self).get_queryset()
+                queryset = self.search_queryset(queryset)
+                queryset = self.get_listfilter_queryset(queryset)
+                return queryset
 
         return OListView
 
@@ -445,11 +476,11 @@ class CRUDView(object):
             check_perms = self.check_perms
             template_father = self.template_father
             related_fields = self.related_fields
-            
+
             def get_success_url(self):
                 url = super(ODeleteView, self).get_success_url()
                 return url + self.getparams
-            
+
         return ODeleteView
 
 #  INITIALIZERS

@@ -61,6 +61,7 @@ class InvoiceCRUD(CRUDView):
                       'invoice_number', 'description1', 'description2',
                       'subtotal', 'subtotal_iva', 'subtotal_retentions',
                       'total']
+    list_filter = ['customer', 'invoice_number', 'sent', 'paid', 'date']
     inlines = [Lines_AjaxCRUD]
     views_available = ['create', 'list', 'detail']
     search_fields = ['description1__icontains']
