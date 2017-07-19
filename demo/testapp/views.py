@@ -66,3 +66,6 @@ class InvoiceCRUD(CRUDView):
     views_available = ['create', 'list', 'detail']
     search_fields = ['description1__icontains']
     split_space_search = True
+    paginate_by = 1
+    paginate_position = 'Both'
+    paginate_template = 'cruds/pagination/enumeration.html'
