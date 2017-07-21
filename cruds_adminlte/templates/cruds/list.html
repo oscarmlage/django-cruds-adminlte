@@ -43,8 +43,8 @@
 
                 <div class="box-body">
                 {% if paginate_position == 'Up' or paginate_position == 'Both' %}
-				{% include paginate_template %}
-				{% endif %}
+                    {% include paginate_template %}
+                {% endif %}
                     <table id="datatable" class="table table-responsive table-bordered table-hover">
                     {% if object_list %}
                         <thead>
@@ -94,8 +94,8 @@
                     </table>
                 </div>
                 {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
-				{% include paginate_template %}
-				{% endif %}
+                  {% include paginate_template %}
+                {% endif %}
                 <div class="box-footer"></div>
             </div>
         </div>

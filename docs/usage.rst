@@ -115,7 +115,8 @@ performance, if split_space_search is True then ' ' is used
 Pagination
 ---------------
 
-Pagination is supported for list view using **paginate_by** and **paginate_template**, the default pagination value is:
+Pagination is supported for list view using **paginate_by** and
+**paginate_template**, the default pagination value is:
 
 * paginate_by = 10
 * paginate_template = 'cruds/pagination/prev_next.html'
