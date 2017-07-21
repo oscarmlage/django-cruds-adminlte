@@ -2,6 +2,19 @@
 Changelog
 =========
 
+0.0.7
+-----
+
+* ``cb61f46`` (HEAD -> master, origin/master, origin/HEAD) PEP8 Cosmetics
+* ``ac5d979`` Merge pull request #39 from luisza/pagination
+* ``309d37e`` Pagination functionality with support of numeration and prev_next
+* ``160550b`` Partially fixes #23, pagination now is set (hardcoded) to 10 + added pagination links in list template
+* ``76d8245`` Fixes #34, corrections to the README
+* ``80931a8`` Fixed pypi url
+* ``33350d3`` Adding online resources to the documentation
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7777777...master
+
 0.0.6
 -----
 
