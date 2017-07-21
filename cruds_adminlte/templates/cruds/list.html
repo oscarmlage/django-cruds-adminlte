@@ -42,6 +42,9 @@
                 </div>
 
                 <div class="box-body">
+                {% if paginate_position == 'Up' or paginate_position == 'Both' %}
+				{% include paginate_template %}
+				{% endif %}
                     <table id="datatable" class="table table-responsive table-bordered table-hover">
                     {% if object_list %}
                         <thead>
@@ -90,25 +93,9 @@
                     {% endif %}
                     </table>
                 </div>
-                {% if is_paginated %}
-                <div class="col-lg-12">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li class="paginate_button">
-                            <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
-                        </li>
-                    {% endif %}
-                        <li class="paginate_button">
-                            <span>{% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}.</span>
-                        </li>
-                    {% if page_obj.has_next %}
-                        <li class="paginate_button">
-                            <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
-                        </li>
-                    {% endif %}
-                </ul>
-                </div>
-                {% endif %}
+                {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
+				{% include paginate_template %}
+				{% endif %}
                 <div class="box-footer"></div>
             </div>
         </div>

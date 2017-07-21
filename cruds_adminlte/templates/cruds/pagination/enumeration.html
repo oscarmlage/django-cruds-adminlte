@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% if is_paginated %}
+<div class="col-lg-12">
+<ul class="pagination">
+
+{% for npage in paginator.page_range%}
+ <li class="paginate_button {% if npage == page_obj.number %} disabled {% else %} active {%endif%}">
+<a href="?page={{ npage }}"> {{ npage }} </a>
+</li>
+{% endfor %}
+
+</ul>
+</div>
+{% endif %}

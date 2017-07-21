@@ -101,6 +101,9 @@ class CRUDMixin(object):
             else:
                 available_perms[perm] = True
 
+        if self.view_type == 'list':
+            context['paginate_template'] = self.paginate_template
+            context['paginate_position'] = self.paginate_position
         context['crud_perms'] = available_perms
         context['template_father'] = self.template_father
 
@@ -251,6 +254,8 @@ class CRUDView(object):
     check_login = True
     check_perms = True
     paginate_by = 10
+    paginate_template = 'cruds/pagination/prev_next.html'
+    paginate_position = 'bottom'
     update_form = None
     add_form = None
     display_fields = None
@@ -403,6 +408,8 @@ class CRUDView(object):
             search_fields = self.search_fields
             split_space_search = self.split_space_search
             related_fields = self.related_fields
+            paginate_template = self.paginate_template
+            paginate_position = self.paginate_position
 
             def get_queryset(self):
 

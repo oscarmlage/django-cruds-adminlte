@@ -112,6 +112,26 @@ performance, if split_space_search is True then ' ' is used
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
     :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
 
+Pagination
+---------------
+
+Pagination is supported for list view using **paginate_by** and **paginate_template**, the default pagination value is:
+
+* paginate_by = 10
+* paginate_template = 'cruds/pagination/prev_next.html'
+* paginate_position = 'Bottom'
+
+For example paginate custumers using enumeration paginate
+
+.. code:: python
+
+    class Myclass(CRUDView):
+        model = Customer
+        paginate_by = 5
+        paginate_template = 'cruds/pagination/enumeration.html'
+        paginate_position = 'Both'
+
+The **paginate_position** options are *Bottom*, *Both*, *Up*
 
 Overwrite forms
 -------------------
