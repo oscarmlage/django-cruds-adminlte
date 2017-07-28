@@ -42,10 +42,20 @@
                     
                     
                     {% if filters %}
-                    
-                    
- <aside class="control-sidebar control-sidebar-light">
-                     <form action="" method="get">
+<br>
+<div class="box box-warning box-solid">
+            <div class="box-header with-border">
+              <h3 class="box-title">{% trans 'Filters' %}</h3>
+
+              <div class="box-tools pull-right">
+                <button data-widget="collapse" class="btn btn-box-tool" type="button"><i class="fa fa-minus"></i>
+                </button>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body" style="">
+              <form action="" method="get">
                     <table class="table">
                     	{% for filter in filters %}
                     		{{filter.render }}
@@ -53,22 +63,15 @@
                     </div></div>
                     {% endif%}
         			</table>
-        			<input type="submit" class="btn btn-info" />
+        			<input type="submit" class="btn btn-info" value="{% trans 'filter' %}" />
+        			<input type="reset" class="btn btn-warning" value="{% trans 'clean filter' %}" />
                     </form>
- 
-      </aside>
-
-      <div class="control-sidebar-bg"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>                    
                     
-                    
-                    <div class="row">
-                    <div class="col-lg-6">
-                    
-                    <button class="btn btn-default" data-toggle="control-sidebar">{% trans 'Filter objects'%}</button>
-
-                </div></div>
-
-                <div class="box-body">
+                   
+                  <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
                     {% if object_list %}
                         <thead>
