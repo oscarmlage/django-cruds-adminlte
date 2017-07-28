@@ -117,6 +117,10 @@ class CRUDMixin(object):
         self.get_filters(context)
 
         context['views_available'] = self.views_available
+        if self.view_type == 'list':
+            context['paginate_template'] = self.paginate_template
+            context['paginate_position'] = self.paginate_position
+
         context['template_father'] = self.template_father
 
         context.update(self.context_rel)
@@ -129,14 +133,13 @@ class CRUDMixin(object):
         getparams = []
         self.getparams = ''
         for related in self.related_fields:
-            Classrelated = utils.get_related_class_field(self.model, related)
-            self.context_rel[related] = get_object_or_404(Classrelated,
-                                                          pk=self.request.GET.get(
-                                                              related, '0')
-                                                          )
-            getparams.append("%s=%s" % (related,
-                                        str(self.context_rel[related].pk)))
-
+            if self.request.GET.get(related, False) is not False:
+                Classrelated = utils.get_related_class_field(
+                    self.model, related)
+                self.context_rel[related] = get_object_or_404(
+                    Classrelated, pk=self.request.GET.get(related, '0'))
+                getparams.append("%s=%s" % (
+                    related, str(self.context_rel[related].pk)))
         if getparams:
             self.getparams = "?" + "&".join(getparams)
         for perm in self.perms:
@@ -266,6 +269,8 @@ class CRUDView(object):
     check_login = True
     check_perms = True
     paginate_by = 10
+    paginate_template = 'cruds/pagination/prev_next.html'
+    paginate_position = 'bottom'
     update_form = None
     add_form = None
     display_fields = None
@@ -419,6 +424,8 @@ class CRUDView(object):
             search_fields = self.search_fields
             split_space_search = self.split_space_search
             related_fields = self.related_fields
+            paginate_template = self.paginate_template
+            paginate_position = self.paginate_position
             list_filter = self.list_filter
 
             def get_listfilter_queryset(self, queryset):
@@ -450,7 +457,6 @@ class CRUDView(object):
                         query = query.filter(sfilter)
                 if self.related_fields:
                     query = query.filter(**self.context_rel)
-
                 return query
 
             def get_queryset(self):
@@ -617,8 +623,14 @@ class CRUDView(object):
 
     def get_urls(self):
 
-        base_name = "%s/%s" % (self.model._meta.app_label,
-                               self.model.__name__.lower())
+        pre = ""
+        try:
+            if self.cruds_url:
+                pre = "%s/" % self.cruds_url
+        except AttributeError:
+            pre = ""
+        base_name = "%s%s/%s" % (pre, self.model._meta.app_label,
+                                 self.model.__name__.lower())
         myurls = []
         if 'list' in self.views_available:
             myurls.append(url("^%s/list$" % (base_name,),

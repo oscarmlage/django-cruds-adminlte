@@ -46,9 +46,9 @@
 <div class="box box-warning box-solid">
             <div class="box-header with-border">
               <h3 class="box-title">{% trans 'Filters' %}</h3>
-
               <div class="box-tools pull-right">
-                <button data-widget="collapse" class="btn btn-box-tool" type="button"><i class="fa fa-minus"></i>
+                <button data-widget="collapse" class="btn btn-box-tool" type="button">
+                <i class="fa fa-minus"></i>
                 </button>
               </div>
               <!-- /.box-tools -->
@@ -73,6 +73,11 @@
                    
                   <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
+                <div class="box-body">
+                {% if paginate_position == 'Up' or paginate_position == 'Both' %}
+                    {% include paginate_template %}
+                {% endif %}
+                    <table id="datatable" class="table table-responsive table-bordered table-hover">
                     {% if object_list %}
                         <thead>
                             {% block thead %}
@@ -95,7 +100,7 @@
                               </td>
                               {% endfor %}
                               <td>
-                                {% block actions%}
+                                {% block actions %}
                                   {% crud_url object "detail" namespace as url %}
                                     {% if url and 'detail' in views_available and crud_perms.detail %}
                                     <a href="{{ url }}{{getparams}}" class="btn btn-success">{% trans "Show" %}</a>
@@ -120,6 +125,9 @@
                     {% endif %}
                     </table>
                 </div>
+                {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
+                  {% include paginate_template %}
+                {% endif %}
                 <div class="box-footer"></div>
             </div>
         </div>

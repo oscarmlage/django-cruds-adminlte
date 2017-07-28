@@ -2,6 +2,34 @@
 Changelog
 =========
 
+0.0.7
+-----
+
+* ``cb61f46`` (HEAD -> master, origin/master, origin/HEAD) PEP8 Cosmetics
+* ``ac5d979`` Merge pull request #39 from luisza/pagination
+* ``309d37e`` Pagination functionality with support of numeration and prev_next
+* ``160550b`` Partially fixes #23, pagination now is set (hardcoded) to 10 + added pagination links in list template
+* ``76d8245`` Fixes #34, corrections to the README
+* ``80931a8`` Fixed pypi url
+* ``33350d3`` Adding online resources to the documentation
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7777777...master
+
+0.0.6
+-----
+
+* ``2afad55`` (HEAD -> master, origin/master, origin/HEAD) Fixes an error related with #32 + Updates the demo
+* ``5a63520`` Added feature: common cruds url + fixes #32
+* ``57b4ea6`` Adding new column types
+* ``fa54e77`` PEP8 Cosmetics
+* ``4b458f9`` Fixed: adds the filter only if there is request.GET.get(related), if not it works as before
+* ``6af9252`` Merge pull request #31 from luisza/relatedCrud
+* ``5932da4`` Related fields for foreignkeys
+* ``a5596f2`` Adding relad field function
+* ``908c055`` Fixes CHANGELOG links
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.6...master
+
 0.0.5
 ------
 
@@ -12,7 +40,7 @@ Changelog
 * ``6dd38ff`` - Search feature
 * ``4a64ca0`` - Typo fixed, thanks to Matej Vadnjal (@matejv) for noticing
 
-https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.5...master
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.5...0.0.6
 
 0.0.4
 ------

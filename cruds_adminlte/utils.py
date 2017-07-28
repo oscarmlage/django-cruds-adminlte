@@ -50,13 +50,16 @@ def get_fields(model, include=None):
     else:
         selected = [field for field in info.fields if field.editable]
     for field in selected:
+        if field.__class__.__name__ == 'ManyToOneRel':
+            field.verbose_name = field.related_name
         fields[field.name] = [
             field.verbose_name,
             model._meta.get_field(field.name).get_internal_type]
     return fields
 
 
-def crud_url(instance, action, prefix=None, namespace=None, additional_kwargs=None):
+def crud_url(instance, action, prefix=None, namespace=None,
+             additional_kwargs=None):
     """
     Shortcut function returns url for instance and action passing `pk` kwarg.
 
@@ -75,6 +78,7 @@ def crud_url(instance, action, prefix=None, namespace=None, additional_kwargs=No
     if namespace:
         url = namespace + ':' + url
     return reverse(url, kwargs=additional_kwargs)
+
 
 def get_related_class_field(obj, field):
     objfield = obj._meta.get_field(field)

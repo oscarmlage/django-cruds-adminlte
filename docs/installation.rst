@@ -165,3 +165,37 @@ It is also possible to add CRUD for one model: ::
     from django.apps.apps import get_model
     from cruds_adminlte.urls import crud_for_model
     urlpatterns += crud_for_model(get_model('testapp', 'Author'))
+
+cruds_for_app
+=============
+
+Parameters you can set in `cruds_for_app` method call:
+
+* login_required (boolean): Check if the login is required, need to activate
+  'login' and 'logout' urls, for example: ::
+    url(r'^accounts/login/$', auth_views.login, name='login'),
+    url(r'^logout/$', auth_views.logout, name='logout'),
+* check_perms (boolean): Check if the user has the proper permissions.
+* cruds_url (string): Put all the generated cruds in a common url, instead of
+  'app_one/model/list' and 'app_two/model/list' we can set it to 'myadmin' and
+  then the urls will be 'myadmin/app_one/model/list' and
+  'myadmin/app_two/model/list'.
+* modelforms: Load custom forms for the cruds of the model.
+
+Different samples: ::
+
+    urlpatterns += crud_for_app('app_one', login_required=True,
+                                check_perms=True, cruds_url='myadmin')
+    urlpatterns += crud_for_app('app_two', login_required=False,
+                                check_perms=True, cruds_url='myadmin')
+
+    from testapp.forms import CustomerForm, InvoiceForm
+    custom_forms = {
+        'add_customer': CustomerForm,
+        'update_customer': CustomerForm,
+        'add_invoice': InvoiceForm,
+        'update_invoice': InvoiceForm,
+    }
+    urlpatterns += crud_for_app('app_three', login_required=True,
+                                check_perms=True, cruds_url='myadmin',
+                                modelforms=custom_forms)

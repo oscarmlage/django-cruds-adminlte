@@ -51,6 +51,7 @@ class InvoiceCRUD(CRUDView):
     check_perms = False
     add_form = InvoiceForm
     update_form = InvoiceForm
+    related_fields = ['customer']
     fields = ['customer', 'registered', 'sent', 'paid', 'date',
               'invoice_number', 'description1', 'description2', 'subtotal',
               'subtotal_iva', 'subtotal_retentions', 'total']
@@ -66,3 +67,6 @@ class InvoiceCRUD(CRUDView):
     views_available = ['create', 'list', 'detail']
     search_fields = ['description1__icontains']
     split_space_search = True
+    paginate_by = 1
+    paginate_position = 'Both'
+    paginate_template = 'cruds/pagination/enumeration.html'

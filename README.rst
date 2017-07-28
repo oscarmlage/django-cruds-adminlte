@@ -33,7 +33,10 @@ impressed with what he could do just configuring a bit the models and the forms:
 * Wrappable fields: You can define the wrapper of the label+input (col-6,
   col-12), so it's easy to place fields side-by-side or 3 in a row, etc...
   You can do the same with ``django-crispy-forms`` but I've seen no easy way to
-  integrate it on django's admin.
+  integrate it on django's admin. Note from `@spookylukey
+  <https://github.com/spookylukey>`_: There is a `really easy way
+  <https://docs.djangoproject.com/en/1.11/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets>`_ to put the fields
+  side-by-side in the django's contrib admin.
 * ``Select2`` for selects with fk, etc... I've tried
   ``django-select2`` + ``django-easy-select2`` with not too much luck (I'm sure
   it was my fault), didn't know ``django-autocomplete-light`` tbh.
@@ -82,6 +85,8 @@ Online Resources
 
 * `Code repository`_
 * `Documentation`_
+* `Pypi`_
+* `DjangoPackages`_
 * For reporting a bug use `GitHub Issues`_
 
 
@@ -115,5 +120,7 @@ Screenshots
 
 .. _`Code repository`: https://github.com/oscarmlage/django-cruds-adminlte
 .. _`Documentation`: http://django-cruds-adminlte.readthedocs.io/
+.. _`Pypi`: https://pypi.python.org/pypi/django-cruds-adminlte/
 .. _`GitHub Issues`: https://github.com/oscarmlage/django-cruds-adminlte/issues/
+.. _`DjangoPackages`: https://djangopackages.org/packages/p/cruds/
 
