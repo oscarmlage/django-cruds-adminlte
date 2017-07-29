@@ -133,11 +133,12 @@ class CRUDMixin(object):
         getparams = []
         self.getparams = ''
         for related in self.related_fields:
-            if self.request.GET.get(related, False) is not False:
+            pk = self.request.GET.get(related, '')
+            if pk:
                 Classrelated = utils.get_related_class_field(
                     self.model, related)
                 self.context_rel[related] = get_object_or_404(
-                    Classrelated, pk=self.request.GET.get(related, '0'))
+                    Classrelated, pk=pk)
                 getparams.append("%s=%s" % (
                     related, str(self.context_rel[related].pk)))
         if getparams:

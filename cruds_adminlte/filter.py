@@ -131,10 +131,6 @@ class FormFilter:
         self.request = request
         self.form_instance = form(request.GET)
 
-        for key in self.form_instance.fields:
-            print(key, self.form_instance.fields[key])
-            self.form_instance.fields[key].required = False
-
     def get_cleaned_fields(self):
         values = {}
         self.form_instance.is_valid()
@@ -145,6 +141,8 @@ class FormFilter:
 
     def render(self):
         form = self.form(self.request.GET)
+        for key in form.fields:
+            form.fields[key].required = False
         form._errors = {}
         return form
 
