@@ -36,15 +36,11 @@ Forms
 If you want to override a form with some other crispy features you can add to
 your testapp.urls the following::
 
-    urlpatterns = []
-    urlpatterns += [
-        url(r'author/new/$',
-            CRUDCreateView.as_view(model=Author, form_class=AuthorForm),
-            name='testapp_author_update'),
-        url(r'author/(?P<pk>\d+)/edit/$',
-            CRUDUpdateView.as_view(model=Author, form_class=AuthorForm),
-            name='testapp_customer_update'),
-    ]
+    from cruds_adminlte.urls import crud_for_model
+    urlpatterns += crud_for_model(Author, views=['create', 'update'], 
+        add_form=AuthorForm,  update_form=AuthorForm )
+
+
 
 And define the AuthorForm with tabs or any other crispy feature in your app::
 
