@@ -8,6 +8,8 @@ from cruds_adminlte.inline_crud import InlineAjaxCRUD
 from .models import Autor, Addresses, Line, Invoice
 from .forms import InvoiceForm, LineForm, AddressesForm
 from django.views.generic.base import TemplateView
+from django import forms
+from cruds_adminlte.filter import FormFilter
 
 
 class IndexView(TemplateView):
@@ -45,6 +47,14 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
     title = _("Lines")
 
 
+class LineForm(forms.Form):
+    line = forms.ModelMultipleChoiceField(queryset=Line.objects.all())
+
+
+class filterAddress(FormFilter):
+    form = LineForm
+
+
 class InvoiceCRUD(CRUDView):
     model = Invoice
     check_login = False
@@ -62,7 +72,8 @@ class InvoiceCRUD(CRUDView):
                       'invoice_number', 'description1', 'description2',
                       'subtotal', 'subtotal_iva', 'subtotal_retentions',
                       'total']
-    list_filter = ['customer', 'invoice_number', 'sent', 'paid', 'date']
+    list_filter = ['customer', 'invoice_number',
+                   'sent', 'paid', 'date', filterAddress]
     inlines = [Lines_AjaxCRUD]
     views_available = ['create', 'list', 'detail']
     search_fields = ['description1__icontains']

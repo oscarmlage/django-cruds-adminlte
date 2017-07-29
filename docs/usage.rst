@@ -112,6 +112,46 @@ performance, if split_space_search is True then ' ' is used
 .. image:: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
     :target: https://raw.githubusercontent.com/oscarmlage/django-cruds-adminlte/master/docs/images/cruds-search.png
 
+Filter content
+---------------
+
+.. warning:: 
+    Code preserve filter it's a complex task, and filter content with high grade of liberty is hard to do, so this is a experimental version.
+
+Use **list_filter** as list of model attributes or FormFilter objects like:
+
+.. code:: python
+
+    class Myclass(CRUDView):
+        model = Invoice
+        list_filter = ['invoice_number', 'sent', 'paid']
+
+Filter method is based on forms and filter query set, so we use different approch compared with django admin
+
+**FormFilter** is a special class used for filter content based on form.
+
+.. code:: python
+
+    from cruds_adminlte.filter import FormFilter
+    class LineForm(forms.Form):
+        line = forms.ModelMultipleChoiceField(queryset=Line.objects.all())
+
+    class LineFilter(FormFilter):
+        form = LineForm
+
+    class Myclass(CRUDView):
+        model = Invoice
+        list_filter = ['sent', 'paid', LineFilter]
+
+Magic.., not, just and good example of how to do a multiple value search based en a reverse foreignkey. 
+
+FormFilter has this public method:
+
+* **render():** return a form or your own html, has an instance of form in self.form_instance, and also has self.request. 
+* **get_filter(queryset):** filter your content here
+* **get_params(exclude):** clean the get parameters 
+
+
 Pagination
 ---------------
 
@@ -233,8 +273,9 @@ In views
 
 So with this you now have management of author's book.
 
-.. warning:: we provide all internal references but you need to create the
-first author to book list|create|update|detail|delete reference.
+.. warning:: 
+    we provide all internal references but you need to create the
+    first author to book list|create|update|detail|delete reference.
 
 
 Decorators
@@ -372,10 +413,8 @@ Basically works like CRUDView and support all cases described above.  Require
 this extra parameters
 
 1. `base_model` model used to refence the inline
-2. `inline_field` field used to update object, needs to be the same class
-that `base_model`
-3. `title` title of the inline (used to show separation betwen model fields
-and inline fields).
+2. `inline_field` field used to update object, needs to be the same class that `base_model`
+3. `title` title of the inline (used to show separation betwen model fields and inline fields).
 
 
 .. code:: python

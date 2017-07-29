@@ -9,9 +9,10 @@ class FormFilter:
     form = None
 
     def __init__(self, request, form=None):
-        self.form = form
+        if form:
+            self.form = form
         self.request = request
-        self.form_instance = form(request.GET)
+        self.form_instance = self.form(request.GET)
         for key in self.form_instance.fields:
             self.form_instance.fields[key].required = False
         self.form_instance.is_valid()
@@ -31,6 +32,7 @@ class FormFilter:
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
         if clean_value:
+            print(clean_value)
             queryset = queryset.filter(**clean_value)
         return queryset
 
