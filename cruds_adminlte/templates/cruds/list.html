@@ -43,12 +43,13 @@
                     
                     {% if filters %}
 <br>
-<div class="box box-warning box-solid">
+
+<div class="box box-warning collapsed-box">
             <div class="box-header with-border">
               <h3 class="box-title">{% trans 'Filters' %}</h3>
               <div class="box-tools pull-right">
-                <button data-widget="collapse" class="btn btn-box-tool" type="button">
-                <i class="fa fa-minus"></i>
+                <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
+                <i class="fa fa-plus"></i>
                 </button>
               </div>
               <!-- /.box-tools -->
@@ -61,15 +62,15 @@
                     		{{filter.render }}
                     	{% endfor %}
                     </div></div>
-                    {% endif%}
+
         			</table>
-        			<input type="submit" class="btn btn-info" value="{% trans 'filter' %}" />
-        			<input type="reset" class="btn btn-warning" value="{% trans 'clean filter' %}" />
+        			<input type="submit" class="btn btn-info" value="{% trans 'Filter' %}" />
+        			<a  class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
                     </form>
             </div>
             <!-- /.box-body -->
-          </div>                    
-                    
+</div>                    
+                                    {% endif%}
                    
                   <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
@@ -124,10 +125,13 @@
                       <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
                     {% endif %}
                     </table>
-                </div>
+                 
                 {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
                   {% include paginate_template %}
                 {% endif %}
+                 
+                </div>
+
                 <div class="box-footer"></div>
             </div>
         </div>

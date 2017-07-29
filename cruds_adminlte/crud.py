@@ -44,9 +44,19 @@ class CRUDMixin(object):
             context['q'] = self.request.GET.get('q', '')
 
     def get_filters(self, context):
+        filter_params = []
         if self.view_type == 'list' and self.list_filter:
             filters = get_filters(self.model, self.list_filter, self.request)
             context['filters'] = filters
+            for filter in filters:
+                param = filter.get_params(self.related_fields or [])
+                if param:
+                    filter_params += param
+
+        if filter_params:
+            if self.getparams:
+                self.getparams += "&"
+            self.getparams += "&".join(filter_params)
 
     def get_check_perms(self, context):
         user = self.request.user
@@ -124,7 +134,8 @@ class CRUDMixin(object):
         context['template_father'] = self.template_father
 
         context.update(self.context_rel)
-        context['getparams'] = self.getparams
+        context['getparams'] = "?" + self.getparams
+        context['getparams'] += "&" if self.getparams else ""
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -142,7 +153,7 @@ class CRUDMixin(object):
                 getparams.append("%s=%s" % (
                     related, str(self.context_rel[related].pk)))
         if getparams:
-            self.getparams = "?" + "&".join(getparams)
+            self.getparams = "&".join(getparams)
         for perm in self.perms:
             if not request.user.has_perm(perm):
                 return HttpResponseForbidden()

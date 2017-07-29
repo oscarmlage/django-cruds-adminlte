@@ -6,7 +6,7 @@
 
 {% for npage in paginator.page_range %}
  <li class="paginate_button {% if npage == page_obj.number %} disabled {% else %} active {%endif%}">
-<a href="?page={{ npage }}"> {{ npage }} </a>
+<a href="{{getparams}}page={{ npage }}"> {{ npage }} </a>
 </li>
 {% endfor %}
 
