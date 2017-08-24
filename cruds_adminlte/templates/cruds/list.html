@@ -38,40 +38,39 @@
                         </form>
                     </div>
                     {% endif %}
-                    </div>
-                    
-                    
-                    {% if filters %}
-<br>
+                </div>
 
-<div class="box box-warning collapsed-box">
-            <div class="box-header with-border">
-              <h3 class="box-title">{% trans 'Filters' %}</h3>
-              <div class="box-tools pull-right">
-                <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
-                <i class="fa fa-plus"></i>
-                </button>
-              </div>
-              <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body" style="">
-              <form action="" method="get">
-                    <table class="table">
-                    	{% for filter in filters %}
-                    		{{filter.render }}
-                    	{% endfor %}
+                {% if filters %}
+                <br />
+
+                <div class="box box-warning collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{% trans 'Filters' %}</h3>
+                        <div class="box-tools pull-right">
+                            <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="">
+                        <form action="" method="get">
+                            <table class="table">
+                                {% for filter in filters %}
+                                {{filter.render }}
+                                {% endfor %}
                     </div></div>
 
-        			</table>
-        			<input type="submit" class="btn btn-info" value="{% trans 'Filter' %}" />
-        			<a  class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
-                    </form>
+                            </table>
+                            <input type="submit" class="btn btn-info" value="{% trans 'Filter' %}" />
+                            <a  class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
+                        </form>
+                </div>
+                <!-- /.box-body -->
             </div>
-            <!-- /.box-body -->
-</div>                    
-                                    {% endif%}
-                   
+                    {% endif%}
+
                   <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
                 <div class="box-body">
@@ -125,11 +124,11 @@
                       <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
                     {% endif %}
                     </table>
-                 
-                {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
+
+                    {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
                   {% include paginate_template %}
                 {% endif %}
-                 
+
                 </div>
 
                 <div class="box-footer"></div>

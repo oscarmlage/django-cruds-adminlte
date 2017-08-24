@@ -1,4 +1,3 @@
-
 import six
 from django.core.exceptions import FieldDoesNotExist
 from django.forms.models import modelform_factory
@@ -32,7 +31,7 @@ class FormFilter:
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
         if clean_value:
-            print(clean_value)
+            print clean_value
             queryset = queryset.filter(**clean_value)
         return queryset
 
@@ -55,12 +54,7 @@ def get_filters(model, list_filter, request):
     fields = []
     forms = []
     for field in list_filter:
-        if type(field) in [
-            six.string_types,
-            six.text_type,
-            six.binary_type
-
-        ]:
+        if type(field) in [six.string_types, six.text_type, six.binary_type]:
             # this is a model field
             try:
                 model._meta.get_field(field)

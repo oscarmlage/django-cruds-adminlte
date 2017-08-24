@@ -115,8 +115,9 @@ performance, if split_space_search is True then ' ' is used
 Filter content
 ---------------
 
-.. warning:: 
-    Code preserve filter it's a complex task, and filter content with high grade of liberty is hard to do, so this is a experimental version.
+.. warning::
+    Code preserve filter it's a complex task, and filter content with high
+    grade of liberty is hard to do, so this is a experimental version.
 
 Use **list_filter** as list of model attributes or FormFilter objects like:
 
@@ -126,7 +127,8 @@ Use **list_filter** as list of model attributes or FormFilter objects like:
         model = Invoice
         list_filter = ['invoice_number', 'sent', 'paid']
 
-Filter method is based on forms and filter query set, so we use different approch compared with django admin
+Filter method is based on forms and filter query set, so we use different
+approach compared with django admin
 
 **FormFilter** is a special class used for filter content based on form.
 
@@ -143,13 +145,15 @@ Filter method is based on forms and filter query set, so we use different approc
         model = Invoice
         list_filter = ['sent', 'paid', LineFilter]
 
-Magic.., not, just and good example of how to do a multiple value search based en a reverse foreignkey. 
+Magic.., not, just and good example of how to do a multiple value search based
+end a reverse foreignkey.
 
 FormFilter has this public method:
 
-* **render():** return a form or your own html, has an instance of form in self.form_instance, and also has self.request. 
+* **render():** return a form or your own html, has an instance of form in
+  self.form_instance, and also has self.request.
 * **get_filter(queryset):** filter your content here
-* **get_params(exclude):** clean the get parameters 
+* **get_params(exclude):** clean the get parameters
 
 
 Pagination
@@ -273,7 +277,7 @@ In views
 
 So with this you now have management of author's book.
 
-.. warning:: 
+.. warning::
     we provide all internal references but you need to create the
     first author to book list|create|update|detail|delete reference.
 
@@ -413,8 +417,10 @@ Basically works like CRUDView and support all cases described above.  Require
 this extra parameters
 
 1. `base_model` model used to refence the inline
-2. `inline_field` field used to update object, needs to be the same class that `base_model`
-3. `title` title of the inline (used to show separation betwen model fields and inline fields).
+2. `inline_field` field used to update object, needs to be the same class that
+   `base_model`
+3. `title` title of the inline (used to show separation betwen model fields and
+   inline fields).
 
 
 .. code:: python

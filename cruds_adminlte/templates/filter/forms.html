@@ -1,18 +1,19 @@
 {% load i18n %}
 
-	<form id="filter_form" class="form" method="GET" role="search">
-<div id="ffilter" class="table-responsive">
-<table class="table">
-{% for choice in filter_choices %}
-
-    {{choice.form}}
-    {{choice.form.media}}
-
-{% endfor %}
-<tr><td></td>
-<td><input type="submit" id="filter" name="filter" value="{% trans 'Filter' %}" class="btn btn-default"/> 	
-</td></tr>
-</table>
-</div>
-
+<form id="filter_form" class="form" method="GET" role="search">
+    <div id="ffilter" class="table-responsive">
+        <table class="table">
+            {% for choice in filter_choices %}
+                {{choice.form}}
+                {{choice.form.media}}
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" id="filter" name="filter"
+                        value="{% trans 'Filter' %}" class="btn btn-default" />
+                </td>
+            </tr>
+        </table>
+    </div>
 </form>
