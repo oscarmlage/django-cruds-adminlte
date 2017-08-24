@@ -5,7 +5,7 @@
 <ul class="pagination">
     {% if page_obj.has_previous %}
         <li class="paginate_button">
-            <span><a href="?page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
+            <span><a href="{{getparams}}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a></span>
         </li>
     {% endif %}
         <li class="paginate_button">
@@ -13,7 +13,8 @@
         </li>
     {% if page_obj.has_next %}
         <li class="paginate_button">
-            <span><a href="?page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
+        
+            <span><a href="{{getparams}}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a></span>
         </li>
 {% endif %}
 </ul>
