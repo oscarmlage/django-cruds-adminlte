@@ -2,6 +2,20 @@
 Changelog
 =========
 
+0.0.8
+-----
+
+* ''33e5166'' (HEAD -> master, origin/master, origin/HEAD) PEP8 Cosmetics
+* ''906b023'' Merge pull request #40 from luisza/filter
+* ''bbde3f1'' Update documentation of components
+* ''33ffed7'' Documentation and some fixes
+* ''907d72f'' Filters working with pagination but not with search form
+* ''80dc29a'' Filter form
+* ''8df2764'' Merge master
+* ''3d0999d'' Add filter collapse
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.8...master
+
 0.0.7
 -----
 
@@ -13,7 +27,7 @@ Changelog
 * ``80931a8`` Fixed pypi url
 * ``33350d3`` Adding online resources to the documentation
 
-https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7777777...master
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7...master
 
 0.0.6
 -----
