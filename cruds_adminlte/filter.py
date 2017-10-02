@@ -31,7 +31,7 @@ class FormFilter:
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
         if clean_value:
-            print clean_value
+            print (clean_value)
             queryset = queryset.filter(**clean_value)
         return queryset
 
