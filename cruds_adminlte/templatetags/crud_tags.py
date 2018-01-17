@@ -5,10 +5,8 @@ import os.path
 
 from cruds_adminlte import utils
 from django import template
-from django.core.urlresolvers import (
-    NoReverseMatch,
-    reverse,
-)
+
+from django.urls import (reverse, NoReverseMatch)
 from django.db import models
 from django.utils import six
 from django.utils.html import escape
