@@ -162,9 +162,9 @@ URL                                   name
 
 It is also possible to add CRUD for one model: ::
 
-    from django.apps.apps import get_model
+    from django.apps import apps
     from cruds_adminlte.urls import crud_for_model
-    urlpatterns += crud_for_model(get_model('testapp', 'Author'))
+    urlpatterns += crud_for_model(apps.get_model('testapp', 'Author'))
 
 cruds_for_app
 =============
