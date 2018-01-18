@@ -36,7 +36,7 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^select2/', include('django_select2.urls')),
-    url('^namespace/', include(ns, namespace='ns')),
+    url('^namespace/', include('testapp.urls')),
     url(r'', include(authorcrud.get_urls())),
     url(r'', include(invoicecrud.get_urls()))
 ]
@@ -58,8 +58,8 @@ urlpatterns += crud_for_app('testapp', login_required=True,
                             cruds_url='lte')
 urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ]
+#if settings.DEBUG:
+#    import debug_toolbar
+#    urlpatterns += [
+#        url(r'^__debug__/', include(debug_toolbar.urls)),
+#    ]
