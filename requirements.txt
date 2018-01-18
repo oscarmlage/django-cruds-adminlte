@@ -4,5 +4,3 @@ django-select2
 django-image-cropping
 easy-thumbnails
 djangoajax==2.3.7
-
-
