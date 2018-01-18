@@ -57,8 +57,3 @@ urlpatterns += crud_for_app('testapp', login_required=True,
                             cruds_url='lte')
 urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
-# if settings.DEBUG:
-#     import debug_toolbar
-#     urlpatterns += [
-#         url(r'^__debug__/', include(debug_toolbar.urls)),
-#     ]
