@@ -22,10 +22,9 @@ from testapp.forms import CustomerForm, InvoiceForm, LineForm, AddressesForm
 from testapp.views import AutorCRUD, InvoiceCRUD, IndexView
 from django.contrib.auth import views as auth_views
 
-#Dev load files
-#from django.conf import settings
-#from django.conf.urls.static import static
-
+from django.conf import settings
+from django.conf.urls.static import static
+    
 authorcrud = AutorCRUD()
 invoicecrud = InvoiceCRUD()
 
@@ -61,7 +60,7 @@ urlpatterns += crud_for_app('testapp', login_required=True,
 urlpatterns += crud_for_app('auth', login_required=True, cruds_url='lte')
 
 
-#add path to load media
-#urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
