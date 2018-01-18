@@ -111,7 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -149,3 +148,14 @@ DATETIME_FORMAT = 'm/d/Y H:i:s'
 DATE_FORMAT = "m/d/Y"
 
 TIME_INPUT_FORMATS = ['%I:%M %p']
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+
+

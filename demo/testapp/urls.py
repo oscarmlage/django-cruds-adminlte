@@ -8,4 +8,6 @@ app_name = 'testapp'
 
 urlpatterns=[]
 
-urlpatterns+= crud_for_app('testapp', check_perms=True)  
+
+urlpatterns+= crud_for_app('testapp', check_perms=True)
+
