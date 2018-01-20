@@ -6,7 +6,7 @@ import os.path
 from cruds_adminlte import utils
 from django import template
 
-from django.urls import (reverse, NoReverseMatch)  #django2.0
+from django.urls import (reverse, NoReverseMatch)  # django2.0
 from django.db import models
 from django.utils import six
 from django.utils.html import escape
