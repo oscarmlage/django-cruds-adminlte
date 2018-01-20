@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from django.core.urlresolvers import reverse
+from  django.urls import reverse   # django 2.0
 
 
 ACTION_CREATE = 'create'
