@@ -444,13 +444,10 @@ class CRUDView(object):
             list_filter = self.list_filter
 
             def get_listfilter_queryset(self, queryset):
-                #print (queryset)
                 if self.list_filter:
                     filters = get_filters(
                         self.model, self.list_filter, self.request)
                     for filter in filters:
-                        #print (queryset)
-                        #print (filter)
                         queryset = filter.get_filter(queryset)
                         
                 return queryset
@@ -468,17 +465,16 @@ class CRUDView(object):
                     sfilter = None
                     for field in self.search_fields:
                         for qsearch in q:
-                            if field not in self.context_rel :  #only filter models fields
+                            if field not in self.context_rel :  
                                 if sfilter is None:
                                     sfilter = Q(**{field: qsearch})
                                 else:
                                      sfilter |= Q(**{field: qsearch})             
                     if sfilter is not None:
                             query = query.filter(sfilter) 
-                #print(query)
+
                 if self.related_fields:    
-                        query = query.filter(**self.context_rel)    # objects relations foreign
-                #print(query) 
+                        query = query.filter(**self.context_rel)   
                 return query
 
             def get_queryset(self):

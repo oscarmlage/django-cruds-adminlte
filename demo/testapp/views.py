@@ -134,6 +134,6 @@ class InvoiceCRUD(CRUDView):
     views_available=['create', 'list', 'delete', 'update', 'detail']  #Test add actions
     search_fields = ['description1__icontains']
     split_space_search = True
-    paginate_by = 10
+    paginate_by = 1
     paginate_position = 'Bottom' #Test move position Both to Bottom
     paginate_template = 'cruds/pagination/enumeration.html'
