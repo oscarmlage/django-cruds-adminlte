@@ -43,13 +43,9 @@ class FormFilter:
                                      sfilter |= Q(**{rq: rqo})             
                     if sfilter is not None:
                             queryset = queryset.filter(sfilter)    
-                    else:
-                         queryset = queryset.filter(**clean_value[rq])
                 except ValueError:
-                    print ("ValueError get_filter: %s - Values:%s "%(rq,clean_value))
                     pass
-                except TypeError: 
-                    print ("TypeError get_filter: %s - Values:%s "%(rq,clean_value)) 
+                except TypeError: #When model hasn't relationship with rq (model) name
                     pass    
         return queryset
 
