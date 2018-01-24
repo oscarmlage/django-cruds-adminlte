@@ -1,0 +1,138 @@
+{% extends template_father %}
+{% load i18n %}
+{% load crud_tags %}
+
+{% block title %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+
+                <div class="box-header">
+                  <div class="row">
+                    {% if url_create %}
+                    <div class="col-lg-6">
+                        {% crud_url object "create" namespace as url %}
+                        {% if url and 'create' in views_available and crud_perms.create %}
+                          <a href="{{ url }}{{getparams}}" class="btn btn-primary">
+                              {% trans "Create new " %} {{ model_verbose_name|lower }}</a>
+                          {%endif%}
+                    </div>
+                    {% endif %}
+                    {% if search %}
+                    <div class="col-lg-6">
+                        <form action="" method="get">
+                            <div class="input-group">
+                                <input type="text" name="q" value="{{q}}" class="form-control" placeholder="{% trans 'Search for...' %}">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-flat" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if filters %}
+                <br />
+
+                <div class="box box-warning collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{% trans 'Filters' %}</h3>
+                        <div class="box-tools pull-right">
+                            <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="">
+                        <form action="" method="get">
+                            <table class="table">
+                                {% for filter in filters %}
+                                {{filter.render }}
+                                {% endfor %}
+                    </div></div>
+
+                            </table>
+                            <input type="submit" class="btn btn-info" value="{% trans 'Filter' %}" />
+                            <a  class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
+                        </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+                    {% endif%}
+
+                  <div class="box-body">
+                    <table id="datatable" class="table table-bordered table-hover">
+                <div class="box-body">
+                {% if paginate_position == 'Up' or paginate_position == 'Both' %}
+                    {% include paginate_template %}
+                {% endif %}
+                    <table id="datatable" class="table table-responsive table-bordered table-hover">
+                    {% if object_list %}
+                        <thead>
+                            {% block thead %}
+                            {% for field, field_name in fields.items %}
+                            <th class="th-field-{{ field|lower }} th-fieldtype-{{ field_name.1|lower }}">{{ field_name.0 }}</th>
+                            {% endfor %}
+                            <th>{% trans "Actions" %}</th>
+                            {% endblock thead %}
+                        </thead>
+                        <tbody>
+                          {% block tbody %}
+                          {% for object in object_list %}
+                            <tr>
+                              {% for field, field_name in fields.items %}
+                              <td class="td-field-{{ field|lower }} td-fieldtype-{{ field_name.1|lower }}">
+                                {% with column=field_name.1|lower|add:".html" %}
+                                    {% include "cruds/columns/"|add:column %}
+                                {% endwith %}
+                                {# typefield #}
+                              </td>
+                              {% endfor %}
+                              <td>
+                                {% block actions %}
+                                  {% crud_url object "detail" namespace as url %}
+                                    {% if url and 'detail' in views_available and crud_perms.detail %}
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-success">{% trans "Show" %}</a>
+                                    {% endif %}
+                                    {% crud_url object "update" namespace as url %}
+                                    {% if url and 'update' in views_available and crud_perms.update %}
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-primary">{% trans "Edit" %}</a>
+                                    {% endif %}
+                                    {% crud_url object "delete" namespace as url %}
+                                    {% if url and 'delete' in views_available and crud_perms.delete %}
+                                    <a href="{{ url }}{{getparams}}" class="btn btn-danger">{% trans "Delete" %}</a>
+                                    {% endif %}
+                                {% endblock %}
+                              </td>
+                            </tr>
+                          {% endfor %}
+                          {% endblock tbody %}
+                        </tbody>
+                    {% else %}
+                      <thead><th></th></thead>
+                      <tbody><tr><td>{% trans "No items yet." %}</td></tr></tbody>
+                    {% endif %}
+                    </table>
+
+                    {% if paginate_position == 'Bottom' or paginate_position == 'Both' %}
+                  {% include paginate_template %}
+                {% endif %}
+
+                </div>
+
+                <div class="box-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

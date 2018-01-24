@@ -1,0 +1,27 @@
+{% extends template_father %}
+{% load i18n %}
+
+{% block title %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        {% if crud_perms.list %}
+        <a href="{{ url_list }}{{getparams}}" class="btn btn-info">
+            <i class="fa fa-angle-double-left"></i>
+            {% trans "Back to" %} {{ model_verbose_name_plural|lower }}
+        </a>
+        {% endif %}
+        <br /><br />
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{% trans "New" %} {{ model_verbose_name }}</h3>
+            </div>
+            {% include "cruds/_form.html" with action='create' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
