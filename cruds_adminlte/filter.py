@@ -23,7 +23,13 @@ class FormFilter:
         for value in self.form_instance.cleaned_data:
             rq_value = self.request.GET.get(value, '')
             if value and rq_value:
-                values[value] = self.form_instance.cleaned_data[value]
+                data_value = self.form_instance.cleaned_data[value]
+                if type(data_value) == models.QuerySet : 
+                    if data_value.count() == 1:
+                        data_value=data_value.first()
+                    elif '__in' not in value:
+                        value=value+'__in'
+                values[value] = data_value
         return values
 
     def render(self):
@@ -31,22 +37,8 @@ class FormFilter:
 
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
-        if clean_value:
-            sfilter = None
-            for rq in clean_value:  # relation query model  (rq)
-                try:  
-                    if (len (clean_value[rq])):
-                         for rqo in clean_value[rq]:   # relation query object model  (rqo)
-                                if sfilter is None:
-                                    sfilter = Q(**{rq: rqo})
-                                else:
-                                     sfilter |= Q(**{rq: rqo})             
-                    if sfilter is not None:
-                            queryset = queryset.filter(sfilter)    
-                except ValueError:
-                    pass
-                except TypeError: # When model hasn't relationship with rq (model) name
-                    pass    
+        if clean_value:          
+            queryset = queryset.filter(**clean_value)          
         return queryset
 
     def get_params(self, exclude=[]):
