@@ -1,6 +1,7 @@
 import six
 from django.core.exceptions import FieldDoesNotExist
 from django.forms.models import modelform_factory
+from django.db.models.query_utils import Q
 from django.db import models
 
 
@@ -31,7 +32,15 @@ class FormFilter:
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
         if clean_value:
-            queryset = queryset.filter(**clean_value)
+            for rq in clean_value:
+                try:
+                    sqf = {"%s" : clean_value[rq]}
+                    srelation= Q(**{rq: })
+                    queryset = queryset.filter(srelation)
+                except ValueError:
+                    pass
+                except TypeError:
+                    pass    
         return queryset
 
     def get_params(self, exclude=[]):

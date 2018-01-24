@@ -21,8 +21,10 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
+from django.db.models.expressions import F
 from django.shortcuts import get_object_or_404
 from cruds_adminlte.filter import get_filters
+from django.db.models import query
 
 
 class CRUDMixin(object):
@@ -152,6 +154,7 @@ class CRUDMixin(object):
                     Classrelated, pk=pk)
                 getparams.append("%s=%s" % (
                     related, str(self.context_rel[related].pk)))
+        
         if getparams:
             self.getparams = "&".join(getparams)
         for perm in self.perms:
@@ -441,11 +444,15 @@ class CRUDView(object):
             list_filter = self.list_filter
 
             def get_listfilter_queryset(self, queryset):
+                #print (queryset)
                 if self.list_filter:
                     filters = get_filters(
                         self.model, self.list_filter, self.request)
                     for filter in filters:
+                        #print (queryset)
+                        #print (filter)
                         queryset = filter.get_filter(queryset)
+                        
                 return queryset
 
             def search_queryset(self, query):
@@ -461,14 +468,17 @@ class CRUDView(object):
                     sfilter = None
                     for field in self.search_fields:
                         for qsearch in q:
-                            if sfilter is None:
-                                sfilter = Q(**{field: qsearch})
-                            else:
-                                sfilter |= Q(**{field: qsearch})
+                            if field not in self.context_rel :  #only filter models fields
+                                if sfilter is None:
+                                    sfilter = Q(**{field: qsearch})
+                                else:
+                                     sfilter |= Q(**{field: qsearch})             
                     if sfilter is not None:
-                        query = query.filter(sfilter)
-                if self.related_fields:
-                    query = query.filter(**self.context_rel)
+                            query = query.filter(sfilter) 
+                #print(query)
+                if self.related_fields:    
+                        query = query.filter(**self.context_rel)    # objects relations foreign
+                #print(query) 
                 return query
 
             def get_queryset(self):

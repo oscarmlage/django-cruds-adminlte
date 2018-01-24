@@ -17,11 +17,11 @@ class Autor(models.Model):
         permissions = (
             ("view_author", "Can see available Authors"),
         )
+        
 
 
 class Addresses(models.Model):
-    autor = models.ForeignKey(Autor, related_name="Autor",
-                              on_delete=models.CASCADE)
+    autor = models.ForeignKey(Autor, related_name="Autor",on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     status = models.BooleanField(_("Status"), help_text=_('Active?'),
@@ -64,8 +64,7 @@ def last_number():
 
 class Invoice(models.Model, InvoicePresentation):
 
-    customer = models.ForeignKey(Customer, related_name="customer",
-                                 on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, related_name="customer",on_delete=models.CASCADE)
     registered = models.BooleanField(_("Registered"),
                                      help_text=_('Registered yet?'))
     sent = models.BooleanField(_("Sent"), help_text=_('Invoice sent?'))
@@ -102,8 +101,7 @@ class Invoice(models.Model, InvoicePresentation):
 
 
 class Line(models.Model):
-    invoice = models.ForeignKey(Invoice, related_name="line",
-                                on_delete=models.CASCADE)
+    invoice = models.ForeignKey(Invoice, related_name="line",on_delete=models.CASCADE)
     reference = models.CharField(_('Reference'), max_length=200)
     concept = models.CharField(_('Concept'), max_length=200)
     quantity = models.CharField(_('Quantity'), max_length=200)
