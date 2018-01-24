@@ -33,13 +33,14 @@ class FormFilter:
         clean_value = self.get_cleaned_fields()
         if clean_value:
             for rq in clean_value:
+                print(rq)
                 try:
-                    sqf = {"%s" : clean_value[rq]}
-                    srelation= Q(**{rq: })
-                    queryset = queryset.filter(srelation)
+                    queryset = queryset.filter(**clean_value[rq])
                 except ValueError:
+                    print ("ValueError get_filter: %s"%rq)
                     pass
-                except TypeError:
+                except TypeError: 
+                    print ("ValueError get_filter: %s"%rq) 
                     pass    
         return queryset
 
