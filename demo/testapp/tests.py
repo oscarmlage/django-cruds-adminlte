@@ -48,16 +48,16 @@ class TreeData(TestCase):
                                                    
             io = Invoice(customer=co,registered=True,sent=False,paid=False)  # only registered
             io.date =datetime.date.today()
-            io.save      
+            io.save()      
             io = Invoice(customer=co,registered=True,sent=True,paid=False) # registered and sent
             io.date =datetime.date.today()
-            io.save   
+            io.save()  
             io = Invoice(customer=co,registered=False,sent=False,paid=False) # nothing did!
             io.date =datetime.date.today()
-            io.save
+            io.save()
             io = Invoice(customer=co,registered=True,sent=True,paid=True)  # completed
             io.date =datetime.date.today()
-            io.save
+            io.save()
                     
         # add object Invoices / Lines
         for io in Invoice.object.all():
@@ -69,7 +69,7 @@ class TreeData(TestCase):
                  lo.unit=i
                  lo.unit_price=i
                  lo.amount=i
-                 lo.save
+                 lo.save()
             
                  # ( customer 0) -------------------------------------------------------------------------------------------
                  # invoice 0                                           | invoice 1
