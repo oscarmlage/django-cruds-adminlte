@@ -58,7 +58,6 @@ class FormFilter:
             rq_value = self.request.GET.get(value, '')
             if rq_value:
                 data = self.form_instance.cleaned_data[value]
-                print (data)
                 if type(data) == models.QuerySet: 
                      for q in data:
                          params = self.get_build_param(value,q,params)

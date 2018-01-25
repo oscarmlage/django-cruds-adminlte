@@ -363,7 +363,10 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(OCreateView, self).get_success_url()
-                return url + self.getparams
+                if (self.getparams): # fixed filter create action
+                    url +='?'+ self.getparams
+                return url
+            
         return OCreateView
 
     def get_detail_view_class(self):
@@ -384,6 +387,12 @@ class CRUDView(object):
             template_father = self.template_father
             related_fields = self.related_fields
 
+            def get_success_url(self):
+                url = super(ODetailView, self).get_success_url()
+                if (self.getparams): # fixed filter detail action
+                    url +='?'+ self.getparams
+                return url
+            
         return ODetailView
 
     def get_update_view_class(self):
@@ -416,7 +425,9 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(OEditView, self).get_success_url()
-                return url + self.getparams
+                if (self.getparams): # fixed filter edit action
+                    url +='?'+ self.getparams
+                return url
 
         return OEditView
 
@@ -476,7 +487,14 @@ class CRUDView(object):
                 if self.related_fields:    
                         query = query.filter(**self.context_rel)   
                 return query
-
+            
+            def get_success_url(self):
+                url = super(OListView, self).get_success_url()
+                if (self.getparams): # fixed filter detail action
+                    url +='?'+ self.getparams
+                return url
+            
+            
             def get_queryset(self):
                 queryset = super(OListView, self).get_queryset()
                 queryset = self.search_queryset(queryset)
@@ -503,7 +521,10 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(ODeleteView, self).get_success_url()
-                return url + self.getparams
+                print(self.getparams)
+                if (self.getparams): # fixed filter delete action
+                    url +='?'+ self.getparams
+                return url   
 
         return ODeleteView
 
