@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
 
-import datetime
+from django.utils import timezone
+from datetime import datetime, timedelta, tzinfo
 #TEST
 from django.test import TestCase
 from django.test import Client
@@ -14,6 +15,7 @@ from cruds_adminlte import crud as crud_views
 
 #APPs
 from .models import Autor, Addresses, Customer, Invoice, Line
+from django.conf import settings
 
 class TreeData(TestCase):
     def setUp(self):
@@ -26,18 +28,29 @@ class TreeData(TestCase):
         self.user.set_password('test')
         self.user.save()
         
-        # add objects Autor/Address
+        # add objects Autor/Addressself.client.login(username='test', password='test')
         for i in range(nobjects):  # add Autor-Address 
              # autor 0   | autor 1   | autor 2   | autor 3
              # address 0 | address 1 | address 2 | address 3
-             ao = Autor.object.create(name="author_name_%i"%i)
-             ado = Addresses.object.create(name="addresses_address_%s_%i"%(ao.pk,i),city="addresses_city_%s_%i"%(ao.pk,i),  autor=ao)
-             ado = Addresses.object.create(name="addresses_address_%s_%i"%(ao.pk,i),city="addresses_city_%s_%i"%(ao.pk,i),  autor=ao)
+            
+             ao = Autor.objects.create(name="author_name_%i"%i)
+             ado = Addresses(autor=ao)
+             ado.name="addresses_address_%s_%i"%(ao.pk,i)
+             ado.city="addresses_city_%s_%i"%(ao.pk,i)
+             ado.save()
+              
           
           
         # add object Customer/Invoices
         for i in range(nobjects):  # add Customer (Invoices < Lines)
-            co = Customer.object.create(name="customer_%i"%i)
+            co = Customer.objects.create(name="customer_%i"%i,
+                                          information="information_customer_%i"%i,
+                                          email="customer_%i@examples.dj"%i,
+                                         date = datetime.now(),
+                                         time=datetime.now(),
+                                         datetime=timezone.now()
+                                         )
+            
             
             # customer 0 | customer 1 | customer 2 | customer 3
             # -----------| ---------- | ---------- | ----------
@@ -46,21 +59,14 @@ class TreeData(TestCase):
             # invoice 2  | invoice 6  | invoice 10 | invoice 14
             # invoice 3  | invoice 7  | invoice 11 | invoice 15
                                                    
-            io = Invoice(customer=co,registered=True,sent=False,paid=False)  # only registered
-            io.date =datetime.date.today()
-            io.save()      
-            io = Invoice(customer=co,registered=True,sent=True,paid=False) # registered and sent
-            io.date =datetime.date.today()
-            io.save()  
-            io = Invoice(customer=co,registered=False,sent=False,paid=False) # nothing did!
-            io.date =datetime.date.today()
-            io.save()
-            io = Invoice(customer=co,registered=True,sent=True,paid=True)  # completed
-            io.date =datetime.date.today()
-            io.save()
+            io = Invoice.objects.create(customer=co,registered=True,sent=False,paid=False,date=timezone.now())  # only registered    
+            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=False,date=timezone.now()) # registered and sent 
+            io = Invoice.objects.create(customer=co,registered=False,sent=False,paid=False,date=timezone.now()) # nothing did!
+            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=True,date=timezone.now())  # completed
+
                     
         # add object Invoices / Lines
-        for io in Invoice.object.all():
+        for io in Invoice.objects.all():
              for i in range(nobjects):  
                  lo=Line(invoice=io)
                  lo.reference=io.customer.name+"_"+str(io.pk)+"_reference"+str(i)  #  customer_0 + 0 + _reference + 0
@@ -99,7 +105,7 @@ class TreeData(TestCase):
 
 class   OListViewTest(TreeData):
         def test_get_autor(self):
-            
+            self.client.login(username='test', password='test')
     
   
 # """ Filters test """
@@ -217,4 +223,3 @@ class   OListViewTest(TreeData):
 #         """ user can init auth """
 #         response = self.client.get('/admin/auth/')
 #         self.assertEqual(response.status_code, 200, response)
-#        
