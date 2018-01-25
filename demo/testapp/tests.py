@@ -15,7 +15,7 @@ from cruds_adminlte import crud as crud_views
 #APPs
 from .models import Autor, Addresses, Customer, Invoice, Line
 
-class InsertData(TestCase):
+class TreeData(TestCase):
     def setUp(self):
         nobjects=4
         for i in range(nobjects):  # add Autor-Address 
@@ -85,7 +85,7 @@ class InsertData(TestCase):
                  #   * Line 11 i=3  ...                                |   *  Line 15  i=3   ...                 
                  # ( customer 1) -------------------------------------------------------------------------------------------        
 
-class   OListViewTest(InsertData):
+class   OListViewTest(TreeData):
     
     
   
