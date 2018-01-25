@@ -18,6 +18,15 @@ from .models import Autor, Addresses, Customer, Invoice, Line
 class TreeData(TestCase):
     def setUp(self):
         nobjects=4
+        
+        self.user = User(
+          username='test', email='test@example.com', is_active=True,
+              is_staff=True, is_superuser=True,
+        )
+        self.user.set_password('test')
+        self.user.save()
+        
+        # add objects Autor/Address
         for i in range(nobjects):  # add Autor-Address 
              # autor 0   | autor 1   | autor 2   | autor 3
              # address 0 | address 1 | address 2 | address 3
@@ -26,7 +35,7 @@ class TreeData(TestCase):
              ado = Addresses.object.create(name="addresses_address_%s_%i"%(ao.pk,i),city="addresses_city_%s_%i"%(ao.pk,i),  autor=ao)
           
           
-          
+        # add object Customer/Invoices
         for i in range(nobjects):  # add Customer (Invoices < Lines)
             co = Customer.object.create(name="customer_%i"%i)
             
@@ -50,7 +59,7 @@ class TreeData(TestCase):
             io.date =datetime.date.today()
             io.save
                     
-
+        # add object Invoices / Lines
         for io in Invoice.object.all():
              for i in range(nobjects):  
                  lo=Line(invoice=io)
@@ -89,7 +98,8 @@ class TreeData(TestCase):
                  # ( customer 1) -------------------------------------------------------------------------------------------        
 
 class   OListViewTest(TreeData):
-    
+        def test_get_autor(self):
+            
     
   
 # """ Filters test """
