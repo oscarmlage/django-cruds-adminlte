@@ -46,7 +46,6 @@ class CustomerCRUD(CRUDView):
         'update_addresses': AddressesForm,
     }
     modelforms= custom_forms
-    #related_fields = ['customer']
     inlines=[Invoice_AjaxCRUD]
     cruds_url='lte'
     
@@ -130,10 +129,10 @@ class InvoiceCRUD(CRUDView):
     list_filter = ['customer', 'invoice_number',
                    'sent', 'paid', 'date', filterAddress]
     inlines = [Lines_AjaxCRUD]
-    #views_available = ['create', 'list', 'detail']
-    views_available=['create', 'list', 'delete', 'update', 'detail']  #Test add actions
+    #views_available = ['create', 'list',  'detail'] # original actions
+    views_available = ['create', 'list', 'update', 'detail']
     search_fields = ['description1__icontains']
     split_space_search = True
     paginate_by = 1
-    paginate_position = 'Bottom' #Test move position Both to Bottom
+    paginate_position = 'Bottom' # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'

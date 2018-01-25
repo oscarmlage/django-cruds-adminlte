@@ -1,7 +1,6 @@
 import six
 from django.core.exceptions import FieldDoesNotExist
 from django.forms.models import modelform_factory
-from django.db.models.query_utils import Q
 from django.db import models
 
 
