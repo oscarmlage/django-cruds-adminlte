@@ -22,7 +22,8 @@ class TreeData(TestCase):
              # autor 0   | autor 1   | autor 2   | autor 3
              # address 0 | address 1 | address 2 | address 3
              ao = Autor.object.create(name="author_name_%i"%i)
-             ado = Addresses.object.create(name="addresses_address_%i"%i,city="addresses_city_%i"%i,  autor=ao)
+             ado = Addresses.object.create(name="addresses_address_%s_%i"%(ao.pk,i),city="addresses_city_%s_%i"%(ao.pk,i),  autor=ao)
+             ado = Addresses.object.create(name="addresses_address_%s_%i"%(ao.pk,i),city="addresses_city_%s_%i"%(ao.pk,i),  autor=ao)
           
           
           
@@ -30,20 +31,22 @@ class TreeData(TestCase):
             co = Customer.object.create(name="customer_%i"%i)
             
             # customer 0 | customer 1 | customer 2 | customer 3
+            # -----------| ---------- | ---------- | ----------
             # invoice 0  | invoice 4  | invoice 8  | invoice 12
-            io = Invoice(customer=co,registered=True,sent=False,paid=False)  # Solo registrado
-            io.date =datetime.date.today()
-            io.save
-            # invoice 1  | invoice 5  | invoice 9  | invoice 13         
-            io = Invoice(customer=co,registered=True,sent=True,paid=False) # registrado y enviado
-            io.date =datetime.date.today()
-            io.save
-            # invoice 2  | invoice 6  | invoice 10 | invoice 14   
-            io = Invoice(customer=co,registered=False,sent=False,paid=False) # Sin procesar
-            io.date =datetime.date.today()
-            io.save
+            # invoice 1  | invoice 5  | invoice 9  | invoice 13
+            # invoice 2  | invoice 6  | invoice 10 | invoice 14
             # invoice 3  | invoice 7  | invoice 11 | invoice 15
-            io = Invoice(customer=co,registered=True,sent=True,paid=True)  # completado
+                                                   
+            io = Invoice(customer=co,registered=True,sent=False,paid=False)  # only registered
+            io.date =datetime.date.today()
+            io.save      
+            io = Invoice(customer=co,registered=True,sent=True,paid=False) # registered and sent
+            io.date =datetime.date.today()
+            io.save   
+            io = Invoice(customer=co,registered=False,sent=False,paid=False) # nothing did!
+            io.date =datetime.date.today()
+            io.save
+            io = Invoice(customer=co,registered=True,sent=True,paid=True)  # completed
             io.date =datetime.date.today()
             io.save
                     
@@ -51,8 +54,8 @@ class TreeData(TestCase):
         for io in Invoice.object.all():
              for i in range(nobjects):  
                  lo=Line(invoice=io)
-                 lo.reference=io.customer.name+"_"+str(io.pk)+"_reference"+str(i)  #  customer_0 + 0 + _reference 0
-                 lo.concept=io.customer.name+"_"+str(io.pk)+"_concept"+str(i)   #  customer_0 + 0 + _concept 0
+                 lo.reference=io.customer.name+"_"+str(io.pk)+"_reference"+str(i)  #  customer_0 + 0 + _reference + 0
+                 lo.concept=io.customer.name+"_"+str(io.pk)+"_concept"+str(i)   #  customer_0 + 0 + _concept + 0
                  lo.quantity="quantity_"+str(i)      #  quantity_0
                  lo.unit=i
                  lo.unit_price=i
