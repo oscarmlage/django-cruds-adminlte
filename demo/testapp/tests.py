@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
 
 #TEST
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.test import Client
 
 #CRUD
@@ -13,33 +13,40 @@ from cruds_adminlte.utils import get_fields
 from cruds_adminlte import crud as crud_views
 
 #APPs
-from .models import Autor
+from .models import Autor, Customer, Line,  
 
-
-class CRUDViewTest(TestCase):
-
-    def setUp(self):
-        self.factory = RequestFactory()
-
-    def test_add_crud_template(self):
-        request = self.factory.get('')
-        view = crud_views.CRUDView.as_view(model=Author)(request)
-        self.assertEqual(view.template_name, [
-            u'testapp/author_list.html',
-            u'cruds/list.html',
-        ])
-
-
-class TestUtils(TestCase):
-
-    def test_get_fields_order(self):
-        res = get_fields(Autor, ('name',))
-        self.assertEqual(list(res.keys())[0], 'name')
+class InsertData(TestCase):
 
 
 
+""" Filters test """
+class FilterViewTest(InsertData):
+    def setUp(self):   
+        self.user = User(
+            username='test', email='test@example.com', is_active=True,
+            is_staff=True, is_superuser=True,
+        )
+        self.user.set_password('test')
+        self.user.save()
+        
+        #insertar Customer
+        #insert Invoice
+        #insert Line
+        
+        
+        
+    def test_listview(self):
+        self.client.login(username='test', password='test')
+        url=reverse('testapp_invoice_list')
+        url+="?customer=&invoice_number=&initial-invoice_number=&date=&line=16&line=17"
+        response = self.client.get(url)
+        print (response.context['object_list'])    
+        self.assertQuerysetEqual(response.context['object_list'], [])
+          
 
-""" TEST OF VIEWS """
+
+
+""" Views test """
 class AuthUserViewTest(TestCase):
 
     def setUp(self):
@@ -53,9 +60,7 @@ class AuthUserViewTest(TestCase):
         )
         self.user.set_password('test')
         self.user.save()
-      
 
-        
         
     def test_user_noLogin(self):
         """ The User don't have been login """
@@ -83,6 +88,7 @@ class AuthUserViewTest(TestCase):
         self.assertQuerysetEqual(response.context['object_list'], [])
                
    
+""" Admin user views test"""
 class AdminViewTestCase(TestCase):
     def setUp(self):
         group_name = "My Test Group"
@@ -112,11 +118,13 @@ class AdminViewTestCase(TestCase):
         
             
     def test_admin_not_broken(self):
+        """ user can use django admin """
         response = self.client.get('/admin/')
         self.assertContains(response, '/admin/password_change/')
         self.assertNotContains(response, "You don't have permission to edit anything")
 
     def test_admin_auth_not_broken(self):
+        """ user can init auth """
         response = self.client.get('/admin/auth/')
         self.assertEqual(response.status_code, 200, response)
        
