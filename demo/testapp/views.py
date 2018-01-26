@@ -59,6 +59,8 @@ class LineCRUD(CRUDView):
     related_fields = ['invoice']
     views_available=['create', 'list', 'delete', 'update', 'detail']   
 
+    
+    
 class AddressCRUD(CRUDView):
     model = Addresses
     namespace = 'testapp'

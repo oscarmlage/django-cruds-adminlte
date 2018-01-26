@@ -5,18 +5,18 @@ from django.contrib.auth.models import User, Permission, Group
 from django.test.client import RequestFactory
 from django.utils import timezone
 from datetime import datetime, timedelta, tzinfo
-#TEST
+# TEST
 from django.test import ( TestCase,
                             Client )
 
-#CRUD
+# CRUD
 from cruds_adminlte.utils import get_fields
 from testapp.views import AutorCRUD, InvoiceCRUD, IndexView, CustomerCRUD, LineCRUD, AddressCRUD
 
 from testapp import views as testapp_views
 from cruds_adminlte import crud as crud_views
 
-#APPs
+# APPs
 from testapp.models import ( Autor, 
                              Addresses, 
                              Customer, 
@@ -24,6 +24,8 @@ from testapp.models import ( Autor,
                              Line )
 from django.conf import settings
 
+# others
+import math
 
 class TreeData(TestCase):
     def setUp(self):
@@ -130,7 +132,13 @@ class SimpleOListViewTest:
                 if (self.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
                         url=url.replace(self.view.cruds_url, 'namespace')  
         
-            return url       
+            return url    
+        
+        def test_countinserts(self):
+               count=self.view.model.objects.count()
+               print (count)
+               self.assertEqual(count, self.model_inserting)
+                  
         """ Test show list of 'object_list' """
         def test_get_listView_content(self):
             self.client.login(username='test', password='test')
@@ -172,24 +180,51 @@ class SimpleOListViewTest:
             self.assertEqual(response.status_code, 200 )
             if self.view.paginate_by :
                 paginations=response.context['page_obj']
+                pages=int(math.ceil((self.model_inserting/self.view.paginate_by))) # number of pages to show all objects
+                
                 if (self.model_inserting<=self.view.paginate_by):
                     self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations) ) # check pagina 1
-                    self.assertFalse( ('Page %i '%self.view.paginate_by) in ("%s"%paginations) )
                 else:
-                    self.assertTrue( ("<Page 1 of %i>"%int(self.model_inserting/self.view.paginate_by)) in ("%s"%paginations) ) # check pagina 1
-                
-                # exist all buttons of paginations
-                for i in range(1, int(self.model_inserting/self.view.paginate_by)):  # 16 = (4 custormers x 4 invoices)
-                     self.assertContains( response, 'page=%i"> %i </a>'%(i,i) )  
+                    self.assertTrue( ("<Page 1 of %i>"%pages) in ("%s"%paginations),"Could %s don't have %i pages"%(paginations,pages)) # check pagina 1
+                    # exist all buttons of paginations
+                    for i in range(1, pages):  # 16 = (4 custormers x 4 invoices)
+                        html='page=%i"> %i </a>'%(i,i)
+                        self.assertContains( response, "%s"%html)  
                                 
                      
 
             self.client.logout()    
-            
+ 
+ 
+ 
+class SimpleOListViewAutorTest(TreeData,SimpleOListViewTest):   
+        def __init__(self, *args, **kwargs):
+                self.model='autor'        
+                self.model_inserting=4
+                self.view = AutorCRUD()   # defined view 
+                super(SimpleOListViewAutorTest, self).__init__(*args, **kwargs)                        
+
+class SimpleOListViewAddressTest(TreeData,SimpleOListViewTest):   
+        def __init__(self, *args, **kwargs):
+                self.model='addresses'        
+                self.model_inserting=4      # 4 = (4 custormers)
+                self.view = AddressCRUD()   # defined view 
+                super(SimpleOListViewAddressTest, self).__init__(*args, **kwargs)
+
+class SimpleOListViewLineTest(TreeData,SimpleOListViewTest):   
+        def __init__(self, *args, **kwargs):
+                self.model='line' 
+                self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
+                self.view = LineCRUD()   # defined view
+                super(SimpleOListViewLineTest, self).__init__(*args, **kwargs)
+                                
+
+              
+                                
 class SimpleOListViewInvoiceTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
-                self.model_inserting=(4*4)       
+                self.model_inserting=(4*4)#        16 = (4 custormers x 4 invoices)
                 self.view = InvoiceCRUD()   # defined view
                 super(SimpleOListViewInvoiceTest, self).__init__(*args, **kwargs)
 
@@ -201,20 +236,10 @@ class SimpleOListViewCustomerTest(TreeData,SimpleOListViewTest):
                 self.view = CustomerCRUD()   # defined view 
                 super(SimpleOListViewCustomerTest, self).__init__(*args, **kwargs)  
                 
+      
+                
                               
-class SimpleOListViewAutorTest(TreeData,SimpleOListViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='autor'        
-                self.model_inserting=4
-                self.view = AutorCRUD()   # defined view 
-                super(SimpleOListViewAutorTest, self).__init__(*args, **kwargs)                        
-
-class SimpleOListViewAddressTest(TreeData,SimpleOListViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='addresses'        
-                self.model_inserting=4
-                self.view = AddressCRUD()   # defined view 
-                super(SimpleOListViewAddressTest, self).__init__(*args, **kwargs)                  
+              
                          
 # """ Filters test """
 # class FilterViewTest(InsertData):
