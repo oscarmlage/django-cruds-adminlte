@@ -27,11 +27,22 @@ from django.conf import settings
 # others
 import math
 
+""" function to return the url """
+def get_action_url(test,action,pk=None):
+            if ( action in ['update','delete','detail'] ) :
+                    url= reverse(test.app_testing+'_'+test.model+'_'+action, kwargs={'pk': pk})    # testapp/invoice/1/update
+            else:
+                    url= reverse(test.app_testing+'_'+test.model+'_'+action)    # testapp/invoice/create   -   testapp/invoice/list
+                    
+            if (test.view.namespace): # if have namespace,find URL action on /namespace/
+                if (test.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
+                        url=url.replace(test.view.cruds_url, 'namespace')  
+            return url
+
 class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
         #self.model='invoice'
-        #self.view = None
         nobjects=4 # number of objects to insert
         self.actions=['create', 'list', 'delete', 'update', 'detail']  
         
@@ -44,7 +55,7 @@ class TreeData(TestCase):
         self.user.save()
         
         
-        # add objects Autor/Addressself.client.login(username='test', password='test')
+        # add objects Autor/Addressses
         for i in range(nobjects):  # add Autor-Address 
              # autor 0   | autor 1   | autor 2   | autor 3
              # address 0 | address 1 | address 2 | address 3
@@ -122,27 +133,17 @@ class TreeData(TestCase):
              
         
 class SimpleOListViewTest:
-        def get_action_url(self,action,pk=None):
-            if ( action in ['update','delete','detail'] ) :
-                    url= reverse(self.app_testing+'_'+self.model+'_'+action, kwargs={'pk': pk})    # testapp/invoice/1/update
-            else:
-                    url= reverse(self.app_testing+'_'+self.model+'_'+action)    # testapp/invoice/create
-                    
-            if (self.view.namespace): # if have namespace,find URL action on /namespace/
-                if (self.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
-                        url=url.replace(self.view.cruds_url, 'namespace')  
-        
-            return url    
-        
-        def test_countinserts(self):
+   
+
+        """ Test definition of number objects inserted """
+        def test_count_objects(self):
                count=self.view.model.objects.count()
-               print (count)
                self.assertEqual(count, self.model_inserting)
                   
         """ Test show list of 'object_list' """
         def test_get_listView_content(self):
             self.client.login(username='test', password='test')
-            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            url= get_action_url(self,'list')         
 
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
@@ -160,54 +161,98 @@ class SimpleOListViewTest:
         """ Test show only button of valid actions """         
         def test_get_listView_actions(self):
             self.client.login(username='test', password='test')
-            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            url= get_action_url(self,'list')        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
                  if action in self.view.views_available:  # crudview set actions ['create', 'list']
-                    url=self.get_action_url(action,1)
-                    self.assertContains( response, '<a href="'+url )          
+                     if action not in self.ignore_action :  # Used when action doesn't shows. Example:: list action on sidebar
+                         url=get_action_url(self,action,1)
+                         self.assertContains( response, '<a href="'+url )  # check if exist hyperlink to actions         
             self.client.logout()  
             
             
-        """ Test show objecto by pagination 1 object and url pages bottons """         
+        """ Test show object by pagination 1  and url pages buttons """         
         def test_get_listView_pagination(self):
             
             
             self.client.login(username='test', password='test')
-            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            url= get_action_url(self,'list')         
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             if self.view.paginate_by :
                 paginations=response.context['page_obj']
-                pages=int(math.ceil((self.model_inserting/self.view.paginate_by))) # number of pages to show all objects
                 
-                if (self.model_inserting<=self.view.paginate_by):
-                    self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations) ) # check pagina 1
-                else:
-                    self.assertTrue( ("<Page 1 of %i>"%pages) in ("%s"%paginations),"Could %s don't have %i pages"%(paginations,pages)) # check pagina 1
+                if (self.model_inserting<=self.view.paginate_by): # only one page
+                    self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations) ) # check page 1
+                else: # more of one page
+                    pages=int(math.ceil((self.model_inserting/self.view.paginate_by))) # number of pages to show all objects               
+                    self.assertTrue( ("<Page 1 of %i>"%pages) in ("%s"%paginations),"Could %s don't have %i pages"%(paginations,pages)) # check page 1
+                    
+                    
                     # exist all buttons of paginations
-                    for i in range(1, pages):  # 16 = (4 custormers x 4 invoices)
-                        html='page=%i"> %i </a>'%(i,i)
-                        self.assertContains( response, "%s"%html)  
+                    if('enumeration.html' in self.view.paginate_template ):  # Numeric pagination template: cruds/pagination/enumeration.html
+                        for i in range(1, pages):  # 16 = (4 custormers x 4 invoices)
+                            html='page=%i"> %i </a>'%(i,i)
+                            self.assertContains( response, "%s"%html)  
+                            self.assertTemplateUsed(response,  self.view.paginate_template)
                                 
-                     
+                    if('prev_next.html' in self.view.paginate_template ):  # default pagination template: cruds/pagination/prev_next.html
+                            html='<a href="?page=2"' 
+                            self.assertContains( response, "%s"%html)   
+                            self.assertTemplateUsed(response, self.view.paginate_template)
+                            
+            self.client.logout()    
+            
+            
+        """ Test show only the list of fields settings   """
+        def test_get_listview_fields(self):
+            self.client.login(username='test', password='test')
+            url= get_action_url(self,'list')        
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200 )
+            
+            fields=response.context['fields']  # columns fields to build table html
+            
+            if self.view.template_name_base != crud_views.CRUDView.template_name_base : # test if used custom template
+                    tmp=self.app_testing +'/'+ self.model+'/'+self.view.template_name_base+'/list.html'
+                    self.assertTemplateUsed(response,tmp )
+                
+                
+            if self.view.list_fields:   # test if fields exist on response
+                for field in self.view.list_fields :
+                     self.assertIn(field,fields)
+                     html='<th class="th-field-%s th-fieldtype-'%(field) 
+                     self.assertContains( response, "%s"%html)   
+            
+            self.client.logout()    
+             
+             
+        """ Test show first object inserted on first row table html"""
+        def test_get_listview_row_one(self):
+            self.client.login(username='test', password='test')
+            url= get_action_url(self,'list')        
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200 )
+            
+
 
             self.client.logout()    
- 
- 
+             
  
 class SimpleOListViewAutorTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='autor'        
                 self.model_inserting=4
+                self.ignore_action = []   
                 self.view = AutorCRUD()   # defined view 
                 super(SimpleOListViewAutorTest, self).__init__(*args, **kwargs)                        
 
 class SimpleOListViewAddressTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='addresses'        
-                self.model_inserting=4      # 4 = (4 custormers)
+                self.model_inserting=4      # 4 = (4 addresses)
+                self.ignore_action = []   
                 self.view = AddressCRUD()   # defined view 
                 super(SimpleOListViewAddressTest, self).__init__(*args, **kwargs)
 
@@ -215,16 +260,17 @@ class SimpleOListViewLineTest(TreeData,SimpleOListViewTest):
         def __init__(self, *args, **kwargs):
                 self.model='line' 
                 self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
+                self.ignore_action=['list']
                 self.view = LineCRUD()   # defined view
                 super(SimpleOListViewLineTest, self).__init__(*args, **kwargs)
                                 
-
               
                                 
 class SimpleOListViewInvoiceTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
-                self.model_inserting=(4*4)#        16 = (4 custormers x 4 invoices)
+                self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
+                self.ignore_action = []
                 self.view = InvoiceCRUD()   # defined view
                 super(SimpleOListViewInvoiceTest, self).__init__(*args, **kwargs)
 
@@ -233,6 +279,7 @@ class SimpleOListViewCustomerTest(TreeData,SimpleOListViewTest):
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
+                self.ignore_action = []   
                 self.view = CustomerCRUD()   # defined view 
                 super(SimpleOListViewCustomerTest, self).__init__(*args, **kwargs)  
                 
@@ -240,7 +287,16 @@ class SimpleOListViewCustomerTest(TreeData,SimpleOListViewTest):
                 
                               
               
-                         
+#    def test_call_view_fails_blank(self):
+#         self.client.login(username='user', password='test')
+#         response = self.client.post('/url/to/view', {}) # blank data dictionary
+#         self.assertFormError(response, 'form', 'some_field', 'This field is required.')
+#                                 
+# #    def test_contact_view_success(self):
+#     # same again, but with valid data, then
+#     self.client.login(username='username1', password='password1')
+#     response = self.client.post('/contact/add/', {u'last_name': [u'Johnson'], }) 
+#     self.assertRedirects(response, '/')
 # """ Filters test """
 # class FilterViewTest(InsertData):
 #     def setUp(self):   
