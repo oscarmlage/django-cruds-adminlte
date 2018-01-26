@@ -2,31 +2,43 @@
 from __future__ import unicode_literals
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
-
+from django.test.client import RequestFactory
 from django.utils import timezone
 from datetime import datetime, timedelta, tzinfo
 #TEST
-from django.test import TestCase
-from django.test import Client
+from django.test import ( TestCase,
+                            Client )
 
 #CRUD
 from cruds_adminlte.utils import get_fields
+from testapp.views import AutorCRUD, InvoiceCRUD, IndexView, CustomerCRUD, LineCRUD, AddressCRUD
+
+from testapp import views as testapp_views
 from cruds_adminlte import crud as crud_views
 
 #APPs
-from .models import Autor, Addresses, Customer, Invoice, Line
+from testapp.models import ( Autor, 
+                             Addresses, 
+                             Customer, 
+                             Invoice, 
+                             Line )
 from django.conf import settings
+
 
 class TreeData(TestCase):
     def setUp(self):
-        nobjects=4
+        self.app_testing='testapp'
+        nobjects=4 # number of objects to insert
+        self.actions=['create', 'list', 'delete', 'update', 'detail']  
         
-        self.user = User(
-          username='test', email='test@example.com', is_active=True,
+        self.factory = RequestFactory()
+        #user to test
+        self.user = User( username='test', email='test@example.com', is_active=True,
               is_staff=True, is_superuser=True,
         )
         self.user.set_password('test')
         self.user.save()
+        
         
         # add objects Autor/Addressself.client.login(username='test', password='test')
         for i in range(nobjects):  # add Autor-Address 
@@ -59,12 +71,12 @@ class TreeData(TestCase):
             # invoice 2  | invoice 6  | invoice 10 | invoice 14
             # invoice 3  | invoice 7  | invoice 11 | invoice 15
                                                    
-            io = Invoice.objects.create(customer=co,registered=True,sent=False,paid=False,date=timezone.now())  # only registered    
-            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=False,date=timezone.now()) # registered and sent 
-            io = Invoice.objects.create(customer=co,registered=False,sent=False,paid=False,date=timezone.now()) # nothing did!
-            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=True,date=timezone.now())  # completed
+            io = Invoice.objects.create(customer=co,registered=True,sent=False,paid=False,date=timezone.now())  # only registered   
+            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=False,date=timezone.now(),pk=None) # registered and sent
+            io = Invoice.objects.create(customer=co,registered=False,sent=False,paid=False,date=timezone.now(),pk=None) # nothing did!
+            io = Invoice.objects.create(customer=co,registered=True,sent=True,paid=True,date=timezone.now(),pk=None)  # completed
 
-                    
+                      
         # add object Invoices / Lines
         for io in Invoice.objects.all():
              for i in range(nobjects):  
@@ -103,10 +115,76 @@ class TreeData(TestCase):
                  #   * Line 11 i=3  ...                                |   *  Line 15  i=3   ...                 
                  # ( customer 1) -------------------------------------------------------------------------------------------        
 
-class   OListViewTest(TreeData):
-        def test_get_autor(self):
-            self.client.login(username='test', password='test')
+
+    def get_action_url(self,action,pk=None):
+         if ( action in ['update','delete','detail'] ) :
+                url= reverse(self.app_testing+'_'+self.model+'_'+action, kwargs={'pk': pk})    # testapp_invoice/1/update
+         else:
+                url= reverse(self.app_testing+'_'+self.model+'_'+action)    # testapp/invoice/create
+                    
+         return url                
+        
+class   SimpleOListViewTest(TreeData):
     
+        """ Test show list of 'object_list' """
+        def test_get_ListView_Invoice_content(self):
+            self.model='invoice'
+            self.client.login(username='test', password='test')
+            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            view = InvoiceCRUD()   # defined view
+            
+            
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200 )
+            
+            object_list=response.context['object_list']
+            self.assertEqual(len(object_list), view.paginate_by)  # Number of object by pages
+
+            if (view.paginate_by==1):
+                 paginations=response.context['page_obj']
+                 self.assertTrue( '16' in "%s"%paginations)  
+            
+            self.assertEqual(view.views_available, response.context['views_available'])
+            
+            del (view)
+            self.client.logout()   
+        
+        """ Test show only button of valid actions """         
+        def test_get_ListView_Invoice_actions(self):
+            self.model='invoice'
+            self.client.login(username='test', password='test')
+            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            view = InvoiceCRUD()   # defined view
+            
+            
+            response = self.client.get(url)
+             
+            for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
+                 if action in view.views_available:  # crudview set actions ['create', 'list']
+                    url=self.get_action_url(action,1)
+                    self.assertContains( response, '<a href="'+url )          
+                     
+            del (view)
+            self.client.logout()  
+            
+            
+        """ Test show only button of valid actions """         
+        def test_get_ListView_Invoice_pagination(self):
+            self.model='invoice'
+            self.client.login(username='test', password='test')
+            url= reverse(self.app_testing+'_'+self.model+'_list')         
+            view = InvoiceCRUD()   # defined view
+            
+            
+            response = self.client.get(url)
+             
+            for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
+                 if action in view.views_available:  # crudview set actions ['create', 'list']
+                    url=self.get_action_url(action,1)
+                    self.assertContains( response, '<a href="'+url )          
+                     
+            del (view)
+            self.client.logout()              
   
 # """ Filters test """
 # class FilterViewTest(InsertData):
