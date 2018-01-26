@@ -28,6 +28,8 @@ from django.conf import settings
 class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
+        #self.model='invoice'
+        #self.view = None
         nobjects=4 # number of objects to insert
         self.actions=['create', 'list', 'delete', 'update', 'detail']  
         
@@ -124,68 +126,89 @@ class TreeData(TestCase):
                     
          return url                
         
-class   SimpleOListViewTest(TreeData):
+class SimpleOListViewTest:
     
         """ Test show list of 'object_list' """
-        def test_get_ListView_Invoice_content(self):
-            self.model='invoice'
+        def test_get_listView_content(self):
             self.client.login(username='test', password='test')
             url= reverse(self.app_testing+'_'+self.model+'_list')         
-            view = InvoiceCRUD()   # defined view
+
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200 )
+            
+            if self.view.paginate_by :
+                object_list=response.context['object_list']
+                if (( len(object_list) == self.model_inserting) and (self.model_inserting < self.view.paginate_by)):
+                    self.assertEqual(len(object_list), self.model_inserting)  # Number of objects
+                else:
+                   self.assertEqual(len(object_list), self.view.paginate_by)  # Number of object by pages
+
+            
+            self.assertEqual(self.view.views_available, response.context['views_available'])
+            
+            self.client.logout()   
+        
+        """ Test show only button of valid actions """         
+        def test_get_listView_actions(self):
+            self.client.login(username='test', password='test')
+            url= reverse(self.app_testing+'_'+self.model+'_list')         
             
             
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             
-            object_list=response.context['object_list']
-            self.assertEqual(len(object_list), view.paginate_by)  # Number of object by pages
-
-            if (view.paginate_by==1):
-                 paginations=response.context['page_obj']
-                 self.assertTrue( '16' in "%s"%paginations)  
-            
-            self.assertEqual(view.views_available, response.context['views_available'])
-            
-            del (view)
-            self.client.logout()   
-        
-        """ Test show only button of valid actions """         
-        def test_get_ListView_Invoice_actions(self):
-            self.model='invoice'
-            self.client.login(username='test', password='test')
-            url= reverse(self.app_testing+'_'+self.model+'_list')         
-            view = InvoiceCRUD()   # defined view
-            
-            
-            response = self.client.get(url)
-             
             for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
-                 if action in view.views_available:  # crudview set actions ['create', 'list']
+                 if action in self.view.views_available:  # crudview set actions ['create', 'list']
                     url=self.get_action_url(action,1)
                     self.assertContains( response, '<a href="'+url )          
                      
-            del (view)
+
             self.client.logout()  
             
             
-        """ Test show only button of valid actions """         
-        def test_get_ListView_Invoice_pagination(self):
-            self.model='invoice'
+        """ Test show objecto by pagination 1 object and url pages bottons """         
+        def test_get_listView_pagination(self):
             self.client.login(username='test', password='test')
             url= reverse(self.app_testing+'_'+self.model+'_list')         
-            view = InvoiceCRUD()   # defined view
-            
+
             
             response = self.client.get(url)
-             
-            for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
-                 if action in view.views_available:  # crudview set actions ['create', 'list']
-                    url=self.get_action_url(action,1)
-                    self.assertContains( response, '<a href="'+url )          
+            self.assertEqual(response.status_code, 200 )
+            
+            if self.view.paginate_by :
+                paginations=response.context['page_obj']
+                if (self.model_inserting<=self.view.paginate_by):
+                    self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations) ) # check pagina 1
+                    self.assertFalse( ('Page %i '%self.view.paginate_by) in ("%s"%paginations) )
+                else:
+                    self.assertTrue( ("<Page 1 of %i>"%int(self.model_inserting/self.view.paginate_by)) in ("%s"%paginations) ) # check pagina 1
+                
+                # exist all buttons of paginations
+                for i in range(1, int(self.model_inserting/self.view.paginate_by)):  # 16 = (4 custormers x 4 invoices)
+                     self.assertContains( response, 'page=%i"> %i </a>'%(i,i) )  
+                                
                      
-            del (view)
-            self.client.logout()              
-  
+
+            self.client.logout()    
+            
+class SimpleOListViewInvoiceTest(TreeData,SimpleOListViewTest):   
+        def __init__(self, *args, **kwargs):
+                self.model='invoice' 
+                self.model_inserting=(4*4)       
+                self.view = InvoiceCRUD()   # defined view
+                super(SimpleOListViewInvoiceTest, self).__init__(*args, **kwargs)
+
+
+class SimpleOListViewCustomerTest(TreeData,SimpleOListViewTest):   
+        def __init__(self, *args, **kwargs):
+                self.model='customer'        
+                self.model_inserting=4*4
+                self.view = CustomerCRUD()   # defined view 
+                super(SimpleOListViewCustomerTest, self).__init__(*args, **kwargs)                
+                      
+
+                
+                         
 # """ Filters test """
 # class FilterViewTest(InsertData):
 #     def setUp(self):   
