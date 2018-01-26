@@ -11,12 +11,17 @@ from django.test import ( TestCase,
 
 # CRUD
 from cruds_adminlte.utils import get_fields
-from testapp.views import AutorCRUD, InvoiceCRUD, IndexView, CustomerCRUD, LineCRUD, AddressCRUD
-
-from testapp import views as testapp_views
+from cruds_adminlte import utils
 from cruds_adminlte import crud as crud_views
 
 # APPs
+from testapp.views import (AutorCRUD, 
+                           InvoiceCRUD, 
+                           IndexView, 
+                           CustomerCRUD, 
+                           LineCRUD, 
+                           AddressCRUD)
+from testapp import views as testapp_views
 from testapp.models import ( Autor, 
                              Addresses, 
                              Customer, 
@@ -154,6 +159,7 @@ class SimpleOListViewTest:
                     self.assertEqual(len(object_list), self.model_inserting)  # Number of objects
                 else:
                    self.assertEqual(len(object_list), self.view.paginate_by)  # Number of object by pages
+                   
             self.assertEqual(self.view.views_available, response.context['views_available'])
             
             self.client.logout()   
@@ -195,12 +201,12 @@ class SimpleOListViewTest:
                         for i in range(1, pages):  # 16 = (4 custormers x 4 invoices)
                             html='page=%i"> %i </a>'%(i,i)
                             self.assertContains( response, "%s"%html)  
-                            self.assertTemplateUsed(response,  self.view.paginate_template)
+                            self.assertTemplateUsed(response,  self.view.paginate_template)# loaded the correct template 
                                 
                     if('prev_next.html' in self.view.paginate_template ):  # default pagination template: cruds/pagination/prev_next.html
                             html='<a href="?page=2"' 
                             self.assertContains( response, "%s"%html)   
-                            self.assertTemplateUsed(response, self.view.paginate_template)
+                            self.assertTemplateUsed(response, self.view.paginate_template) # loaded the correct template 
                             
             self.client.logout()    
             
@@ -216,14 +222,21 @@ class SimpleOListViewTest:
             
             if self.view.template_name_base != crud_views.CRUDView.template_name_base : # test if used custom template
                     tmp=self.app_testing +'/'+ self.model+'/'+self.view.template_name_base+'/list.html'
-                    self.assertTemplateUsed(response,tmp )
+                    self.assertTemplateUsed(response,tmp )       # loaded the correct template 
                 
-                
+             
+            model_fields= utils.get_fields(self.view.model)   
             if self.view.list_fields:   # test if fields exist on response
                 for field in self.view.list_fields :
-                     self.assertIn(field,fields)
+                     self.assertIn(field,model_fields)   # fields exist on model
+                     self.assertIn(field,fields)         # fields exist on listview setting list_fields
                      html='<th class="th-field-%s th-fieldtype-'%(field) 
-                     self.assertContains( response, "%s"%html)   
+                     self.assertContains( response, "%s"%html)            # column field exist on table html
+            else: # '__all__'
+                     for field in model_fields:
+                        self.assertIn(field,fields)         # field exist on listview setting list_fields
+                        html='<th class="th-field-%s th-fieldtype-'%(field) 
+                        self.assertContains( response, "%s"%html) # column field exist on table html
             
             self.client.logout()    
              
@@ -234,8 +247,9 @@ class SimpleOListViewTest:
             url= get_action_url(self,'list')        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
+        
+            firstobject= self.view.model.objects.all()[0] # first object inserting           
             
-
 
             self.client.logout()    
              
