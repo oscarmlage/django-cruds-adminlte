@@ -271,12 +271,12 @@ class FilterOListViewTest:
                  for filter in view_filter:
                      if (isinstance(filter, str)):
                          filter_html='<label for="id_%s">'%filter
-                         self.assertContains(response,filter_html)   #label filters exist
+                         self.assertContains(response,filter_html)   # label filters exist
                      elif hasattr(filter,'form'):
                             if hasattr(filter.form,'base_fields'):
                                 for bf in filter.form.base_fields:
                                      filter_html='<label for="id_%s">'%bf
-                                     self.assertContains(response,filter_html)   #label filters exist
+                                     self.assertContains(response,filter_html)   # label filters exist
                                         
             self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
             self.client.logout()  
