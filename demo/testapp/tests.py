@@ -5,6 +5,8 @@ from django.contrib.auth.models import User, Permission, Group
 from django.test.client import RequestFactory
 from django.utils import timezone
 from datetime import datetime, timedelta, tzinfo
+from django.template import Template, Context
+
 # TEST
 from django.test import ( TestCase,
                             Client )
@@ -13,15 +15,25 @@ from django.test import ( TestCase,
 from cruds_adminlte.utils import get_fields
 from cruds_adminlte import utils
 from cruds_adminlte import crud as crud_views
-
+from cruds_adminlte.filter import ( FormFilter, 
+                                    get_filters )
 # APPs
 from testapp.views import (AutorCRUD, 
                            InvoiceCRUD, 
                            IndexView, 
                            CustomerCRUD, 
                            LineCRUD, 
-                           AddressCRUD)
-from testapp import views as testapp_views
+                           AddressCRUD,
+                           filterAddress,
+                           LineForm,
+                           Lines_AjaxCRUD,
+                           Address_AjaxCRUD,
+                           )
+
+from testapp.forms import (CustomerForm,
+                           InvoiceForm,
+                           LineForm,
+                           AddressesForm) 
 from testapp.models import ( Autor, 
                              Addresses, 
                              Customer, 
@@ -32,6 +44,7 @@ from django.conf import settings
 # others
 import math
 
+
 """ function to return the url """
 def get_action_url(test,action,pk=None):
             if ( action in ['update','delete','detail'] ) :
@@ -39,11 +52,16 @@ def get_action_url(test,action,pk=None):
             else:
                     url= reverse(test.app_testing+'_'+test.model+'_'+action)    # testapp/invoice/create   -   testapp/invoice/list
                     
-            if (test.view.namespace): # if have namespace,find URL action on /namespace/
+            if (test.view.namespace): # if have namespace, find URL action on /namespace/
                 if (test.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
-
+""" function to return filters html"""        
+def get_FormFilter_html(test,filter):
+        if isinstance(filter, FormFilter):
+                return filter.form_instance            
+        return None
+    
 class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
@@ -108,7 +126,6 @@ class TreeData(TestCase):
                  lo.unit_price=i
                  lo.amount=i
                  lo.save()
-            
                  # ( customer 0) -------------------------------------------------------------------------------------------
                  # invoice 0                                           | invoice 1
                  #   * Line 0 i=0                                      |  *   Line 4    i=0
@@ -135,8 +152,6 @@ class TreeData(TestCase):
                  #   * Line 11 i=3  ...                                |   *  Line 15  i=3   ...                 
                  # ( customer 1) -------------------------------------------------------------------------------------------        
 
-             
-        
 class SimpleOListViewTest:
    
 
@@ -172,10 +187,12 @@ class SimpleOListViewTest:
             self.assertEqual(response.status_code, 200 )
             for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
                  if action in self.view.views_available:  # crudview set actions ['create', 'list']
-                     if action not in self.ignore_action :  # Used when action doesn't shows. Example:: list action on sidebar
-                         url=get_action_url(self,action,1)
+                     if action not in self.ignore_action : 
+                         firstobject= self.view.model.objects.all()[0]
+                         self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+                         url=get_action_url(self,action,firstobject.pk)
                          self.assertContains( response, '<a href="'+url )  # check if exist hyperlink to actions         
-            self.client.logout()  
+            self.client.logout()   
             
             
         """ Test show object by pagination 1  and url pages buttons """         
@@ -233,74 +250,111 @@ class SimpleOListViewTest:
                      html='<th class="th-field-%s th-fieldtype-'%(field) 
                      self.assertContains( response, "%s"%html)            # column field exist on table html
             else: # '__all__'
-                     for field in model_fields:
-                        self.assertIn(field,fields)         # field exist on listview setting list_fields
-                        html='<th class="th-field-%s th-fieldtype-'%(field) 
-                        self.assertContains( response, "%s"%html) # column field exist on table html
+                for field in model_fields:
+                    self.assertIn(field,fields)         # field exist on listview setting list_fields
+                    html='<th class="th-field-%s th-fieldtype-'%(field) 
+                    self.assertContains( response, "%s"%html) # column field exist on table html
             
             self.client.logout()    
              
-             
-        """ Test show first object inserted on first row table html"""
-        def test_get_listview_row_one(self):
+class FilterOListViewTest:
+    """ Test show only the list of list_filter settings   """
+    def test_get_listview_fields_filters(self):
             self.client.login(username='test', password='test')
             url= get_action_url(self,'list')        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
-        
-            firstobject= self.view.model.objects.all()[0] # first object inserting           
             
+      
+            view_filter= self.view.list_filter          
+            if view_filter:
+                 #filters=response.context['filters']  # columns list_filter to build table html
+                 #html=get_FormFilter_html(self,filters) 
+                 #self.assertTrue(html)                   
+                 for filter in view_filter:
+                     if (isinstance(filter, str)):
+                         filter_html='<label for="id_%s">'%filter
+                         self.assertContains(response,filter_html)   #label filters exist
+                     elif hasattr(filter,'form'):
+                            if hasattr(filter.form,'base_fields'):
+                                for bf in filter.form.base_fields:
+                                     filter_html='<label for="id_%s">'%bf
+                                     self.assertContains(response,filter_html)   #label filters exist
+                                    
 
-            self.client.logout()    
-             
- 
-class SimpleOListViewAutorTest(TreeData,SimpleOListViewTest):   
+
+
+            #if self.view.list_filter:   # test if fields exist on response
+                #for field in self.view.list_fields :
+                    
+                    
+                    
+                    
+                    
+             #        self.assertIn(field,model_fields)   # filters exist on model
+             #        self.assertIn(field,filters)         # filters exist on listview setting list_filter
+             #        html='<th class="th-field-%s th-fieldtype-'%(field) 
+             #        self.assertContains( response, "%s"%html)            # column field exist on table html
+
+
+            self.client.logout()  
+    
+    
+class OListViewAutorTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='autor'        
                 self.model_inserting=4
                 self.ignore_action = []   
                 self.view = AutorCRUD()   # defined view 
-                super(SimpleOListViewAutorTest, self).__init__(*args, **kwargs)                        
+                super(OListViewAutorTest, self).__init__(*args, **kwargs)                        
 
-class SimpleOListViewAddressTest(TreeData,SimpleOListViewTest):   
+class OListViewAddressTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='addresses'        
                 self.model_inserting=4      # 4 = (4 addresses)
                 self.ignore_action = []   
                 self.view = AddressCRUD()   # defined view 
-                super(SimpleOListViewAddressTest, self).__init__(*args, **kwargs)
+                super(OListViewAddressTest, self).__init__(*args, **kwargs)
 
-class SimpleOListViewLineTest(TreeData,SimpleOListViewTest):   
+class OListViewLineTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='line' 
                 self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
-                self.ignore_action=['list']
+                self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
                 self.view = LineCRUD()   # defined view
-                super(SimpleOListViewLineTest, self).__init__(*args, **kwargs)
+                super(OListViewLineTest, self).__init__(*args, **kwargs)
                                 
               
                                 
-class SimpleOListViewInvoiceTest(TreeData,SimpleOListViewTest):   
+class OListViewInvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
                 self.ignore_action = []
                 self.view = InvoiceCRUD()   # defined view
-                super(SimpleOListViewInvoiceTest, self).__init__(*args, **kwargs)
+                super(OListViewInvoiceTest, self).__init__(*args, **kwargs)
 
 
-class SimpleOListViewCustomerTest(TreeData,SimpleOListViewTest):   
+class OListViewCustomerTest(TreeData,SimpleOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
                 self.ignore_action = []   
                 self.view = CustomerCRUD()   # defined view 
-                super(SimpleOListViewCustomerTest, self).__init__(*args, **kwargs)  
+                super(OListViewCustomerTest, self).__init__(*args, **kwargs)  
                 
       
                 
                               
-              
+# def get_field_template(test,field,value):
+#     fo = test.view.model._meta.get_field(field)
+#     fo= (fo.__class__.__name__).lower()
+#     tmp="cruds/columns/%s.html"%fo
+#     #tmp=Template(tmp)
+#     #rendered = tmp.render(Context({'object':value}))
+#     #return rendered
+#     #self.assertIn(entry.title, rendered)
+#     return tmp
 #    def test_call_view_fails_blank(self):
 #         self.client.login(username='user', password='test')
 #         response = self.client.post('/url/to/view', {}) # blank data dictionary
