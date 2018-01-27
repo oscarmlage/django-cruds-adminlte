@@ -45,6 +45,7 @@ from django.conf import settings
 import math
 
 
+
 """ function to return the url """
 def get_action_url(test,action,pk=None):
             if ( action in ['update','delete','detail'] ) :
@@ -265,12 +266,8 @@ class FilterOListViewTest:
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             
-      
             view_filter= self.view.list_filter          
-            if view_filter:
-                 #filters=response.context['filters']  # columns list_filter to build table html
-                 #html=get_FormFilter_html(self,filters) 
-                 #self.assertTrue(html)                   
+            if view_filter:                  
                  for filter in view_filter:
                      if (isinstance(filter, str)):
                          filter_html='<label for="id_%s">'%filter
@@ -280,23 +277,8 @@ class FilterOListViewTest:
                                 for bf in filter.form.base_fields:
                                      filter_html='<label for="id_%s">'%bf
                                      self.assertContains(response,filter_html)   #label filters exist
-                                    
-
-
-
-            #if self.view.list_filter:   # test if fields exist on response
-                #for field in self.view.list_fields :
-                    
-                    
-                    
-                    
-                    
-             #        self.assertIn(field,model_fields)   # filters exist on model
-             #        self.assertIn(field,filters)         # filters exist on listview setting list_filter
-             #        html='<th class="th-field-%s th-fieldtype-'%(field) 
-             #        self.assertContains( response, "%s"%html)            # column field exist on table html
-
-
+                                        
+            self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
             self.client.logout()  
     
     
