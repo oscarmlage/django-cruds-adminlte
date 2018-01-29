@@ -23,6 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from cruds_adminlte.filter import get_filters
+from django.db.models import query
 
 
 class CRUDMixin(object):
@@ -152,6 +153,7 @@ class CRUDMixin(object):
                     Classrelated, pk=pk)
                 getparams.append("%s=%s" % (
                     related, str(self.context_rel[related].pk)))
+        
         if getparams:
             self.getparams = "&".join(getparams)
         for perm in self.perms:
@@ -360,7 +362,10 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(OCreateView, self).get_success_url()
-                return url + self.getparams
+                if (self.getparams): # fixed filter create action
+                    url +='?'+ self.getparams
+                return url
+            
         return OCreateView
 
     def get_detail_view_class(self):
@@ -381,6 +386,12 @@ class CRUDView(object):
             template_father = self.template_father
             related_fields = self.related_fields
 
+            def get_success_url(self):
+                url = super(ODetailView, self).get_success_url()
+                if (self.getparams): # fixed filter detail action
+                    url +='?'+ self.getparams
+                return url
+            
         return ODetailView
 
     def get_update_view_class(self):
@@ -413,7 +424,9 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(OEditView, self).get_success_url()
-                return url + self.getparams
+                if (self.getparams): # fixed filter edit action
+                    url +='?'+ self.getparams
+                return url
 
         return OEditView
 
@@ -446,6 +459,7 @@ class CRUDView(object):
                         self.model, self.list_filter, self.request)
                     for filter in filters:
                         queryset = filter.get_filter(queryset)
+                        
                 return queryset
 
             def search_queryset(self, query):
@@ -461,16 +475,25 @@ class CRUDView(object):
                     sfilter = None
                     for field in self.search_fields:
                         for qsearch in q:
-                            if sfilter is None:
-                                sfilter = Q(**{field: qsearch})
-                            else:
-                                sfilter |= Q(**{field: qsearch})
+                            if field not in self.context_rel :  
+                                if sfilter is None:
+                                    sfilter = Q(**{field: qsearch})
+                                else:
+                                     sfilter |= Q(**{field: qsearch})             
                     if sfilter is not None:
-                        query = query.filter(sfilter)
-                if self.related_fields:
-                    query = query.filter(**self.context_rel)
-                return query
+                            query = query.filter(sfilter) 
 
+                if self.related_fields:    
+                        query = query.filter(**self.context_rel)   
+                return query
+            
+            def get_success_url(self):
+                url = super(OListView, self).get_success_url()
+                if (self.getparams): # fixed filter detail action
+                    url +='?'+ self.getparams
+                return url
+            
+            
             def get_queryset(self):
                 queryset = super(OListView, self).get_queryset()
                 queryset = self.search_queryset(queryset)
@@ -497,7 +520,10 @@ class CRUDView(object):
 
             def get_success_url(self):
                 url = super(ODeleteView, self).get_success_url()
-                return url + self.getparams
+                print(self.getparams)
+                if (self.getparams): # fixed filter delete action
+                    url +='?'+ self.getparams
+                return url   
 
         return ODeleteView
 

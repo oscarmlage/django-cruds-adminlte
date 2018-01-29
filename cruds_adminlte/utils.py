@@ -82,4 +82,4 @@ def crud_url(instance, action, prefix=None, namespace=None,
 
 def get_related_class_field(obj, field):
     objfield = obj._meta.get_field(field)
-    return objfield.rel.model
+    return objfield.rel.model if hasattr(objfield, 'rel') else objfield.remote_field.model

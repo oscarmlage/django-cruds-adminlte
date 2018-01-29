@@ -17,6 +17,7 @@ class Autor(models.Model):
         permissions = (
             ("view_author", "Can see available Authors"),
         )
+        
 
 
 class Addresses(models.Model):

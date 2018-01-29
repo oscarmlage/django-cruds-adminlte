@@ -16,13 +16,20 @@ class FormFilter:
             self.form_instance.fields[key].required = False
         self.form_instance.is_valid()
         self.form_instance._errors = {}
-
+    
+        
     def get_cleaned_fields(self):
         values = {}
         for value in self.form_instance.cleaned_data:
             rq_value = self.request.GET.get(value, '')
             if value and rq_value:
-                values[value] = self.form_instance.cleaned_data[value]
+                data_value = self.form_instance.cleaned_data[value]
+                if type(data_value) == models.QuerySet : 
+                    if data_value.count() == 1:
+                        data_value=data_value.first()
+                    elif '__in' not in value:
+                        value=value+'__in'
+                values[value] = data_value
         return values
 
     def render(self):
@@ -30,10 +37,18 @@ class FormFilter:
 
     def get_filter(self, queryset):
         clean_value = self.get_cleaned_fields()
-        if clean_value:
-            queryset = queryset.filter(**clean_value)
+        if clean_value:          
+            queryset = queryset.filter(**clean_value)          
         return queryset
 
+    def get_build_param(self,value,data,params):
+        if isinstance(data, models.base.Model):
+                    data = str(data.pk)
+        params.append("%s=%s" %
+                              (value, str(data)))
+        return params
+                    
+                    
     def get_params(self, exclude=[]):
         params = []
         for value in self.form_instance.cleaned_data:
@@ -42,10 +57,11 @@ class FormFilter:
             rq_value = self.request.GET.get(value, '')
             if rq_value:
                 data = self.form_instance.cleaned_data[value]
-                if isinstance(data, models.base.Model):
-                    data = str(data.pk)
-                params.append("%s=%s" %
-                              (value, str(data)))
+                if type(data) == models.QuerySet: 
+                     for q in data:
+                         params = self.get_build_param(value,q,params)
+                else:    
+                    params = self.get_build_param(value,data,params)   
         return params
 
 

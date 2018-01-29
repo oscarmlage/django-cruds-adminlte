@@ -1,0 +1,75 @@
+{% extends template_father %}
+{% load i18n %}
+{% load crud_tags %}
+
+{% block title %}{% trans "Update" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% trans "Update" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+    	{% if crud_perms.list %}
+        <a href="{{ url_list }}{{getparams}}">
+            <i class="fa fa-angle-double-left"></i>
+            {% trans "Back to" %} {{ model_verbose_name_plural|lower }}
+        </a>
+        {% endif %}
+        <br /><br />
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{% trans "Edit" %} {{ model_verbose_name }}</h3>
+            </div>
+            {% include "cruds/_form.html" with action='update' %}
+
+          {% if inlines%}
+            <div class="box-body row">
+                <div class="col-md-12">
+
+                    <div class="panel panel-default">
+                    {% for inline in inlines%}
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{inline.title}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="{{inline.name}}_father">
+                            {% if 'list' in inline.views_available %}
+                            <div data-refresh-url="{% crud_inline_url form.instance inline.model 'list' namespace %}" id="{{inline.name}}_myList">
+
+                                <a id="{{inline.name}}_btn" data-replace-inner="#{{inline.name}}_myList"
+                                    data-ajax="" data-success="function(){}"
+                                    data-href="{% crud_inline_url form.instance inline.model 'list' namespace %}">
+                                    <i class='fa fa-spinner fa-spin '></i>
+                                </a>
+                                <script>
+                                $( document ).ready(function() {$("#{{inline.name}}_btn").click() });
+                                </script>
+                            </div>
+                            {% endif %}
+                            <div id="{{inline.name}}_editList"></div>
+                            {% if 'create' in inline.views_available %}
+                            <button class="btn btn-success"
+                                data-href="{% crud_inline_url form.instance inline.model 'create' namespace %}"
+
+                                id="#{{ name }}_{{ object.pk }}_add"
+                                data-replace-inner="#edit_modal_inner"
+
+
+                                data-replace-inner="#{{inline.name}}_editList"
+                                data-ajax="" data-success="function(){}" >
+                                {% trans 'Create' %}
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

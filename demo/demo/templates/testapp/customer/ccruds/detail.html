@@ -1,0 +1,40 @@
+{% extends template_father %}
+{% load i18n %}
+{% load crud_tags %}
+{% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
+{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% trans "Detail of" %} {{ object }}{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+
+  {% if url_update and 'update' in views_available and crud_perms.update %}
+  <div class="box-header">
+      <a href="{{ url_update }}{{getparams}}" class="btn btn-primary" >{% trans "Edit" %}</a>
+  </div>
+  {% endif %}
+<div class="box-body">
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <th>{% trans 'Label' %}</th><th>{% trans 'Value' %}</th>
+    </thead>
+    <tbody>
+      {% crud_fields object fields %}
+    </tbody>
+  </table>
+</div>
+</div>
+  {% if url_list and 'list' in views_available and crud_perms.list %}
+    <div class="box-footer">
+      <a href="{{ url_list }}{{getparams}}" class="btn btn-primary">{% trans "Back to list" %}</a>
+   </div>
+  {% endif %}
+  </div>
+  </div>
+  </div>
+{% endblock %}
