@@ -59,15 +59,19 @@ def get_action_url(test,action,pk=None):
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
 
-def get_build_params(test,params=[]):
+def get_build_params(test,params=[],strseparator="&",str_boolean=False):
     query='?'
     separator=False
     for index in params :
-         if separator :
-              query+="&"
-              separator=False;     
-         query+="%s=%s"%(index[0], index[1])
-         separator=True
+         value=index[1]  
+         if value!='' :  
+             if separator :
+                query+=strseparator
+                separator=False;    
+             if str_boolean:
+                value= value if value!= 'on'  else True
+             query+="%s=%s"%(index[0], value)
+             separator=True
     return query    
     
         
@@ -291,8 +295,10 @@ class FilterOListViewTest:
                                         
             self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
             self.client.logout()  
-    """ Test action url with filters params """
-    
+            
+            
+            
+    """ Test action url with filters params, checking to add one by one """
     def test_get_listView_pagination_filters(self):
             params=[]
             self.client.login(username='test', password='test')
@@ -301,28 +307,31 @@ class FilterOListViewTest:
             view_filter= self.view.list_filter    
              
             if view_filter:         # check filters params
+                sfilter=None
                 response = self.client.get(url)
                 object_list=self.view.model.objects.all()
                 self.assertEqual(response.status_code, 200 )
                 for filter in view_filter :
                          if (isinstance(filter, str)):
-                             params.append([filter,self.filter_params[filter]])
-                             value= self.filter_params[filter] 
-                             
-                             value= value if value!= 'on'  else True
-                             value= value if value!= ''  else False
-                             
-                             sfilter = Q(**{filter: value})
-                             object_list = object_list.filter(sfilter) 
+                             if filter in self.filter_params:
+                                     params.append([filter,self.filter_params[filter]])
+                                     value= self.filter_params[filter] 
+                                     value= value if value!= 'on'  else True
+                                     
+                                     if value !='' :
+                                        sfilter = Q(**{filter: value})
+                                        object_list = object_list.filter(sfilter) 
+                             else:
+                                    params.append([filter,''])       
                          elif hasattr(filter,'form'):
                                 if hasattr(filter.form,'base_fields'):
                                     for bf in filter.form.base_fields:
                                          filter=bf
                                          params.append([filter,self.filter_params[filter]])
                                          sfilter = {"%s__in"%filter: self.filter_params[filter]}
-                                         object_list = object_list.filter(sfilter) 
+                                         object_list = object_list.filter(**sfilter) 
                            
-                         print(object_list)                
+            
                          pm=get_build_params(self,params) # params  ?customer&....
                          urlparams=url+pm
                          
@@ -331,19 +340,26 @@ class FilterOListViewTest:
 
                          if self.view.paginate_by :  # check paginations
                             paginations=response.context['page_obj']
-                            pages=4
-                             
+                            ro=response.context['object_list']
+                            
+                            print(object_list.query)
+                            objects=object_list.count()
+                            print (objects)
+                            print (paginations)
+                            print (ro)
+                            
                             if (self.model_inserting<= self.view.paginate_by): # only one page)
                                 self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations), urlparams) # check page 1
                             else: # more of one page
-              
+                                pages=int(math.ceil((objects/self.view.paginate_by))) # number of pages to show all objects  
+                                  
                                 # exist all buttons of paginations
                                 if('enumeration.html' in self.view.paginate_template ):  # Numeric pagination template: cruds/pagination/enumeration.html
                                     for i in range(1, pages):  
-                                        pm=get_build_params(self,params)
+                                        pm=get_build_params(self,params,'&amp;',True)
                                         pageurl=pm+'&amp;page=%i'%i
-                                        html='<a href="%s">'%(pageurl)
-                                        self.assertContains( response, "%s"%html)  
+                                        html='<a href="%s"'%pageurl 
+                                        self.assertContains( response, '%s'%html)  
                                         self.assertTemplateUsed(response,  self.view.paginate_template)# loaded the correct template 
                                             
                                 if('prev_next.html' in self.view.paginate_template ):  # default pagination template: cruds/pagination/prev_next.html
@@ -352,6 +368,11 @@ class FilterOListViewTest:
                                         self.assertTemplateUsed(response, self.view.paginate_template) # loaded the correct template 
                                         
           
+                            if(objects==0): # result no items
+
+                                self.assertContains( response, '<td>No items yet.</td>')
+                                
+                                
             self.client.logout()   
 
 """ Children class  """    
@@ -386,7 +407,7 @@ class OListViewInvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
                 self.ignore_action = []
-                self.filter_params={'customer': '1', 'invoice_number':'on','sent':'', 'paid':'', 'date':'2018', 'line':'1'}
+                self.filter_params={'customer': '1', 'invoice_number':'','sent':'on', 'paid':'', 'line':['1','2','3','4']}
                 self.view = InvoiceCRUD()   # defined view
                 super(OListViewInvoiceTest, self).__init__(*args, **kwargs)
 
