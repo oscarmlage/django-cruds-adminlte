@@ -6,6 +6,7 @@ from django.test.client import RequestFactory
 from django.utils import timezone
 from datetime import datetime, timedelta, tzinfo
 from django.template import Template, Context
+from django.db.models.query_utils import Q
 
 # TEST
 from django.test import ( TestCase,
@@ -57,12 +58,20 @@ def get_action_url(test,action,pk=None):
                 if (test.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
-""" function to return filters html"""        
-def get_FormFilter_html(test,filter):
-        if isinstance(filter, FormFilter):
-                return filter.form_instance            
-        return None
+
+def get_build_params(test,params=[]):
+    query='?'
+    separator=False
+    for index in params :
+         if separator :
+              query+="&"
+              separator=False;     
+         query+="%s=%s"%(index[0], index[1])
+         separator=True
+    return query    
     
+        
+""" Fathers class  """   
 class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
@@ -120,8 +129,8 @@ class TreeData(TestCase):
         for io in Invoice.objects.all():
              for i in range(nobjects):  
                  lo=Line(invoice=io)
-                 lo.reference=io.customer.name+"_"+str(io.pk)+"_reference"+str(i)  #  customer_0 + 0 + _reference + 0
-                 lo.concept=io.customer.name+"_"+str(io.pk)+"_concept"+str(i)   #  customer_0 + 0 + _concept + 0
+                 lo.reference=io.customer.name+"_"+str(io.pk)+"_reference_"+str(i)  #  customer_0 + 0 + _reference + 0
+                 lo.concept=io.customer.name+"_"+str(io.pk)+"_concept_"+str(i)   #  customer_0 + 0 + _concept + 0
                  lo.quantity="quantity_"+str(i)      #  quantity_0
                  lo.unit=i
                  lo.unit_price=i
@@ -210,8 +219,9 @@ class SimpleOListViewTest:
                 if (self.model_inserting<=self.view.paginate_by): # only one page
                     self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations) ) # check page 1
                 else: # more of one page
-                    pages=int(math.ceil((self.model_inserting/self.view.paginate_by))) # number of pages to show all objects               
-                    self.assertTrue( ("<Page 1 of %i>"%pages) in ("%s"%paginations),"Could %s don't have %i pages"%(paginations,pages)) # check page 1
+                    pages=int(math.ceil((self.model_inserting/self.view.paginate_by))) # number of pages to show all objects    
+                    strcheck= ("<Page 1 of %i>"%pages)             
+                    self.assertTrue( strcheck in ("%s"%paginations),"Could %s don't have %i pages"%(strcheck,pages)) # check page 1
                     
                     
                     # exist all buttons of paginations
@@ -267,7 +277,7 @@ class FilterOListViewTest:
             self.assertEqual(response.status_code, 200 )
             
             view_filter= self.view.list_filter          
-            if view_filter:                  
+            if view_filter :                  
                  for filter in view_filter:
                      if (isinstance(filter, str)):
                          filter_html='<label for="id_%s">'%filter
@@ -277,42 +287,106 @@ class FilterOListViewTest:
                                 for bf in filter.form.base_fields:
                                      filter_html='<label for="id_%s">'%bf
                                      self.assertContains(response,filter_html)   # label filters exist
+                     
                                         
             self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
             self.client.logout()  
+    """ Test action url with filters params """
     
-    
-class OListViewAutorTest(TreeData,SimpleOListViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='autor'        
-                self.model_inserting=4
-                self.ignore_action = []   
-                self.view = AutorCRUD()   # defined view 
-                super(OListViewAutorTest, self).__init__(*args, **kwargs)                        
+    def test_get_listView_pagination_filters(self):
+            params=[]
+            self.client.login(username='test', password='test')
+            url= get_action_url(self,'list')
+                       
+            view_filter= self.view.list_filter    
+             
+            if view_filter:         # check filters params
+                response = self.client.get(url)
+                object_list=self.view.model.objects.all()
+                self.assertEqual(response.status_code, 200 )
+                for filter in view_filter :
+                         if (isinstance(filter, str)):
+                             params.append([filter,self.filter_params[filter]])
+                             value= self.filter_params[filter] 
+                             
+                             value= value if value!= 'on'  else True
+                             value= value if value!= ''  else False
+                             
+                             sfilter = Q(**{filter: value})
+                             object_list = object_list.filter(sfilter) 
+                         elif hasattr(filter,'form'):
+                                if hasattr(filter.form,'base_fields'):
+                                    for bf in filter.form.base_fields:
+                                         filter=bf
+                                         params.append([filter,self.filter_params[filter]])
+                                         sfilter = {"%s__in"%filter: self.filter_params[filter]}
+                                         object_list = object_list.filter(sfilter) 
+                           
+                         print(object_list)                
+                         pm=get_build_params(self,params) # params  ?customer&....
+                         urlparams=url+pm
+                         
+                         response = self.client.get(urlparams)
+                         self.assertEqual(response.status_code, 200, urlparams )
 
-class OListViewAddressTest(TreeData,SimpleOListViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='addresses'        
-                self.model_inserting=4      # 4 = (4 addresses)
-                self.ignore_action = []   
-                self.view = AddressCRUD()   # defined view 
-                super(OListViewAddressTest, self).__init__(*args, **kwargs)
-
-class OListViewLineTest(TreeData,SimpleOListViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='line' 
-                self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
-                self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
-                self.view = LineCRUD()   # defined view
-                super(OListViewLineTest, self).__init__(*args, **kwargs)
-                                
+                         if self.view.paginate_by :  # check paginations
+                            paginations=response.context['page_obj']
+                            pages=4
+                             
+                            if (self.model_inserting<= self.view.paginate_by): # only one page)
+                                self.assertTrue( ("<Page 1 of 1>") in ("%s"%paginations), urlparams) # check page 1
+                            else: # more of one page
               
+                                # exist all buttons of paginations
+                                if('enumeration.html' in self.view.paginate_template ):  # Numeric pagination template: cruds/pagination/enumeration.html
+                                    for i in range(1, pages):  
+                                        pm=get_build_params(self,params)
+                                        pageurl=pm+'&amp;page=%i'%i
+                                        html='<a href="%s">'%(pageurl)
+                                        self.assertContains( response, "%s"%html)  
+                                        self.assertTemplateUsed(response,  self.view.paginate_template)# loaded the correct template 
+                                            
+                                if('prev_next.html' in self.view.paginate_template ):  # default pagination template: cruds/pagination/prev_next.html
+                                        html='<a href="?page=2"' 
+                                        self.assertContains( response, "%s"%html)   
+                                        self.assertTemplateUsed(response, self.view.paginate_template) # loaded the correct template 
+                                        
+          
+            self.client.logout()   
+
+""" Children class  """    
+class OListViewAutorTest(TreeData,SimpleOListViewTest):   
+         def __init__(self, *args, **kwargs):
+                 self.model='autor'        
+                 self.model_inserting=4
+                 self.ignore_action = []   
+                 self.view = AutorCRUD()   # defined view 
+                 super(OListViewAutorTest, self).__init__(*args, **kwargs)                        
+ 
+class OListViewAddressTest(TreeData,SimpleOListViewTest):   
+         def __init__(self, *args, **kwargs):
+                 self.model='addresses'        
+                 self.model_inserting=4      # 4 = (4 addresses)
+                 self.ignore_action = []   
+                 self.view = AddressCRUD()   # defined view 
+                 super(OListViewAddressTest, self).__init__(*args, **kwargs)
+ 
+class OListViewLineTest(TreeData,SimpleOListViewTest):   
+         def __init__(self, *args, **kwargs):
+                 self.model='line' 
+                 self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
+                 self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
+                 self.view = LineCRUD()   # defined view
+                 super(OListViewLineTest, self).__init__(*args, **kwargs)
+                                 
+               
                                 
 class OListViewInvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
                 self.ignore_action = []
+                self.filter_params={'customer': '1', 'invoice_number':'on','sent':'', 'paid':'', 'date':'2018', 'line':'1'}
                 self.view = InvoiceCRUD()   # defined view
                 super(OListViewInvoiceTest, self).__init__(*args, **kwargs)
 
@@ -322,10 +396,10 @@ class OListViewCustomerTest(TreeData,SimpleOListViewTest):
                 self.model='customer'        
                 self.model_inserting=4
                 self.ignore_action = []   
-                self.view = CustomerCRUD()   # defined view 
+                self.view = CustomerCRUD()   # defined view
                 super(OListViewCustomerTest, self).__init__(*args, **kwargs)  
-                
-      
+                 
+       
                 
                               
 # def get_field_template(test,field,value):
