@@ -90,7 +90,7 @@ class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
         #self.model='invoice'
-        nobjects=4 # number of objects to insert
+        nobjects=4 # number of objects to insert           
         self.actions=['create', 'list', 'delete', 'update', 'detail']  
         
         self.factory = RequestFactory()
@@ -476,6 +476,7 @@ class FilterOListViewTest:
             self.client.logout()  
 
 class SimpleOEditViewTest:
+    update_set=None
     
     """ Test show list of 'object_list' """
     def test_get_editView_content(self):
@@ -508,29 +509,26 @@ class SimpleOEditViewTest:
                             self.assertContains( response, "%s"%html) # column field exist on table html
                 
                 
-                
                 if self.view.inlines:
-                    print (response.content)
+                    #print (response.content)
                     for inline in self.view.inlines :
                         #print(inline.__dict__)
+                        
           
           
                         inline_model_fields= utils.get_fields(inline.model)   
                         html= '<div data-refresh-url="/inline/testapp/%s/%i/list" id="%s'%(inline.name,firstobject.pk,inline.name)
                         self.assertContains(response,html)     
-                        if self.view.list_fields and  not  self.view.list_fields=='__all__':  
-                                for field in inline.list_fields :
-                                     self.assertIn(field,inline_model_fields)   # fields exist on model
-                                     html='<th class="th-field-%s th-fieldtype-'%(field) 
-                                     self.assertContains( response, html)            # column field exist on table html
-                        else: # '__all__'
-                                for field in inline_model_fields:
-                                    if not field == 'id':
-                                        html='<th class="th-field-%s th-fieldtype-'%(field) 
-                                        self.assertContains( response, "%s"%html) # column field exist on table html
-                                                
-                                                                
-                
+#                         form=response.context['form']
+#                         if self.view.list_fields and  not  self.view.list_fields=='__all__':  
+#                                  for field in inline.list_fields :
+#                                       self.assertIn(field,inline_model_fields)   # fields exist on model 
+#                                       self.assertIn( field, form)          
+#                         else: # '__all__'
+#                                  for field in inline_model_fields:
+#                                      if not field == 'id':
+#                                          self.assertIn( field, form) 
+
                 self.assertEqual(self.view.views_available, response.context['views_available'])  
             else:
                 try:
@@ -543,7 +541,40 @@ class SimpleOEditViewTest:
  
             self.client.logout() 
                   
-
+    def  test_post_editview_valid(self):
+            self.client.login(username='test', password='test')
+            firstobject= self.view.model.objects.all()[0]
+            self.assertTrue(isinstance(firstobject, self.view.model)) 
+            self.type='update'
+            if (self.type in self.view.views_available):
+                url= get_action_url(self,self.type,firstobject.pk)
+                response = self.client.get(url)  
+                self.assertEqual(response.status_code, 200 )
+                form=response.context['object']
+                
+                if self.update_set: 
+                    for attr in self.update_set:
+                         #if hasattr(form,attr):
+                             print(form.__dict__)
+                             setattr(form, attr, self.update_set[attr])
+                             print(form.__dict__)
+                         
+                    response=self.client.post(url,form.__dict__)
+                    self.assertEqual(response.status_code, 200 )
+                    self.assertRedirects(response,get_action_url(self,'list'))
+                    
+                    response = self.client.get(url)  
+                    self.assertEqual(response.status_code, 200 )
+                    form=response.context['object']
+                    print(form.__dict__)
+                #print (form)
+                
+                
+            self.client.logout() 
+    def test_post_editview_invalid(self):
+            self.client.login(username='test', password='test')
+            self.client.logout()                   
+                             
 """ Children class   """    
 class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
@@ -579,6 +610,7 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 self.filter_params_false={'customer': '1','sent':'on',  'line':[1,2,3,4]} # Invalid values
                 self.filter_params_true={'customer': '1','sent':'on','paid':'on', 'line':[5,6,7,8]} # Valid values 
                 self.filter_nresults=2   # check only show two row or pages result
+                self.update_set={'sent':'True'}
                 self.view = InvoiceCRUD()   # defined view
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
