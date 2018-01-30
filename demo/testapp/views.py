@@ -23,7 +23,7 @@ class Invoice_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'customer'
     add_form = InvoiceForm
     update_form = InvoiceForm
-    fields = ['invoice_number', 'subtotal_iva',['registered'], 'sent', 'paid', 'date']
+    list_fields = ['invoice_number', 'subtotal_iva','registered', 'sent', 'paid', 'date']
     title = _("Invoice")
     
 class CustomerCRUD(CRUDView):
@@ -96,8 +96,7 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'invoice'
     add_form = LineForm
     update_form = LineForm
-    fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price',
-              'amount']
+    list_fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price','amount']
 
 
 

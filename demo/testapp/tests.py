@@ -4,10 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.models import User, Permission, Group
 from django.test.client import RequestFactory
 from django.utils import timezone
-from datetime import datetime, timedelta, tzinfo
 from django.template import Template, Context
 from django.db.models.query_utils import Q
-
+from django.urls.exceptions import NoReverseMatch
 # TEST
 from django.test import ( TestCase,
                             Client )
@@ -44,7 +43,7 @@ from django.conf import settings
 
 # others
 import math
-
+from datetime import datetime, timedelta, tzinfo
 
 
 """ function to return the url """
@@ -54,7 +53,7 @@ def get_action_url(test,action,pk=None):
             else:
                     url= reverse(test.app_testing+'_'+test.model+'_'+action)    # testapp/invoice/create   -   testapp/invoice/list
                     
-            if (test.view.namespace): # if have namespace, find URL action on /namespace/
+            if (test.view.namespace and test.type=='list'): # if have namespace, find URL action on /namespace/
                 if (test.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
@@ -193,10 +192,14 @@ class SimpleOListViewTest:
         """ Test show list of 'object_list' """
         def test_get_listView_content(self):
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')         
+            self.type='list'
+            url= get_action_url(self,self.type)         
 
             response = self.client.get(url)
-            self.assertEqual(response.status_code, 200 )
+            if ( self.type in self.view.views_available):
+                self.assertEqual(response.status_code, 200 )
+            else:
+                 self.assertEqual(response.status_code, 404 )
             
             if self.view.paginate_by :
                 object_list=response.context['object_list']
@@ -212,7 +215,8 @@ class SimpleOListViewTest:
         """ Test show only button of valid actions """         
         def test_get_listView_actions(self):
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')        
+            self.type='list'
+            url= get_action_url(self,self.type)        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
@@ -230,7 +234,8 @@ class SimpleOListViewTest:
             
             
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')         
+            self.type='list'
+            url= get_action_url(self,self.type)        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             if self.view.paginate_by :
@@ -262,7 +267,8 @@ class SimpleOListViewTest:
         """ Test show only the list of fields settings   """
         def test_get_listview_fields(self):
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')        
+            self.type='list'
+            url= get_action_url(self,self.type)      
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             
@@ -274,7 +280,7 @@ class SimpleOListViewTest:
                 
              
             model_fields= utils.get_fields(self.view.model)   
-            if self.view.list_fields:   # test if fields exist on response
+            if self.view.list_fields and self.view.fields!='__all__':   # test if fields exist on response
                 for field in self.view.list_fields :
                      self.assertIn(field,model_fields)   # fields exist on model
                      self.assertIn(field,fields)         # fields exist on listview setting list_fields
@@ -282,9 +288,10 @@ class SimpleOListViewTest:
                      self.assertContains( response, "%s"%html)            # column field exist on table html
             else: # '__all__'
                 for field in model_fields:
-                    self.assertIn(field,fields)         # field exist on listview setting list_fields
-                    html='<th class="th-field-%s th-fieldtype-'%(field) 
-                    self.assertContains( response, "%s"%html) # column field exist on table html
+                    if not field == 'id':
+                        self.assertIn(field,fields)         # field exist on listview setting list_fields
+                        html='<th class="th-field-%s th-fieldtype-'%(field) 
+                        self.assertContains( response, "%s"%html) # column field exist on table html
             
             self.client.logout()    
              
@@ -292,7 +299,8 @@ class FilterOListViewTest:
     """ Test show only the list of list_filter settings   """
     def test_get_listview_fields_filters(self):
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')        
+            self.type='list'
+            url= get_action_url(self,self.type)         
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
             
@@ -318,7 +326,8 @@ class FilterOListViewTest:
     def test_get_listView_pagination_and_filters_invalid(self):
             params=[]
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')
+            self.type='list'
+            url= get_action_url(self,self.type) 
                        
             view_filter= self.view.list_filter    
              
@@ -394,7 +403,8 @@ class FilterOListViewTest:
     def test_get_listView_pagination_and_filters_valid(self):
             params=[]
             self.client.login(username='test', password='test')
-            url= get_action_url(self,'list')
+            self.type='list'
+            url= get_action_url(self,self.type) 
                        
             view_filter= self.view.list_filter    
              
@@ -413,8 +423,7 @@ class FilterOListViewTest:
                                      params.append([filter,value])
                                      
                                      if value !='' :  
-                                        value= value if value!= 'on' else 1  # 1 == True
-                                        value= value if value!= 'off' else 0  #  0 == False   
+                                        value= value if value!= 'on' else 1  # 1 == True 
                                         sfilter = Q(**{filter: value})
                                         object_list = object_list.filter(sfilter) 
                                         
@@ -465,34 +474,104 @@ class FilterOListViewTest:
 
                                           
             self.client.logout()  
-""" Children class  """    
-class OListViewAutorTest(TreeData,SimpleOListViewTest):   
+
+class SimpleOEditViewTest:
+    
+    """ Test show list of 'object_list' """
+    def test_get_editView_content(self):
+            self.client.login(username='test', password='test')
+            firstobject= self.view.model.objects.all()[0]
+            self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+            self.type='update'
+            if (self.type in self.view.views_available):
+                url= get_action_url(self,self.type,firstobject.pk)
+                response = self.client.get(url)  
+                self.assertEqual(response.status_code, 200 )
+            
+                if self.view.template_name_base != crud_views.CRUDView.template_name_base : # test if used custom template
+                        tmp=self.app_testing +'/'+ self.model+'/'+self.view.template_name_base+'/update.html'
+                        self.assertTemplateUsed(response,tmp )       # loaded the correct template 
+                    
+                fields=response.context['fields']  # columns fields to build table html 
+                model_fields= utils.get_fields(self.view.model)   
+                if self.view.fields and not self.view.fields=='__all__':   # test if fields exist on response
+                    for field in self.view.fields :
+                         self.assertIn(field,model_fields)   # fields exist on model
+                         self.assertIn(field,fields)         # fields exist on updateview setting fields
+                         html='<div id="div_id_%s" '%(field) 
+                         self.assertContains( response, "%s"%html)            # column field exist on table html
+                else: # '__all__'
+                    for field in model_fields:
+                        if not field == 'id':
+                            self.assertIn(field,fields)         # field exist on updateview setting fields
+                            html='<div id="div_id_%s" '%(field) 
+                            self.assertContains( response, "%s"%html) # column field exist on table html
+                
+                
+                
+                if self.view.inlines:
+                    print (response.content)
+                    for inline in self.view.inlines :
+                        #print(inline.__dict__)
+          
+          
+                        inline_model_fields= utils.get_fields(inline.model)   
+                        html= '<div data-refresh-url="/inline/testapp/%s/%i/list" id="%s'%(inline.name,firstobject.pk,inline.name)
+                        self.assertContains(response,html)     
+                        if self.view.list_fields and  not  self.view.list_fields=='__all__':  
+                                for field in inline.list_fields :
+                                     self.assertIn(field,inline_model_fields)   # fields exist on model
+                                     html='<th class="th-field-%s th-fieldtype-'%(field) 
+                                     self.assertContains( response, html)            # column field exist on table html
+                        else: # '__all__'
+                                for field in inline_model_fields:
+                                    if not field == 'id':
+                                        html='<th class="th-field-%s th-fieldtype-'%(field) 
+                                        self.assertContains( response, "%s"%html) # column field exist on table html
+                                                
+                                                                
+                
+                self.assertEqual(self.view.views_available, response.context['views_available'])  
+            else:
+                try:
+                     url= get_action_url(self,self.type,firstobject.pk)
+                     response = self.client.get(url)
+                     self.assertEqual(response.status_code, 404 ) 
+                except NoReverseMatch :
+                    pass
+                           
+ 
+            self.client.logout() 
+                  
+
+""" Children class   """    
+class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
                  self.model_inserting=4
                  self.ignore_action = []   
                  self.view = AutorCRUD()   # defined view 
-                 super(OListViewAutorTest, self).__init__(*args, **kwargs)                        
+                 super(AutorTest, self).__init__(*args, **kwargs)                        
  
-class OListViewAddressTest(TreeData,SimpleOListViewTest):   
+class AddressTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='addresses'        
                  self.model_inserting=4      # 4 = (4 addresses)
                  self.ignore_action = []   
                  self.view = AddressCRUD()   # defined view 
-                 super(OListViewAddressTest, self).__init__(*args, **kwargs)
+                 super(AddressTest, self).__init__(*args, **kwargs)
  
-class OListViewLineTest(TreeData,SimpleOListViewTest):   
+class LineTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='line' 
                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
                  self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
                  self.view = LineCRUD()   # defined view
-                 super(OListViewLineTest, self).__init__(*args, **kwargs)
+                 super(LineTest, self).__init__(*args, **kwargs)
                                  
                
                                 
-class OListViewInvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest):   
+class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
@@ -501,18 +580,20 @@ class OListViewInvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest):
                 self.filter_params_true={'customer': '1','sent':'on','paid':'on', 'line':[5,6,7,8]} # Valid values 
                 self.filter_nresults=2   # check only show two row or pages result
                 self.view = InvoiceCRUD()   # defined view
-                super(OListViewInvoiceTest, self).__init__(*args, **kwargs)
+                super(InvoiceTest, self).__init__(*args, **kwargs)
 
 
-class OListViewCustomerTest(TreeData,SimpleOListViewTest):   
+class CustomerTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
                 self.ignore_action = []   
                 self.view = CustomerCRUD()   # defined view
-                super(OListViewCustomerTest, self).__init__(*args, **kwargs)  
+                super(CustomerTest, self).__init__(*args, **kwargs)  
                  
        
+""" Children class editview """
+
                 
                               
 # def get_field_template(test,field,value):
