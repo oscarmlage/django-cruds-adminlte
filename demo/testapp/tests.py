@@ -548,19 +548,23 @@ class SimpleOEditViewTest:
                 if self.update_set:
                     data = form.initial 
                   
-                    data['pk']=firstobject.pk
+                    # set new values to fields 
                     for attr in self.update_set:
                             data[attr]= self.update_set[attr]
                    
                     
-                    response=self.client.post(url, data)  #check data set
-                                                         
-                    
+                    response=self.client.post(url, data)  # sending changes
+                     
+                    #checked if save and after show listview
+                    self.assertRedirects(response, 
+                                         url_list, status_code=302, 
+                                         target_status_code=200, 
+                                         fetch_redirect_response=True) 
                     
                     # Re-get view whith news inputs values
                     url= get_action_url(self,self.type,firstobject.pk)
                     response = self.client.get(url)
-                    
+                    self.assertEqual(response.status_code, 200 )  
                     
                     #check values changed of DB
                     for attr in self.update_set:
