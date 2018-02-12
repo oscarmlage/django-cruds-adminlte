@@ -317,7 +317,7 @@ class FilterOListViewTest:
                                      self.assertContains(response,filter_html)   # label filters exist
                      
                                         
-            self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
+                 self.assertContains(response,'<input type="text" name="q" value="" class="form-control"')   # input search exist                     
             self.client.logout()  
             
             
@@ -528,7 +528,7 @@ class SimpleOEditViewTest:
             self.client.logout() 
                   
     
-    
+    """ Test save changes on method post"""
     def  test_post_editview_valid(self):
             self.type='update'
             self.client.login(username='test', password='test')
@@ -548,57 +548,76 @@ class SimpleOEditViewTest:
                 if self.update_set:
                     data = form.initial 
                   
-                    # set new values to fields 
+                    # set new value to fields 
                     for attr in self.update_set:
-                            data[attr]= self.update_set[attr]
-                   
-                    
+                        data[attr]= self.update_set[attr]
+
                     response=self.client.post(url, data)  # sending changes
-                     
-                    #checked if save and after show listview
+                    # checked if save and after show listview
                     self.assertRedirects(response, 
                                          url_list, status_code=302, 
                                          target_status_code=200, 
                                          fetch_redirect_response=True) 
-                    
                     # Re-get view whith news inputs values
-                    url= get_action_url(self,self.type,firstobject.pk)
                     response = self.client.get(url)
                     self.assertEqual(response.status_code, 200 )  
-                    
-                    #check values changed of DB
+                    # check values changed of DB
                     for attr in self.update_set:
                         newvalue=str(self.update_set[attr])  
                         formvalue=response.context['form'][attr].value()
-                        
-                        #format of insert values
+                        # format of insert values
                         if( isinstance(formvalue, datetime) ): 
                             newvalue=str(datetime.strptime(newvalue, "%m/%d/%Y").date())
-                     
-                        #format of DB values
+                        # format of DB values
                         if not ( isinstance(formvalue, str) ):
                            formvalue=str(formvalue)       
-                     
                         self.assertTrue((newvalue  in formvalue) ,"Value  %s not in %s, it did not have been changed to DB"%(newvalue,formvalue) )
-                
-                    
-                    
-                    
-
-                   # self.assertEqual(data,form.initial)
-                
-                
             self.client.logout() 
-    
-
-                
-            self.client.logout() 
-    def test_post_editview_invalid(self):
+            
+    """ Check display error to requerid fields """
+    def  test_post_editview_invalid(self):
+            self.type='update'
             self.client.login(username='test', password='test')
-            self.client.logout()                   
-                              
+            
+            firstobject= self.view.model.objects.all()[0]
+            self.assertTrue(isinstance(firstobject, self.view.model)) 
+
+            if (self.type in self.view.views_available):
+                url= get_action_url(self,self.type,firstobject.pk)
+                url_list=get_action_url(self,'list',firstobject.pk)
+                                    
+                response = self.client.get(url)  
+                self.assertEqual(response.status_code, 200 )
+                form=response.context['form']
+
+    
+                if self.update_set:
+                    data = form.initial 
+                    response=self.client.post(url, data)  # sending changes
+                    # checked if save doesn't completed by requered field error
+                    self.assertEqual(response.status_code, 200 )
+                    
+                    # only return code 200 when form have been need a field valid
+                    if (response.status_code==200):
+                        form=response.context['form']                    
+                        html='<ul class="errorlist">'
+                        self.assertTrue( (html in str(form)),"Error with value field  (%s) doesn't showed"%html)
+    
+                        # set new value to fields 
+                        for attr in self.update_set:
+                            data[attr]= self.update_set[attr]
+    
+                        response=self.client.post(url, data)  # sending changes
+                        # checked if save and after show listview
+                        self.assertRedirects(response, 
+                                             url_list, status_code=302, 
+                                             target_status_code=200, 
+                                             fetch_redirect_response=True) 
+
+            self.client.logout() 
+ 
 """ Children class   """    
-class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
                  self.model_inserting=4
@@ -606,7 +625,7 @@ class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):
                  self.view = AutorCRUD()   # defined view 
                  super(AutorTest, self).__init__(*args, **kwargs)                        
   
-class AddressTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='addresses'        
                  self.model_inserting=4      # 4 = (4 addresses)
@@ -614,7 +633,7 @@ class AddressTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):
                  self.view = AddressCRUD()   # defined view 
                  super(AddressTest, self).__init__(*args, **kwargs)
   
-class LineTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='line' 
                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
@@ -637,7 +656,7 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
 
-class CustomerTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
