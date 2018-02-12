@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.template import Template, Context
 from django.db.models.query_utils import Q
 from django.urls.exceptions import NoReverseMatch
+from django.conf import settings
 # TEST
 from django.test import ( TestCase,
                             Client )
@@ -39,7 +40,7 @@ from testapp.models import ( Autor,
                              Customer, 
                              Invoice, 
                              Line )
-from django.conf import settings
+
 
 # others
 import math
@@ -124,8 +125,6 @@ class TreeData(TestCase):
                                          time=datetime.now(),
                                          datetime=timezone.now()
                                          )
-            
-            
             # customer 0 | customer 1 | customer 2 | customer 3
             # -----------| ---------- | ---------- | ----------
             # invoice 0  | invoice 4  | invoice 8  | invoice 12
@@ -510,24 +509,10 @@ class SimpleOEditViewTest:
                 
                 
                 if self.view.inlines:
-                    #print (response.content)
-                    for inline in self.view.inlines :
-                        #print(inline.__dict__)
-                        
-          
-          
+                    for inline in self.view.inlines :         
                         inline_model_fields= utils.get_fields(inline.model)   
                         html= '<div data-refresh-url="/inline/testapp/%s/%i/list" id="%s'%(inline.name,firstobject.pk,inline.name)
                         self.assertContains(response,html)     
-#                         form=response.context['form']
-#                         if self.view.list_fields and  not  self.view.list_fields=='__all__':  
-#                                  for field in inline.list_fields :
-#                                       self.assertIn(field,inline_model_fields)   # fields exist on model 
-#                                       self.assertIn( field, form)          
-#                         else: # '__all__'
-#                                  for field in inline_model_fields:
-#                                      if not field == 'id':
-#                                          self.assertIn( field, form) 
 
                 self.assertEqual(self.view.views_available, response.context['views_available'])  
             else:
@@ -541,66 +526,81 @@ class SimpleOEditViewTest:
  
             self.client.logout() 
                   
+    
+    
     def  test_post_editview_valid(self):
+            self.type='update'
             self.client.login(username='test', password='test')
+            
             firstobject= self.view.model.objects.all()[0]
             self.assertTrue(isinstance(firstobject, self.view.model)) 
-            self.type='update'
+
             if (self.type in self.view.views_available):
                 url= get_action_url(self,self.type,firstobject.pk)
                 response = self.client.get(url)  
                 self.assertEqual(response.status_code, 200 )
-                form=response.context['object']
-                
-                if self.update_set: 
+                form=response.context['form']
+
+                                
+                if self.update_set:
+                    data = form.initial 
+                    print (data)
                     for attr in self.update_set:
-                         #if hasattr(form,attr):
-                             print(form.__dict__)
-                             setattr(form, attr, self.update_set[attr])
-                             print(form.__dict__)
-                         
-                    response=self.client.post(url,form.__dict__)
-                    self.assertEqual(response.status_code, 200 )
-                    self.assertRedirects(response,get_action_url(self,'list'))
+                            data[attr]= self.update_set[attr]
+
+
+                                    
+                    response=self.client.post(url,data)
                     
-                    response = self.client.get(url)  
+                    
+                    
+                    url= get_action_url(self,self.type,firstobject.pk)
+                    response = self.client.get(url)
                     self.assertEqual(response.status_code, 200 )
-                    form=response.context['object']
-                    print(form.__dict__)
-                #print (form)
+                    
+                    form=response.context['form']
+                    data = form.initial 
+                    for attr in self.update_set:
+                       
+                        self.assertContains(response, attr) # or
+                        self.assertEqual(data[attr],self.update_set[attr], "Values doesn't equals %s=%s |= %s"%(attr,data[attr],self.update_set[attr]))
                 
+                
+            self.client.logout() 
+    
+
                 
             self.client.logout() 
     def test_post_editview_invalid(self):
             self.client.login(username='test', password='test')
             self.client.logout()                   
                              
-""" Children class   """    
-class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
-         def __init__(self, *args, **kwargs):
-                 self.model='autor'        
-                 self.model_inserting=4
-                 self.ignore_action = []   
-                 self.view = AutorCRUD()   # defined view 
-                 super(AutorTest, self).__init__(*args, **kwargs)                        
- 
-class AddressTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
-         def __init__(self, *args, **kwargs):
-                 self.model='addresses'        
-                 self.model_inserting=4      # 4 = (4 addresses)
-                 self.ignore_action = []   
-                 self.view = AddressCRUD()   # defined view 
-                 super(AddressTest, self).__init__(*args, **kwargs)
- 
-class LineTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
-         def __init__(self, *args, **kwargs):
-                 self.model='line' 
-                 self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
-                 self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
-                 self.view = LineCRUD()   # defined view
-                 super(LineTest, self).__init__(*args, **kwargs)
-                                 
-               
+# """ Children class   """    
+# class AutorTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+#          def __init__(self, *args, **kwargs):
+#                  self.model='autor'        
+#                  self.model_inserting=4
+#                  self.ignore_action = []   
+#                  self.view = AutorCRUD()   # defined view 
+#                  super(AutorTest, self).__init__(*args, **kwargs)                        
+#  
+# class AddressTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+#          def __init__(self, *args, **kwargs):
+#                  self.model='addresses'        
+#                  self.model_inserting=4      # 4 = (4 addresses)
+#                  self.ignore_action = []   
+#                  self.view = AddressCRUD()   # defined view 
+#                  super(AddressTest, self).__init__(*args, **kwargs)
+#  
+# class LineTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):   
+#          def __init__(self, *args, **kwargs):
+#                  self.model='line' 
+#                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
+#                  self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
+#                  self.view = LineCRUD()   # defined view
+#                  super(LineTest, self).__init__(*args, **kwargs)
+#                                  
+#                
                                 
 class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
         def __init__(self, *args, **kwargs):
@@ -610,8 +610,8 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 self.filter_params_false={'customer': '1','sent':'on',  'line':[1,2,3,4]} # Invalid values
                 self.filter_params_true={'customer': '1','sent':'on','paid':'on', 'line':[5,6,7,8]} # Valid values 
                 self.filter_nresults=2   # check only show two row or pages result
-                self.update_set={'sent':'True'}
-                self.view = InvoiceCRUD()   # defined view
+                self.update_set={'sent' : 'True', 'registered': 'True', 'paid' : True, }
+                self.view = InvoiceCRUD()   # defined view 
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
 
@@ -624,7 +624,7 @@ class CustomerTest(TreeData,SimpleOListViewTest,SimpleOEditViewTest):
                 super(CustomerTest, self).__init__(*args, **kwargs)  
                  
        
-""" Children class editview """
+
 
                 
                               
