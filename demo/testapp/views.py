@@ -131,7 +131,7 @@ class InvoiceCRUD(CRUDView):
                    'sent', 'paid', 'date', filterAddress]
     inlines = [Lines_AjaxCRUD]
     #views_available = ['create', 'list',  'detail'] # original actions
-    views_available = ['create', 'list', 'update', 'detail']
+    views_available = ['create', 'list', 'update', 'detail', 'delete']
     search_fields = ['description1__icontains']
     split_space_search = True
     paginate_by = 1

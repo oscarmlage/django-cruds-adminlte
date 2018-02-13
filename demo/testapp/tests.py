@@ -616,6 +616,47 @@ class SimpleOEditViewTest:
 
             self.client.logout() 
  
+ 
+ 
+class FilterOEditViewTest:
+    
+       
+    """ Test if editview use filters params"""
+    def  test_editview_filters(self): 
+            self.type='update'
+            params=[]
+            view_filter= self.view.list_filter   
+            self.client.login(username='test', password='test')
+            firstobject= self.view.model.objects.all()[0]
+            self.assertTrue(isinstance(firstobject, self.view.model)) 
+            url=get_action_url(self,self.type,firstobject.pk) 
+            if view_filter:         # check filters params
+                for filter in view_filter :
+                         if (isinstance(filter, str)):
+                             if filter in self.filter_params_true:
+                                    value= self.filter_params_true[filter]                                     
+                                    value= value if value!= 'on' else True  # 1 == True
+
+                                    params.append([filter,value])                                            
+                         elif hasattr(filter,'form'):
+                                if hasattr(filter.form,'base_fields'):
+                                    for bf in filter.form.base_fields:
+                                         filter=bf
+                                         value= self.filter_params_true[filter] 
+                                         params.append([filter,value])
+                         pm=get_build_params(self,params) # params  ?customer&....            
+                         urlparams=url+pm  # add params to url base
+
+                         # Get view with params of filters
+                         response = self.client.get(urlparams)
+                         self.assertEqual(response.status_code, 200, "Response doesn't completed with current data" )
+                         
+                         
+                         filter_html='<form action="%s'%(urlparams)
+                         self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed whith the filters url")   # label filters exist
+
+
+     
 """ Children class   """    
 class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
@@ -643,13 +684,13 @@ class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewT
                                   
                 
                                 
-class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
+class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,FilterOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
                 self.ignore_action = []
-                self.filter_params_false={'customer': '1','sent':'on',  'line':[1,2,3,4]} # Invalid values
-                self.filter_params_true={'customer': '1','sent':'on','paid':'on', 'line':[5,6,7,8]} # Valid values 
+                self.filter_params_false={'customer': '1','sent':'on',  'line':[1,2,3,4]} # Invalid values | use the list_filter order 
+                self.filter_params_true={'customer': '1','sent':'on','paid':'on', 'line':[5,6,7,8]} # Valid values  | use the list_filter order 
                 self.filter_nresults=2   # check only show two row or pages result
                 self.update_set = { 'registered' : True, 'sent': True, 'date':'12/01/2011','total': '1000' }
                 self.view = InvoiceCRUD()   # defined view 
