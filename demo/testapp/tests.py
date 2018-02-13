@@ -616,7 +616,16 @@ class SimpleOEditViewTest:
 
             self.client.logout() 
  
- 
+    def  test_editview_delete(self): 
+        self.type='update' # delete form update/edit view
+        self.client.login(username='test', password='test')
+            
+        lastobject= self.view.model.objects.latest()
+         
+         
+         
+            
+        self.client.logout()             
  
 class FilterOEditViewTest:
     
@@ -656,7 +665,7 @@ class FilterOEditViewTest:
                          self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed whith the filters url")   # label filters exist
 
 
-     
+
 """ Children class   """    
 class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
          def __init__(self, *args, **kwargs):
@@ -709,60 +718,7 @@ class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditV
 
 
                 
-                              
-# def get_field_template(test,field,value):
-#     fo = test.view.model._meta.get_field(field)
-#     fo= (fo.__class__.__name__).lower()
-#     tmp="cruds/columns/%s.html"%fo
-#     #tmp=Template(tmp)
-#     #rendered = tmp.render(Context({'object':value}))
-#     #return rendered
-#     #self.assertIn(entry.title, rendered)
-#     return tmp
-#    def test_call_view_fails_blank(self):
-#         self.client.login(username='user', password='test')
-#         response = self.client.post('/url/to/view', {}) # blank data dictionary
-#         self.assertFormError(response, 'form', 'some_field', 'This field is required.')
-#                                 
-# #    def test_contact_view_success(self):
-#     # same again, but with valid data, then
-#     self.client.login(username='username1', password='password1')
-#     response = self.client.post('/contact/add/', {u'last_name': [u'Johnson'], }) 
-#     self.assertRedirects(response, '/')
-# """ Filters test """
-# class FilterViewTest(InsertData):
-#     def setUp(self):   
-#         self.user = User(
-#             username='test', email='test@example.com', is_active=True,
-#             is_staff=True, is_superuser=True,
-#         )
-#         self.user.set_password('test')
-#         self.user.save()
-#         
-#         #insertar Customer
-#         #insert Invoice
-#         #insert Line
-#         
-#  """ Models query test """
-# class TestUtils(TestCase):
-# 
-#     def test_get_fields_order(self):
-#         res = get_fields(Autor, ('name',))
-#         self.assertEqual(list(res.keys())[0], 'name')
-# 
-#        
-#         customer_0 + 0 + _concept
-#     def test_listview(self):
-#         self.client.login(username='test', password='test')
-#         url=reverse('testapp_invoice_list')
-#         url+="?customer=&invoice_number=&initial-invoice_number=&date=&line=16&line=17"
-#         response = self.client.get(url)
-#         print (response.context['object_list'])    
-#         self.assertQuerysetEqual(response.context['object_list'], [])
-#           
-# 
-# 
-# 
+
 # """ Views test """
 # class AuthUserViewTest(TestCase):
 # 
