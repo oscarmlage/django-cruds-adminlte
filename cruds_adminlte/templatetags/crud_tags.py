@@ -5,10 +5,8 @@ import os.path
 
 from cruds_adminlte import utils
 from django import template
-from django.core.urlresolvers import (
-    NoReverseMatch,
-    reverse,
-)
+
+from django.urls import (reverse, NoReverseMatch)  # django2.0
 from django.db import models
 from django.utils import six
 from django.utils.html import escape
@@ -16,6 +14,7 @@ from django.utils.safestring import mark_safe
 
 
 register = template.Library()
+register_tag = register.assignment_tag if hasattr(register, 'assignment_tag') else register.simple_tag
 
 
 @register.filter
@@ -26,7 +25,7 @@ def get_attr(obj, attr):
     return getattr(obj, attr)
 
 
-@register.assignment_tag
+@register_tag
 def crud_url(obj, action, namespace=None):
     try:
         nurl = utils.crud_url_name(type(obj), action)
@@ -41,7 +40,7 @@ def crud_url(obj, action, namespace=None):
     return url
 
 
-@register.assignment_tag
+@register_tag
 def crud_inline_url(obj, inline, action, namespace=None):
 
     try:
@@ -121,7 +120,7 @@ def crud_fields(obj, fields=None):
     }
 
 
-@register.assignment_tag
+@register_tag
 def get_fields(model, fields=None):
     """
     Assigns fields for model.

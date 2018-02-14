@@ -3,6 +3,4 @@ django-crispy-forms
 django-select2
 django-image-cropping
 easy-thumbnails
-djangoajax
-
-
+djangoajax==2.3.7
