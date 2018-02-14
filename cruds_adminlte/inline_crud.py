@@ -224,10 +224,12 @@ class InlineAjaxCRUD(CRUDView):
                                   self.model, 'update', prefix=self.urlprefix))
                           )
         if 'delete' in self.views_available:
-            myurls.append(url(r"^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)/delete$" % (base_name,),
-                              self.delete,
-                              name=utils.crud_url_name(
-                                  self.model, 'delete', prefix=self.urlprefix))
+            myurls.append(url(r"^%s/(?P<model_id>[^/]+)/(?P<pk>[^/]+)/delete$"
+                          %
+                          (base_name,),
+                          self.delete,
+                          name=utils.crud_url_name(
+                              self.model, 'delete', prefix=self.urlprefix))
                           )
 
         return myurls

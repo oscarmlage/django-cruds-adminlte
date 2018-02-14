@@ -3,8 +3,7 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from  django.urls import reverse   # django 2.0
-
+from django.urls import reverse  # django 2.0
 
 ACTION_CREATE = 'create'
 ACTION_DELETE = 'delete'
@@ -82,4 +81,5 @@ def crud_url(instance, action, prefix=None, namespace=None,
 
 def get_related_class_field(obj, field):
     objfield = obj._meta.get_field(field)
-    return objfield.rel.model if hasattr(objfield, 'rel') else objfield.remote_field.model
+    rf = objfield.remote_field.model
+    return objfield.rel.model if hasattr(objfield, 'rel') else rf

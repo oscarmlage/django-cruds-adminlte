@@ -14,7 +14,10 @@ from django.utils.safestring import mark_safe
 
 
 register = template.Library()
-register_tag = register.assignment_tag if hasattr(register, 'assignment_tag') else register.simple_tag
+if hasattr(register, 'assignment_tag'):
+    register_tag = register.assignment_tag
+else:
+    register.simple_tag
 
 
 @register.filter
