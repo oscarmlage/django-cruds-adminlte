@@ -2,6 +2,53 @@
 Changelog
 =========
 
+0.0.9
+-----
+
+* ''cce702a'' Merge branch 'master' of https://github.com/oscarmlage/django-cruds-adminlte
+* ''621988e'' Merge pull request #49 from migue56/django2_0_#48
+* ''b958d88'' Checking lines
+* ''f473a6f'' checking filter url when changes you from  view to other view (checked)
+* ''b7fc88f'' fixed filters paramters to grud.py
+* ''56f2efc'' changes on filter.py to build pagination params
+* ''fd1f9d7'' Changes filter.py get_cleaned_fields
+* ''b0730be'' cleaning  print() to filter.py
+* ''9c86a80'' cleaning  print() to filter.py
+* ''cf1e4f7'' update filter.py
+* ''1b4d2e9'' try/except ValueError over get_filter
+* ''9f4cd8f'' Update demo to testing issues
+* ''6587ef5'' Update demo to testing of issues django 2.0
+* ''ec175b1'' Fixes #48:  'ForeignKey' object has no attribute 'rel'
+* ''c5c3007'' Merge pull request #47 from migue56/django2_0
+* ''ed61dfa'' Update urls.py
+* ''d89d9d9'' Update models.py
+* ''74c6050'' Update utils.py
+* ''92dd062'' Update crud_tags.py
+* ''5c59a38'' Update adminlte_helpers.py
+* ''d28022a'' Test and settings of demo django2.0/1.11/1.10
+* ''4f03c2c'' Test and settings of demo django2.0/1.11/1.10
+* ''ce14461'' Test and settings of demo django2.0
+* ''0c1b7bc'' Test and settings of demo django2.0
+* ''f0ab4e8'' Deleted debug-toolbar to demo django 2.0
+* ''f9ea2d6'' Cleaning debug-toolbar to demo django 2.0
+* ''38482cb'' Changed demo to django 2.0
+* ''5994072'' Change requirements.txt ajax version
+* ''c09375f'' Add intergerfild to templates colums
+* ''b35df35''  Attibute 'user.is_authenticated()' don't exist on django 2.0, change to 'user.is_authenticated'
+* ''f760b44''  Attibute 'user.is_authenticated' don't exist on django 2.0
+* ''295d7d1'' Changes of 'installation.rst' with django 2.0 librarys
+* ''3fdf9d3'' fix 'register.assignment_tag' to django 2.0
+* ''1cd0548'' Attribute '@register.assignment_tag' don't exist on django 2.0, changing that to @register.tag
+* ''ddf0f93'' Import of file utils.py  'from django.core.urlresolvers import reverse' don't exist on Django 2.0, that need to be changig to  'from django.urls import reverse
+* ''bb825b0'' Import of file templatetags/crud_tags.py  'from django.core.urlresolvers import reverse' don't exist on Django 2.0, that need to be changig to  'from django.urls import reverse'.
+* ''04e8d17'' Removing print
+* ''6a223af'' Merge pull request #42 from justelex/patch-2
+* ''f5ad3bc'' Merge pull request #41 from justelex/patch-1
+* ''f443982'' Python 2 -> Python 3
+* ''2f5cfd8'' Fixed: Wrong packagename in documtation
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.9...master
+
 0.0.8
 -----
 
