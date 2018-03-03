@@ -55,15 +55,21 @@ turn off with
         check_login = False
         check_perms = False
 
-You also can defined extra perms with
+You also can defined extra perms in two ways as django perm string or like a function 
+
 
 .. code:: python
+
+    def myperm_system(user, view):
+       # user is django user
+       # view is one of this 'list', 'add', 'update', 'detail'
+       return True or False
 
     class Myclass(CRUDView):
         model = Customer
         perms = { 'create': ['applabel.mycustom_perm'],
                   'list': [],
-                  'delete': [],
+                  'delete': [myperm_system],
                   'update': [],
                   'detail': []
                 }
