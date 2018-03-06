@@ -2,6 +2,14 @@
 Changelog
 =========
 
+0.0.10
+------
+
+* ''82cc5cf'' (origin/master, origin/HEAD) Merge pull request #59 from luisza/patch-1
+* ''d50bbe0'' Fixed broken register_tag behavior
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.10...master
+
 0.0.9
 -----
 
@@ -47,7 +55,7 @@ Changelog
 * ''f443982'' Python 2 -> Python 3
 * ''2f5cfd8'' Fixed: Wrong packagename in documtation
 
-https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.9...master
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.9...0.0.10
 
 0.0.8
 -----
@@ -61,7 +69,7 @@ https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.9...master
 * ''8df2764'' Merge master
 * ''3d0999d'' Add filter collapse
 
-https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.8...master
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.8...0.0.9
 
 0.0.7
 -----
@@ -74,7 +82,7 @@ https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.8...master
 * ``80931a8`` Fixed pypi url
 * ``33350d3`` Adding online resources to the documentation
 
-https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7...master
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.7...0.0.8
 
 0.0.6
 -----
@@ -170,7 +178,7 @@ https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.3...0.0.4
 
 0.0.2
 ------
-* ``9ce4da4`` - (tag: 0.0.2) Minor changes in setup.py
+* ``9ce4da4`` - Minor changes in setup.py
 * ``6fd30e3`` - Updated README.rst
 * ``e89bda0`` - Massive refactor, changed name django-cruds to
                 django-cruds-adminlte, the app now is cruds_adminlte (instead
