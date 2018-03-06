@@ -17,7 +17,7 @@ register = template.Library()
 if hasattr(register, 'assignment_tag'):
     register_tag = register.assignment_tag
 else:
-    register.simple_tag
+    register_tag = register.simple_tag
 
 
 @register.filter
