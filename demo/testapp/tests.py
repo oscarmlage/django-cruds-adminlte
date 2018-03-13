@@ -55,7 +55,13 @@ from datetime import datetime, timedelta, tzinfo
 import urllib 
 
 
-""" function to return the url """
+""" function to return the urls 
+
+    `test` contain the view description/ instance
+    `action`  function or event to build url
+    `pk` Primary key to get/find object on DB
+        
+"""
 def get_action_url(test,action,pk=None):
             if ( action in [UPDATE,DELETE,DETAIL] ) :
                     url= reverse(test.app_testing+'_'+test.model+'_'+action, kwargs={'pk': pk})    # testapp/invoice/1/update
@@ -67,7 +73,14 @@ def get_action_url(test,action,pk=None):
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
 
-""" function to process params of url """    
+""" function to process params of url 
+
+    `test` contain the view description/ instance
+    `params` contain the array list to send on params
+    `strseparator` string separator of url params. Default= &
+    `str_boolean` bool to change boolean values to human string 'on'
+        
+"""    
 def get_build_params(test,params=[],strseparator="&",str_boolean=False):
     query='?'
     separator=False
@@ -93,7 +106,12 @@ def get_build_params(test,params=[],strseparator="&",str_boolean=False):
              separator=True
     return query    
 
-""" function to get the forms values of first the model """
+""" function to get the forms values of first the model 
+
+    `self` contain the view description/ instance
+    `use_id` bool used to confirm the clean of pk/id on array data post
+
+"""
 def get_request_form_values(self,use_id=True):
     firstobject = self.view.model.objects.first()
     self.assertTrue(isinstance(firstobject, self.view.model)) 
@@ -104,9 +122,9 @@ def get_request_form_values(self,use_id=True):
         response = self.client.get(url)  
         self.assertEqual(response.status_code, 200)
         form = response.context['form'] # get the form with data fields
-        data = form.initial
+        data = form.initial # take array list of fields with values
         
-        if 'id' in data and not use_id:
+        if 'id' in data and not use_id:  # to create a new object django require a pk/id = void
             data['id']=None;
         else:
             data['id'] = firstobject.pk
@@ -678,6 +696,7 @@ class FilterOEditViewTest:
                          filter_html='<form action="%s'%(urlparams)
                          self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed with the filters url")   # label filters exist
             self.client.logout() 
+
 class SimpleODeleteViewTest:
     
     """ check if comands post do the deleting  """
@@ -700,7 +719,7 @@ class SimpleODeleteViewTest:
             self.assertEqual(response.status_code, 404) # the response do not sent to error of pk valid                
         self.client.logout()    
         
-
+    """ check if delete view have confirmation button """
     def  test_deleteview_get_delete(self): 
         self.type=DELETE # delete form update/edit view
         self.client.login(username='test', password='test')
@@ -725,7 +744,7 @@ class SimpleODeleteViewTest:
 class AuthUserTest:    
 
     """ 
-    Without log 
+    Without log on GET
     
     """
     """ user  out log on list """          
@@ -777,7 +796,7 @@ class AuthUserTest:
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);   
 
     """ 
-    With log 
+    With log on GET
     
     """         
     """ user  logging on list """                    
@@ -875,7 +894,7 @@ class AuthUserTest:
                                              target_status_code=200,
                                              fetch_redirect_response=True)                 
 
-    """ Check redirect post update without log """
+    """ Check redirect post create without log """
     def  test_post_create(self):
             self.type = CREATE
 
@@ -963,11 +982,10 @@ class CustomerTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest
         self.ignore_action = []   
         self.view = CustomerCRUD()   # defined view
         super(CustomerTest, self).__init__(*args, **kwargs)  
-                 
-       
-class UserTest(TreeData,AdminViewTestCase):   
+                   
+class AdminTest(TreeData,AdminViewTestCase):   
     def __init__(self, *args, **kwargs):     
         self.model_inserting=4
-        super(UserTest, self).__init__(*args, **kwargs)  
+        super(AdminTest, self).__init__(*args, **kwargs)  
                  
                  
