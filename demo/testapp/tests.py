@@ -8,6 +8,7 @@ from django.template import Template, Context
 from django.db.models.query_utils import Q
 from django.urls.exceptions import NoReverseMatch
 from django.conf import settings
+
 # TEST
 from django.test import ( TestCase,
                             Client )
@@ -19,12 +20,6 @@ from cruds_adminlte import crud as crud_views
 from cruds_adminlte.filter import ( FormFilter, 
                                     get_filters )
 
-
-DELETE='delete'
-UPDATE='update'
-LIST='list'
-CREATE='create'
-DETAIL='detail'
 # APPs
 from testapp.views import (AutorCRUD, 
                            InvoiceCRUD, 
@@ -53,6 +48,13 @@ from testapp.models import ( Autor,
 import math
 from datetime import datetime, timedelta, tzinfo
 import urllib 
+
+DELETE='delete'
+UPDATE='update'
+LIST='list'
+CREATE='create'
+DETAIL='detail'
+
 
 
 """ function to return the urls 
@@ -131,7 +133,7 @@ def get_request_form_values(self,use_id=True):
             
     return data    
           
-""" Fathers class  """   
+""" Fathers classes  """   
 class TreeData(TestCase):
     def setUp(self):
         self.app_testing='testapp'
@@ -756,9 +758,6 @@ class AuthUserTest:
             self.assertEqual(response.status_code, 302 )        
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);
             
-            
-            
-        
     """ user  out log on edit """     
     def test_user_edit_noLogin(self):
         self.type=UPDATE
@@ -771,7 +770,7 @@ class AuthUserTest:
             
             self.assertEqual(response.status_code, 302 ) 
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);        
-        
+
     """ user  out log on create """    
     def test_user_create_noLogin(self):
         self.type=CREATE
@@ -781,7 +780,7 @@ class AuthUserTest:
             
             self.assertEqual(response.status_code, 302 ) 
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);       
-        
+
     """ user  out log on delete """           
     def test_user_delete_noLogin(self):
         self.type=DELETE
@@ -809,7 +808,7 @@ class AuthUserTest:
             
             self.assertEqual(response.status_code, 200 )  
             self.client.logout()                   
-        
+
     """ user  logging on edit """
     def test_user_editview_Login(self):
         self.type=UPDATE
@@ -823,7 +822,7 @@ class AuthUserTest:
 
             self.assertEqual(response.status_code, 200 )   
             self.client.logout()             
-        
+
     """ user  logging on create """    
     def test_user_createview_Login(self):
         self.type=CREATE
@@ -834,7 +833,7 @@ class AuthUserTest:
             
             self.assertEqual(response.status_code, 200 )
             self.client.logout()              
-        
+
     """ user  logging on delete """        
     def test_user_deleteview_Login(self):
         self.type=DELETE
@@ -873,8 +872,7 @@ class AuthUserTest:
                                              url_redirect, status_code=302,
                                              target_status_code=200,
                                              fetch_redirect_response=True) 
-                
-                
+
     """ Check redirect post delete without log """
     def  test_post_delete(self):
             self.type = DELETE
@@ -926,7 +924,6 @@ class AdminViewTestCase:
         self.assertContains(response, '/admin/password_change/')
         self.client.logout()         
 
- 
     def test_admin_auth_redirect(self):
         """ user can init auth and it redirect user to admin login"""
         url="/admin/auth/"
@@ -935,10 +932,7 @@ class AdminViewTestCase:
         url_redirect="/admin/login/?next=%s"%url
         self.assertEqual(response.url, url_redirect); 
         
-
-           
-
-""" Children class   """   
+""" models/app classes   """   
 class AutorTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
