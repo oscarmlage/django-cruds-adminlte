@@ -181,13 +181,7 @@ class TreeData(TestCase):
                  #Line.concept=quantity_1                              | Line.concept=quantity_1  
                  #   * Line 10 i=2  ...                                |   *  Line 14  i=2   ...
                  #   * Line 11 i=3  ...                                |   *  Line 15  i=3   ...                 
-                 # ( customer 1) -------------------------------------------------------------------------------------------  
-                 
-                 
-                 
-
-       
-
+                 # ( customer 1) -------------------------------------------------------------------------------------------                
 class SimpleOListViewTest:
    
 
@@ -508,7 +502,9 @@ class SimpleOEditViewTest:
                 if ( DELETE in self.view.views_available ):                       
                         url_delete= get_action_url(self,DELETE,firstobject.pk)
                         
+                        # when cruds_url exist in view, that check the url with namespace
                         if  hasattr(self.view, 'cruds_url') : # cruds_url is in url actions and that changes the url 
+                            # If cruds_url exist on view, the DELETE action should have 'namespace'
                             url_delete=url_delete.replace(self.view.cruds_url, 'namespace')  
                             
                         html= '%s'%( url_delete ) # When it have a A.href or Form.action
@@ -722,8 +718,128 @@ class SimpleODeleteViewTest:
          
             
         self.client.logout()         
+
+""" Auth user access """
+class AuthUserViewTest:
+         
+    def test_user_noLogin(self):
+        """ The User don't have been login """
+        response = self.client.get(reverse('auth_user_list'))
+        self.assertEqual(response.status_code, 302 )
+        self.assertEqual(response.url,"/accounts/login/?next=/lte/auth/user/list")
+         
+         
+    """ user  out log on list """          
+    def  test_user_list_noLogin(self):
+        self.type=LIST
+        if (self.type in self.view.views_available):        
+            url= get_action_url(self,self.type)         
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 302 )        
+            self.assertEqual(response.url,"/accounts/login/?next=%s"%url);
+        
+    """ user  out log on edit """     
+    def test_user_edit_noLogin(self):
+        self.type=UPDATE
+        if (self.type in self.view.views_available):
+            
+            firstobject= self.view.model.objects.first()
+            self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+            url= get_action_url(self,self.type,firstobject.pk)         
+            response = self.client.get(url)            
+            
+            self.assertEqual(response.status_code, 302 ) 
+            self.assertEqual(response.url,"/accounts/login/?next=%s"%url);        
+        
+    """ user  out log on create """    
+    def test_user_create_noLogin(self):
+        self.type=CREATE
+        if (self.type in self.view.views_available):
+            url= get_action_url(self,self.type)         
+            response = self.client.get(url)
+            
+            self.assertEqual(response.status_code, 302 ) 
+            self.assertEqual(response.url,"/accounts/login/?next=%s"%url);       
+        
+    """ user  out log on delete """           
+    def test_user_delete_noLogin(self):
+        self.type=DELETE
+        if (self.type in self.view.views_available):
+            
+            firstobject= self.view.model.objects.first()
+            self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+            url= get_action_url(self,self.type,firstobject.pk)         
+            response = self.client.get(url)           
+        
+            self.assertEqual(response.status_code, 302 )      
+            self.assertEqual(response.url,"/accounts/login/?next=%s"%url);   
+         
+    """ user  logging on list """                    
+    def  test_user_listview_Login(self):
+        self.type=LIST
+        if (self.type in self.view.views_available):
+            self.client.login(username='test', password='test')        
+            url= get_action_url(self,self.type)         
+            response = self.client.get(url)
+            
+            self.assertEqual(response.status_code, 200 )        
+        
+    """ user  logging on edit """
+    def test_user_editview_Login(self):
+        self.type=UPDATE
+        if (self.type in self.view.views_available):
+            self.client.login(username='test', password='test') 
+            
+            firstobject= self.view.model.objects.first()
+            self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+            url= get_action_url(self,self.type,firstobject.pk)         
+            response = self.client.get(url)     
+
+            self.assertEqual(response.status_code, 200 )   
+        
+    """ user  logging on create """    
+    def test_user_createview_Login(self):
+        self.type=CREATE
+        if (self.type in self.view.views_available):
+            self.client.login(username='test', password='test')
+            url= get_action_url(self,self.type)         
+            response = self.client.get(url)
+            
+            self.assertEqual(response.status_code, 200 ) 
+        
+    """ user  logging on delete """        
+    def test_user_deleteview_Login(self):
+        self.type=DELETE
+        if (self.type in self.view.views_available):
+            self.client.login(username='test', password='test') 
+            
+            firstobject= self.view.model.objects.first()
+            self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
+            url= get_action_url(self,self.type,firstobject.pk)         
+            response = self.client.get(url)     
+    
+            self.assertEqual(response.status_code, 200 )      
+        
+                 
+#     def test_user_list(self):
+#         """ The user can load the users list,  when it's login """
+#         self.client.login(username='test', password='test')
+#         response = self.client.get(reverse('auth_user_list'))
+#         #print (response)
+#         self.assertEqual(response.status_code, 200 )
+#         self.assertQuerysetEqual(response.context['object_list'],['<User: test>'])
+         
+         
+#     def test_user_group_list(self): 
+#         """ The user can lad group, when it's login """
+#         self.client.login(username='test', password='test')
+#         response = self.client.get(reverse('auth_user_groups_list'))
+#         #print (response)
+#         self.assertQuerysetEqual(response.context['object_list'], [])
+#                 
+
 """ Children class   """    
-class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
+class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
                  self.model_inserting=4
@@ -731,7 +847,7 @@ class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditView
                  self.view = AutorCRUD()   # defined view 
                  super(AutorTest, self).__init__(*args, **kwargs)                        
   
-class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
+class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='addresses'        
                  self.model_inserting=4      # 4 = (4 addresses)
@@ -739,17 +855,15 @@ class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                  self.view = AddressCRUD()   # defined view 
                  super(AddressTest, self).__init__(*args, **kwargs)
   
-class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
+class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='line' 
                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
                  self.ignore_action=[LIST]   # Used when action doesn't is shows. Example:: list action on sidebar
                  self.view = LineCRUD()   # defined view
                  super(LineTest, self).__init__(*args, **kwargs)
-                                  
-                
-                                
-class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest):   
+                                                                  
+class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest,AuthUserViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
@@ -761,8 +875,7 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 self.view = InvoiceCRUD()   # defined view 
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
-
-class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
+class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest,AuthUserViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
@@ -775,47 +888,6 @@ class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditV
 
                 
 
-# """ Views test """
-# class AuthUserViewTest(TestCase):
-# 
-#     def setUp(self):
-#         group_name = "My Test Group"
-#         self.group = Group(name=group_name)
-#         self.group.save()
-#         
-#         self.user = User(
-#             username='test', email='test@example.com', is_active=True,
-#             is_staff=True, is_superuser=True,
-#         )
-#         self.user.set_password('test')
-#         self.user.save()
-# 
-#         
-#     def test_user_noLogin(self):
-#         """ The User don't have been login """
-#         response = self.client.get(reverse('auth_user_list'))
-#         #self.assertContains(response.context,url)
-#         self.assertEqual(response.status_code, 302 )
-#         self.assertEqual(response.url,"/accounts/login/?next=/lte/auth/user/list")
-#         
-#         
-#         
-#     def test_user_list(self):
-#         """ The user can load the users list,  when it's login """
-#         self.client.login(username='test', password='test')
-#         response = self.client.get(reverse('auth_user_list'))
-#         #print (response)
-#         self.assertEqual(response.status_code, 200 )
-#         self.assertQuerysetEqual(response.context['object_list'],['<User: test>'])
-#         
-#         
-#     def test_user_group_list(self): 
-#         """ The user can lad group, when it's login """
-#         self.client.login(username='test', password='test')
-#         response = self.client.get(reverse('auth_user_groups_list'))
-#         #print (response)
-#         self.assertQuerysetEqual(response.context['object_list'], [])
-#                
 #    
 # """ Admin user views test"""
 # class AdminViewTestCase(TestCase):

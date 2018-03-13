@@ -47,7 +47,7 @@ class CustomerCRUD(CRUDView):
     }
     modelforms= custom_forms
     inlines=[Invoice_AjaxCRUD]
-    cruds_url='lte'
+
     
 class LineCRUD(CRUDView):
     model = Line
