@@ -67,7 +67,7 @@ def get_action_url(test,action,pk=None):
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
 
-    
+""" function to process params of url """    
 def get_build_params(test,params=[],strseparator="&",str_boolean=False):
     query='?'
     separator=False
@@ -92,8 +92,27 @@ def get_build_params(test,params=[],strseparator="&",str_boolean=False):
                     
              separator=True
     return query    
-    
+
+""" function to get the forms values of first the model """
+def get_request_form_values(self,use_id=True):
+    firstobject = self.view.model.objects.first()
+    self.assertTrue(isinstance(firstobject, self.view.model)) 
+    data = None
+    if (self.type in self.view.views_available):
+        url = get_action_url(self, UPDATE, firstobject.pk)                                    
+             
+        response = self.client.get(url)  
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form'] # get the form with data fields
+        data = form.initial
         
+        if 'id' in data and not use_id:
+            data['id']=None;
+        else:
+            data['id'] = firstobject.pk
+            
+    return data    
+          
 """ Fathers class  """   
 class TreeData(TestCase):
     def setUp(self):
@@ -556,21 +575,13 @@ class SimpleOEditViewTest:
             self.type=UPDATE
             self.client.login(username='test', password='test')
             
-            firstobject= self.view.model.objects.first()
-            self.assertTrue(isinstance(firstobject, self.view.model)) 
-
             if (self.type in self.view.views_available):
-                url= get_action_url(self,self.type,firstobject.pk)
-                url_list=get_action_url(self,LIST,firstobject.pk)
-                                    
-                response = self.client.get(url)  
-                self.assertEqual(response.status_code, 200 )
-                form=response.context['form']
-
-    
-                if self.update_set:
-                    data = form.initial 
-                  
+                data = get_request_form_values(self) 
+                
+                url= get_action_url(self,self.type,data['id'])
+                url_list=get_action_url(self,LIST,data['id'])
+                                        
+                if self.update_set:                 
                     # set new value to fields 
                     for attr in self.update_set:
                         data[attr]= self.update_set[attr]
@@ -602,19 +613,13 @@ class SimpleOEditViewTest:
             self.type = UPDATE
             self.client.login(username='test', password='test')
             
-            firstobject = self.view.model.objects.first()
-            self.assertTrue(isinstance(firstobject, self.view.model)) 
-
             if (self.type in self.view.views_available):
-                url = get_action_url(self, self.type, firstobject.pk)
-                url_list = get_action_url(self, LIST, firstobject.pk)
+                data = get_request_form_values(self) 
+                url = get_action_url(self, self.type, data['id'])
+                url_list = get_action_url(self, LIST, data['id'])
                                     
-                response = self.client.get(url)  
-                self.assertEqual(response.status_code, 200)
-                form = response.context['form']
     
                 if self.update_set:
-                    data = form.initial 
                     response = self.client.post(url, data)  # sending changes
                     # checked if save doesn't completed by requered field error
                     self.assertEqual(response.status_code, 200)
@@ -637,10 +642,8 @@ class SimpleOEditViewTest:
                                              fetch_redirect_response=True) 
 
             self.client.logout() 
-     
-class FilterOEditViewTest:
-    
-       
+
+class FilterOEditViewTest:   
     """ Test if editview use filters params"""
     def  test_editview_filters(self): 
             self.type=UPDATE
@@ -673,8 +676,8 @@ class FilterOEditViewTest:
                          
                          
                          filter_html='<form action="%s'%(urlparams)
-                         self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed whith the filters url")   # label filters exist
-
+                         self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed with the filters url")   # label filters exist
+            self.client.logout() 
 class SimpleODeleteViewTest:
     
     """ check if comands post do the deleting  """
@@ -717,18 +720,14 @@ class SimpleODeleteViewTest:
                 self.assertContains( response, "%s"%html) # delete view have confirmation question?
          
             
-        self.client.logout()         
+        self.client.logout()                     
+""" Fathers class with auth user access """
+class AuthUserTest:    
 
-""" Auth user access """
-class AuthUserViewTest:
-         
-    def test_user_noLogin(self):
-        """ The User don't have been login """
-        response = self.client.get(reverse('auth_user_list'))
-        self.assertEqual(response.status_code, 302 )
-        self.assertEqual(response.url,"/accounts/login/?next=/lte/auth/user/list")
-         
-         
+    """ 
+    Without log 
+    
+    """
     """ user  out log on list """          
     def  test_user_list_noLogin(self):
         self.type=LIST
@@ -737,6 +736,9 @@ class AuthUserViewTest:
             response = self.client.get(url)
             self.assertEqual(response.status_code, 302 )        
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);
+            
+            
+            
         
     """ user  out log on edit """     
     def test_user_edit_noLogin(self):
@@ -773,7 +775,11 @@ class AuthUserViewTest:
         
             self.assertEqual(response.status_code, 302 )      
             self.assertEqual(response.url,"/accounts/login/?next=%s"%url);   
-         
+
+    """ 
+    With log 
+    
+    """         
     """ user  logging on list """                    
     def  test_user_listview_Login(self):
         self.type=LIST
@@ -782,7 +788,8 @@ class AuthUserViewTest:
             url= get_action_url(self,self.type)         
             response = self.client.get(url)
             
-            self.assertEqual(response.status_code, 200 )        
+            self.assertEqual(response.status_code, 200 )  
+            self.client.logout()                   
         
     """ user  logging on edit """
     def test_user_editview_Login(self):
@@ -796,6 +803,7 @@ class AuthUserViewTest:
             response = self.client.get(url)     
 
             self.assertEqual(response.status_code, 200 )   
+            self.client.logout()             
         
     """ user  logging on create """    
     def test_user_createview_Login(self):
@@ -805,7 +813,8 @@ class AuthUserViewTest:
             url= get_action_url(self,self.type)         
             response = self.client.get(url)
             
-            self.assertEqual(response.status_code, 200 ) 
+            self.assertEqual(response.status_code, 200 )
+            self.client.logout()              
         
     """ user  logging on delete """        
     def test_user_deleteview_Login(self):
@@ -819,27 +828,99 @@ class AuthUserViewTest:
             response = self.client.get(url)     
     
             self.assertEqual(response.status_code, 200 )      
-        
-                 
-#     def test_user_list(self):
-#         """ The user can load the users list,  when it's login """
-#         self.client.login(username='test', password='test')
-#         response = self.client.get(reverse('auth_user_list'))
-#         #print (response)
-#         self.assertEqual(response.status_code, 200 )
-#         self.assertQuerysetEqual(response.context['object_list'],['<User: test>'])
-         
-         
-#     def test_user_group_list(self): 
-#         """ The user can lad group, when it's login """
-#         self.client.login(username='test', password='test')
-#         response = self.client.get(reverse('auth_user_groups_list'))
-#         #print (response)
-#         self.assertQuerysetEqual(response.context['object_list'], [])
-#                 
+            self.client.logout()             
 
-""" Children class   """    
-class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
+
+    """ 
+    
+    Without log  on POST
+    
+    """                     
+    """ Check redirect post update without log """
+    def  test_post_update(self):
+            self.type = UPDATE
+           
+
+            if (self.type in self.view.views_available):
+                self.client.login(username='test', password='test')
+                data = get_request_form_values(self)
+                self.client.logout() 
+                
+                url_update = get_action_url(self, self.type, data['id'])                                    
+                url_redirect = '/accounts/login/?next=%s'%url_update
+                
+                response = self.client.post(url_update, data)  # sending changes
+                self.assertRedirects(response,
+                                             url_redirect, status_code=302,
+                                             target_status_code=200,
+                                             fetch_redirect_response=True) 
+                
+                
+    """ Check redirect post delete without log """
+    def  test_post_delete(self):
+            self.type = DELETE
+
+            
+            firstobject = self.view.model.objects.first()
+            self.assertTrue(isinstance(firstobject, self.view.model)) 
+
+            if (self.type in self.view.views_available):                           
+                url = get_action_url(self, self.type, firstobject.pk)                                    
+                url_redirect = '/accounts/login/?next=%s'%url
+
+                
+                response = self.client.post(url)  # sending changes
+                self.assertRedirects(response,
+                                             url_redirect, status_code=302,
+                                             target_status_code=200,
+                                             fetch_redirect_response=True)                 
+
+    """ Check redirect post update without log """
+    def  test_post_create(self):
+            self.type = CREATE
+
+            if (self.type in self.view.views_available):
+                self.client.login(username='test', password='test')
+                data = get_request_form_values(self,False)
+                self.client.logout() 
+                
+                url_create =  get_action_url(self, self.type)  
+                url_redirect = '/accounts/login/?next=%s'%url_create 
+
+                
+                # Logout to pass to check required login on post
+                self.client.logout() 
+            
+                response = self.client.post(url_create, data)  # sending changes
+                self.assertRedirects(response,
+                                             url_redirect, status_code=302,
+                                             target_status_code=200,
+                                             fetch_redirect_response=True) 
+                
+""" Profile user access on admin views """
+class AdminViewTestCase:
+            
+    def test_admin_password_change(self):
+        """ user can use django admin to change password"""
+        self.client.login(username='test', password='test')
+        response = self.client.get('/admin/')
+        self.assertContains(response, '/admin/password_change/')
+        self.client.logout()         
+
+ 
+    def test_admin_auth_redirect(self):
+        """ user can init auth and it redirect user to admin login"""
+        url="/admin/auth/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302 ) 
+        url_redirect="/admin/login/?next=%s"%url
+        self.assertEqual(response.url, url_redirect); 
+        
+
+           
+
+""" Children class   """   
+class AutorTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
                  self.model_inserting=4
@@ -847,7 +928,7 @@ class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditView
                  self.view = AutorCRUD()   # defined view 
                  super(AutorTest, self).__init__(*args, **kwargs)                        
   
-class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
+class AddressTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='addresses'        
                  self.model_inserting=4      # 4 = (4 addresses)
@@ -855,7 +936,7 @@ class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                  self.view = AddressCRUD()   # defined view 
                  super(AddressTest, self).__init__(*args, **kwargs)
   
-class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,AuthUserViewTest):   
+class LineTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='line' 
                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
@@ -863,7 +944,7 @@ class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewT
                  self.view = LineCRUD()   # defined view
                  super(LineTest, self).__init__(*args, **kwargs)
                                                                   
-class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest,AuthUserViewTest):   
+class InvoiceTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
@@ -875,56 +956,18 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 self.view = InvoiceCRUD()   # defined view 
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
-class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest,AuthUserViewTest):   
-        def __init__(self, *args, **kwargs):
-                self.model='customer'        
-                self.model_inserting=4
-                self.ignore_action = []   
-                self.view = CustomerCRUD()   # defined view
-                super(CustomerTest, self).__init__(*args, **kwargs)  
+class CustomerTest(TreeData,AuthUserTest,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest):   
+    def __init__(self, *args, **kwargs):
+        self.model='customer'        
+        self.model_inserting=4
+        self.ignore_action = []   
+        self.view = CustomerCRUD()   # defined view
+        super(CustomerTest, self).__init__(*args, **kwargs)  
                  
        
-
-
-                
-
-#    
-# """ Admin user views test"""
-# class AdminViewTestCase(TestCase):
-#     def setUp(self):
-#         group_name = "My Test Group"
-#         self.group = Group(name=group_name)
-#         self.group.save()
-#         
-#         self.user = User(
-#             username='test', email='test@example.com', is_active=True,
-#             is_staff=True, is_superuser=True,
-#         )
-#         self.user.set_password('test')
-#         self.user.save()
-#         self.client.login(username='test', password='test')
-#         
-#         
-#     def tearDown(self):
-#         self.client.logout()
-#                     
-#     def test_user_can_access(self):
-#         """user in group should have access
-#         """
-#         self.user.groups.add(self.group)
-#         self.user.save()
-#         self.client.login(username='test', password='test')
-#         response = self.client.get(reverse('auth_user_list'))
-#         self.assertEqual(response.status_code, 200)      
-#         
-#             
-#     def test_admin_not_broken(self):
-#         """ user can use django admin """
-#         response = self.client.get('/admin/')
-#         self.assertContains(response, '/admin/password_change/')
-#         self.assertNotContains(response, "You don't have permission to edit anything")
-# 
-#     def test_admin_auth_not_broken(self):
-#         """ user can init auth """
-#         response = self.client.get('/admin/auth/')
-#         self.assertEqual(response.status_code, 200, response)
+class UserTest(TreeData,AdminViewTestCase):   
+    def __init__(self, *args, **kwargs):     
+        self.model_inserting=4
+        super(UserTest, self).__init__(*args, **kwargs)  
+                 
+                 
