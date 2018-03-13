@@ -18,6 +18,13 @@ from cruds_adminlte import utils
 from cruds_adminlte import crud as crud_views
 from cruds_adminlte.filter import ( FormFilter, 
                                     get_filters )
+
+
+DELETE='delete'
+UPDATE='update'
+LIST='list'
+CREATE='create'
+DETAIL='detail'
 # APPs
 from testapp.views import (AutorCRUD, 
                            InvoiceCRUD, 
@@ -50,13 +57,13 @@ import urllib
 
 """ function to return the url """
 def get_action_url(test,action,pk=None):
-            if ( action in ['update','delete','detail'] ) :
+            if ( action in [UPDATE,DELETE,DETAIL] ) :
                     url= reverse(test.app_testing+'_'+test.model+'_'+action, kwargs={'pk': pk})    # testapp/invoice/1/update
             else:
                     url= reverse(test.app_testing+'_'+test.model+'_'+action)    # testapp/invoice/create   -   testapp/invoice/list
                     
-            if (test.view.namespace and test.type=='list'): # if have namespace, find URL action on /namespace/
-                if (test.view.cruds_url) and ( action in ['create','update','delete','detail'] ): # cruds_url is in url actions and that changes the url 
+            if (test.view.namespace and test.type==LIST): # if have namespace, find URL action on /namespace/
+                if (test.view.cruds_url) and ( action in [CREATE,UPDATE,DELETE,DETAIL] ): # cruds_url is in url actions and that changes the url 
                         url=url.replace(test.view.cruds_url, 'namespace')  
             return url
 
@@ -93,7 +100,7 @@ class TreeData(TestCase):
         self.app_testing='testapp'
         #self.model='invoice'
         nobjects=4 # number of objects to insert           
-        self.actions=['create', 'list', 'delete', 'update', 'detail']  
+        self.actions=[CREATE, LIST, DELETE, UPDATE, DETAIL]  
         
         self.factory = RequestFactory()
         #user to test
@@ -192,7 +199,7 @@ class SimpleOListViewTest:
         """ Test show list of 'object_list' """
         def test_get_listView_content(self):
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type)         
 
             response = self.client.get(url)
@@ -210,22 +217,26 @@ class SimpleOListViewTest:
                    
             self.assertEqual(self.view.views_available, response.context['views_available'])
             
+              
+                                        
             self.client.logout()   
         
         """ Test show only button of valid actions """         
         def test_get_listView_actions(self):
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type)        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
-            for action in self.actions:  # django actions ['create', 'list', 'delete', 'update', 'detail']
-                 if action in self.view.views_available:  # crudview set actions ['create', 'list']
+            for action in self.actions:  # django actions [CREATE, LIST, DELETE, UPDATE, DETAIL]
+                 if action in self.view.views_available:  # crudview set actions [CREATE, LIST]
                      if action not in self.ignore_action : 
-                         firstobject= self.view.model.objects.all()[0]
+                         firstobject= self.view.model.objects.first()
                          self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
                          url=get_action_url(self,action,firstobject.pk)
-                         self.assertContains( response, '<a href="'+url )  # check if exist hyperlink to actions         
+                         self.assertContains( response, '<a href="'+url )  # check if exist hyperlink to actions
+                         
+              
             self.client.logout()   
             
             
@@ -234,7 +245,7 @@ class SimpleOListViewTest:
             
             
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type)        
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
@@ -267,7 +278,7 @@ class SimpleOListViewTest:
         """ Test show only the list of fields settings   """
         def test_get_listview_fields(self):
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type)      
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
@@ -299,7 +310,7 @@ class FilterOListViewTest:
     """ Test show only the list of list_filter settings   """
     def test_get_listview_fields_filters(self):
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type)         
             response = self.client.get(url)
             self.assertEqual(response.status_code, 200 )
@@ -326,7 +337,7 @@ class FilterOListViewTest:
     def test_get_listView_pagination_and_filters_invalid(self):
             params=[]
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type) 
                        
             view_filter= self.view.list_filter    
@@ -403,7 +414,7 @@ class FilterOListViewTest:
     def test_get_listView_pagination_and_filters_valid(self):
             params=[]
             self.client.login(username='test', password='test')
-            self.type='list'
+            self.type=LIST
             url= get_action_url(self,self.type) 
                        
             view_filter= self.view.list_filter    
@@ -481,30 +492,42 @@ class SimpleOEditViewTest:
     """ Test show list of 'object_list' """
     def test_get_editView_content(self):
             self.client.login(username='test', password='test')
-            firstobject= self.view.model.objects.all()[0]
+            firstobject= self.view.model.objects.first()
             self.assertTrue(isinstance(firstobject, self.view.model)) # check if return something
-            self.type='update'
+            self.type=UPDATE
             if (self.type in self.view.views_available):
-                url= get_action_url(self,self.type,firstobject.pk)
+                url= get_action_url(self,self.type,firstobject.pk)    
                 response = self.client.get(url)  
                 self.assertEqual(response.status_code, 200 )
             
                 if self.view.template_name_base != crud_views.CRUDView.template_name_base : # test if used custom template
                         tmp=self.app_testing +'/'+ self.model+'/'+self.view.template_name_base+'/update.html'
                         self.assertTemplateUsed(response,tmp )       # loaded the correct template 
+                        
+                        
+                if ( DELETE in self.view.views_available ):                       
+                        url_delete= get_action_url(self,DELETE,firstobject.pk)
+                        
+                        if  hasattr(self.view, 'cruds_url') : # cruds_url is in url actions and that changes the url 
+                            url_delete=url_delete.replace(self.view.cruds_url, 'namespace')  
+                            
+                        html= '%s'%( url_delete ) # When it have a A.href or Form.action
+                        self.assertContains(response,html)      
+                        
+     
                     
                 fields=response.context['fields']  # columns fields to build table html 
                 model_fields= utils.get_fields(self.view.model)   
                 if self.view.fields and not self.view.fields=='__all__':   # test if fields exist on response
                     for field in self.view.fields :
                          self.assertIn(field,model_fields)   # fields exist on model
-                         self.assertIn(field,fields)         # fields exist on updateview setting fields
+                         self.assertIn(field,fields)         # fields exist on update view setting fields
                          html='<div id="div_id_%s" '%(field) 
                          self.assertContains( response, "%s"%html)            # column field exist on table html
                 else: # '__all__'
                     for field in model_fields:
                         if not field == 'id':
-                            self.assertIn(field,fields)         # field exist on updateview setting fields
+                            self.assertIn(field,fields)         # field exist on update view setting fields
                             html='<div id="div_id_%s" '%(field) 
                             self.assertContains( response, "%s"%html) # column field exist on table html
                 
@@ -515,7 +538,11 @@ class SimpleOEditViewTest:
                         html= '<div data-refresh-url="/inline/testapp/%s/%i/list" id="%s'%(inline.name,firstobject.pk,inline.name)
                         self.assertContains(response,html)     
 
+
+
                 self.assertEqual(self.view.views_available, response.context['views_available'])  
+                  
+                        
             else:
                 try:
                      url= get_action_url(self,self.type,firstobject.pk)
@@ -530,15 +557,15 @@ class SimpleOEditViewTest:
     
     """ Test save changes on method post"""
     def  test_post_editview_valid(self):
-            self.type='update'
+            self.type=UPDATE
             self.client.login(username='test', password='test')
             
-            firstobject= self.view.model.objects.all()[0]
+            firstobject= self.view.model.objects.first()
             self.assertTrue(isinstance(firstobject, self.view.model)) 
 
             if (self.type in self.view.views_available):
                 url= get_action_url(self,self.type,firstobject.pk)
-                url_list=get_action_url(self,'list',firstobject.pk)
+                url_list=get_action_url(self,LIST,firstobject.pk)
                                     
                 response = self.client.get(url)  
                 self.assertEqual(response.status_code, 200 )
@@ -576,67 +603,55 @@ class SimpleOEditViewTest:
             
     """ Check display error to requerid fields """
     def  test_post_editview_invalid(self):
-            self.type='update'
+            self.type = UPDATE
             self.client.login(username='test', password='test')
             
-            firstobject= self.view.model.objects.all()[0]
+            firstobject = self.view.model.objects.first()
             self.assertTrue(isinstance(firstobject, self.view.model)) 
 
             if (self.type in self.view.views_available):
-                url= get_action_url(self,self.type,firstobject.pk)
-                url_list=get_action_url(self,'list',firstobject.pk)
+                url = get_action_url(self, self.type, firstobject.pk)
+                url_list = get_action_url(self, LIST, firstobject.pk)
                                     
                 response = self.client.get(url)  
-                self.assertEqual(response.status_code, 200 )
-                form=response.context['form']
-
+                self.assertEqual(response.status_code, 200)
+                form = response.context['form']
     
                 if self.update_set:
                     data = form.initial 
-                    response=self.client.post(url, data)  # sending changes
+                    response = self.client.post(url, data)  # sending changes
                     # checked if save doesn't completed by requered field error
-                    self.assertEqual(response.status_code, 200 )
+                    self.assertEqual(response.status_code, 200)
                     
                     # only return code 200 when form have been need a field valid
-                    if (response.status_code==200):
-                        form=response.context['form']                    
-                        html='<ul class="errorlist">'
-                        self.assertTrue( (html in str(form)),"Error with value field  (%s) doesn't showed"%html)
+                    if (response.status_code == 200):
+                        form = response.context['form']                    
+                        html = '<ul class="errorlist">'
+                        self.assertTrue((html in str(form)), "Error with value field  (%s) doesn't showed" % html)
     
                         # set new value to fields 
                         for attr in self.update_set:
-                            data[attr]= self.update_set[attr]
+                            data[attr] = self.update_set[attr]
     
-                        response=self.client.post(url, data)  # sending changes
+                        response = self.client.post(url, data)  # sending changes
                         # checked if save and after show listview
-                        self.assertRedirects(response, 
-                                             url_list, status_code=302, 
-                                             target_status_code=200, 
+                        self.assertRedirects(response,
+                                             url_list, status_code=302,
+                                             target_status_code=200,
                                              fetch_redirect_response=True) 
 
             self.client.logout() 
- 
-    def  test_editview_delete(self): 
-        self.type='update' # delete form update/edit view
-        self.client.login(username='test', password='test')
-            
-        lastobject= self.view.model.objects.latest()
-         
-         
-         
-            
-        self.client.logout()             
- 
+     
 class FilterOEditViewTest:
     
        
     """ Test if editview use filters params"""
     def  test_editview_filters(self): 
-            self.type='update'
+            self.type=UPDATE
             params=[]
             view_filter= self.view.list_filter   
             self.client.login(username='test', password='test')
-            firstobject= self.view.model.objects.all()[0]
+            firstobject= self.view.model.objects.first()
             self.assertTrue(isinstance(firstobject, self.view.model)) 
             url=get_action_url(self,self.type,firstobject.pk) 
             if view_filter:         # check filters params
@@ -664,10 +679,51 @@ class FilterOEditViewTest:
                          filter_html='<form action="%s'%(urlparams)
                          self.assertContains(response,filter_html,1,200,"The form actions doesn't have been completed whith the filters url")   # label filters exist
 
+class SimpleODeleteViewTest:
+    
+    """ check if comands post do the deleting  """
+    def  test_deleteview_post_delete(self): 
+        self.type=DELETE # delete form update/edit view
+        self.client.login(username='test', password='test')
+            
+        lastobject = self.view.model.objects.last()
+         
+        if (self.type in self.view.views_available):
+            url = get_action_url(self, self.type, lastobject.pk)
+            
+            response = self.client.post(url)  # sending delete
+            # check if delete request is completed
+            self.assertEqual(response.status_code, 302) # then code do not confirm delete
+            
+            
+            response = self.client.post(url)  # sending delete
+            # check if have been deleted and show error 404
+            self.assertEqual(response.status_code, 404) # the response do not sent to error of pk valid                
+        self.client.logout()    
+        
 
-
+    def  test_deleteview_get_delete(self): 
+        self.type=DELETE # delete form update/edit view
+        self.client.login(username='test', password='test')
+            
+        lastobject = self.view.model.objects.last()
+         
+        if (self.type in self.view.views_available):
+            url = get_action_url(self, self.type, lastobject.pk)
+            
+            response = self.client.get(url)  # sending delete
+            # check if delete request send to confirmation delete view
+            self.assertEqual(response.status_code, 200)
+            
+            if (response.status_code == 200):
+                #form = response.context['form']                    
+                html = '<button type="submit" class="btn btn-danger">'
+                self.assertContains( response, "%s"%html) # delete view have confirmation question?
+         
+            
+        self.client.logout()         
 """ Children class   """    
-class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
+class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='autor'        
                  self.model_inserting=4
@@ -675,7 +731,7 @@ class AutorTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditView
                  self.view = AutorCRUD()   # defined view 
                  super(AutorTest, self).__init__(*args, **kwargs)                        
   
-class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
+class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='addresses'        
                  self.model_inserting=4      # 4 = (4 addresses)
@@ -683,17 +739,17 @@ class AddressTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                  self.view = AddressCRUD()   # defined view 
                  super(AddressTest, self).__init__(*args, **kwargs)
   
-class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
+class LineTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
          def __init__(self, *args, **kwargs):
                  self.model='line' 
                  self.model_inserting=(4*4*4)  # 64 = (4 custormers x 4 invoices x 4 line)
-                 self.ignore_action=['list']   # Used when action doesn't is shows. Example:: list action on sidebar
+                 self.ignore_action=[LIST]   # Used when action doesn't is shows. Example:: list action on sidebar
                  self.view = LineCRUD()   # defined view
                  super(LineTest, self).__init__(*args, **kwargs)
                                   
                 
                                 
-class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,FilterOEditViewTest):   
+class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest,FilterOEditViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='invoice' 
                 self.model_inserting=(4*4)   #  16 = (4 custormers x 4 invoices)
@@ -706,7 +762,7 @@ class InvoiceTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditVi
                 super(InvoiceTest, self).__init__(*args, **kwargs)
 
 
-class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest):   
+class CustomerTest(TreeData,SimpleOListViewTest,FilterOListViewTest,SimpleOEditViewTest,SimpleODeleteViewTest):   
         def __init__(self, *args, **kwargs):
                 self.model='customer'        
                 self.model_inserting=4
