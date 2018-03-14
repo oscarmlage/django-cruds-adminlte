@@ -16,24 +16,27 @@ from .forms import CustomerForm, InvoiceForm, LineForm, AddressesForm
 
 class IndexView(TemplateView):
     template_name = 'index.html'
-    
+
+
 class Invoice_AjaxCRUD(InlineAjaxCRUD):
     model = Invoice
     base_model = Customer
     inline_field = 'customer'
     add_form = InvoiceForm
     update_form = InvoiceForm
-    list_fields = ['invoice_number', 'subtotal_iva','registered', 'sent', 'paid', 'date']
+    list_fields = ['invoice_number', 'subtotal_iva', 'registered', 'sent',
+                   'paid', 'date']
     title = _("Invoice")
-    
+
+
 class CustomerCRUD(CRUDView):
     model = Customer
-    template_name_base='ccruds'  #customer cruds => ccruds
+    template_name_base = 'ccruds'  # customer cruds => ccruds
     namespace = None
     check_login = True
     check_perms = True
-    views_available=['create', 'list', 'delete', 'update', 'detail']
-    fields = ['name','email']
+    views_available = ['create', 'list', 'delete', 'update', 'detail']
+    fields = ['name', 'email']
     related_fields = ['invoice']
     custom_forms = {
         'add_customer': CustomerForm,
@@ -45,31 +48,31 @@ class CustomerCRUD(CRUDView):
         'add_addresses': AddressesForm,
         'update_addresses': AddressesForm,
     }
-    modelforms= custom_forms
-    inlines=[Invoice_AjaxCRUD]
+    modelforms = custom_forms
+    inlines = [Invoice_AjaxCRUD]
 
-    
+
 class LineCRUD(CRUDView):
     model = Line
-    namespace = 'testapp' 
+    namespace = 'testapp'
     check_login = True
-    check_perms = True 
+    check_perms = True
     fields = '__all__'
-    cruds_url= 'lte'
+    cruds_url = 'lte'
     related_fields = ['invoice']
-    views_available=['create', 'list', 'delete', 'update', 'detail']   
+    views_available = ['create', 'list', 'delete', 'update', 'detail']
 
-    
-    
+
 class AddressCRUD(CRUDView):
     model = Addresses
     namespace = 'testapp'
     check_login = True
-    check_perms = True 
+    check_perms = True
     fields = '__all__'
-    cruds_url= 'lte'
-    views_available=['create', 'list', 'delete', 'update', 'detail'] 
-    
+    cruds_url = 'lte'
+    views_available = ['create', 'list', 'delete', 'update', 'detail']
+
+
 class Address_AjaxCRUD(InlineAjaxCRUD):
     model = Addresses
     base_model = Autor
@@ -96,8 +99,8 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'invoice'
     add_form = LineForm
     update_form = LineForm
-    list_fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price','amount']
-
+    list_fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price',
+                   'amount']
 
 
 class LineForm(forms.Form):
@@ -108,8 +111,6 @@ class filterAddress(FormFilter):
     form = LineForm
 
 
-
-    
 class InvoiceCRUD(CRUDView):
     model = Invoice
     check_login = True
@@ -130,10 +131,10 @@ class InvoiceCRUD(CRUDView):
     list_filter = ['customer', 'invoice_number',
                    'sent', 'paid', 'date', filterAddress]
     inlines = [Lines_AjaxCRUD]
-    #views_available = ['create', 'list',  'detail'] # original actions
+    #  views_available = ['create', 'list',  'detail'] # original actions
     views_available = ['create', 'list', 'update', 'detail', 'delete']
     search_fields = ['description1__icontains']
     split_space_search = True
     paginate_by = 1
-    paginate_position = 'Bottom' # Both | Bottom
+    paginate_position = 'Bottom'  # Both | Bottom
     paginate_template = 'cruds/pagination/enumeration.html'

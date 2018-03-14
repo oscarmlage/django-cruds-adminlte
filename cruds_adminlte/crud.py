@@ -23,8 +23,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from cruds_adminlte.filter import get_filters
-from django.db.models import query
 import types
+
 
 class CRUDMixin(object):
 
@@ -61,7 +61,7 @@ class CRUDMixin(object):
 
     def validate_user_perms(self, user, perm, view):
         if isinstance(perm, types.FunctionType):
-            return  perm(user, view)
+            return perm(user, view)
         return user.has_perm(perm)
 
     def get_check_perms(self, context):
@@ -70,9 +70,9 @@ class CRUDMixin(object):
         for perm in self.all_perms:
             if self.check_perms:
                 if perm in self.views_available:
-                    available_perms[perm] = all(
-                        [self.validate_user_perms(user, x, perm)   for x in self.all_perms[perm]])
-
+                    available_perms[perm] = all([
+                        self.validate_user_perms(user, x, perm)
+                        for x in self.all_perms[perm]])
                 else:
                     available_perms[perm] = False
             else:
