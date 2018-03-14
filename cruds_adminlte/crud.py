@@ -284,7 +284,7 @@ class CRUDView(object):
     check_perms = True
     paginate_by = 10
     paginate_template = 'cruds/pagination/prev_next.html'
-    paginate_position = 'bottom'
+    paginate_position = 'Bottom'
     update_form = None
     add_form = None
     display_fields = None
