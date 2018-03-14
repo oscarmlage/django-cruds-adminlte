@@ -23,7 +23,7 @@ class Invoice_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'customer'
     add_form = InvoiceForm
     update_form = InvoiceForm
-    fields = ['invoice_number', 'subtotal_iva',['registered'], 'sent', 'paid', 'date']
+    list_fields = ['invoice_number', 'subtotal_iva','registered', 'sent', 'paid', 'date']
     title = _("Invoice")
     
 class CustomerCRUD(CRUDView):
@@ -47,7 +47,7 @@ class CustomerCRUD(CRUDView):
     }
     modelforms= custom_forms
     inlines=[Invoice_AjaxCRUD]
-    cruds_url='lte'
+
     
 class LineCRUD(CRUDView):
     model = Line
@@ -59,6 +59,8 @@ class LineCRUD(CRUDView):
     related_fields = ['invoice']
     views_available=['create', 'list', 'delete', 'update', 'detail']   
 
+    
+    
 class AddressCRUD(CRUDView):
     model = Addresses
     namespace = 'testapp'
@@ -94,8 +96,7 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
     inline_field = 'invoice'
     add_form = LineForm
     update_form = LineForm
-    fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price',
-              'amount']
+    list_fields = ['reference', 'concept', 'quantity', 'unit', 'unit_price','amount']
 
 
 
@@ -130,7 +131,7 @@ class InvoiceCRUD(CRUDView):
                    'sent', 'paid', 'date', filterAddress]
     inlines = [Lines_AjaxCRUD]
     #views_available = ['create', 'list',  'detail'] # original actions
-    views_available = ['create', 'list', 'update', 'detail']
+    views_available = ['create', 'list', 'update', 'detail', 'delete']
     search_fields = ['description1__icontains']
     split_space_search = True
     paginate_by = 1
