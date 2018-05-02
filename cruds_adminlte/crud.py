@@ -120,6 +120,7 @@ class CRUDMixin(object):
             'model_verbose_name_plural': self.model._meta.verbose_name_plural,
             'namespace': self.namespace
         })
+        context.update({'blocks': self.template_blocks})
 
         if self.view_type in ['update', 'detail']:
             context['inlines'] = self.inlines
@@ -282,6 +283,7 @@ class CRUDView(object):
 
     model = None
     template_name_base = "cruds"
+    template_blocks = {}
     namespace = None
     fields = '__all__'
     urlprefix = ""
@@ -353,6 +355,7 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            template_blocks = self.template_blocks
             related_fields = self.related_fields
 
             def form_valid(self, form):
@@ -389,6 +392,7 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            template_blocks = self.template_blocks
             related_fields = self.related_fields
 
             def get_success_url(self):
@@ -415,6 +419,7 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            template_blocks = self.template_blocks
             related_fields = self.related_fields
 
             def form_valid(self, form):
@@ -451,6 +456,7 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            template_blocks = self.template_blocks
             search_fields = self.search_fields
             split_space_search = self.split_space_search
             related_fields = self.related_fields
@@ -520,6 +526,7 @@ class CRUDView(object):
             views_available = self.views_available[:]
             check_perms = self.check_perms
             template_father = self.template_father
+            template_blocks = self.template_blocks
             related_fields = self.related_fields
 
             def get_success_url(self):
