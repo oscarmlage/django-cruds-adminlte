@@ -1,10 +1,10 @@
 {% extends template_father %}
 {% load i18n %}
 
-{% block title %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endblock %}
-{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
-{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
-{% block page_description %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+{% block title %}{% if blocks.title %}{{ blocks.page_description }}{% else %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endif %}{% endblock %}
+{% block body_class %}{{ blocks.body_class|default:model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ blocks.page_name|default:model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% if blocks.page_description %}{{ blocks.page_description }}{% else %}{% trans "Create new" %} {{ model_verbose_name_plural|lower }}{% endif %}{% endblock %}
 
 {% block content %}
 <div class="row">

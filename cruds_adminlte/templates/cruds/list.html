@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load crud_tags %}
 
-{% block title %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
-{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
-{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
-{% block page_description %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endblock %}
+{% block title %}{% if blocks.title %}{{ blocks.page_description }}{% else %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endif %}{% endblock %}
+{% block body_class %}{{ blocks.body_class|default:model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ blocks.page_name|default:model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% if blocks.page_description %}{{ blocks.page_description }}{% else %}{% trans "List of" %} {{ model_verbose_name_plural|lower }}{% endif %}{% endblock %}
 
 
 {% block content %}

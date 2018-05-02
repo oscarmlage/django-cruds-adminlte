@@ -1,10 +1,11 @@
 {% extends template_father %}
 {% load i18n %}
 {% load crud_tags %}
-{% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
-{% block body_class %}{{ model_verbose_name_plural|lower }}{% endblock body_class %}
-{% block page_name %}{{ model_verbose_name_plural }}{% endblock %}
-{% block page_description %}{% trans "Detail of" %} {{ object }}{% endblock %}
+
+{% block title %}{% if blocks.title %}{{ blocks.page_description }}{% else %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endif %}{% endblock %}
+{% block body_class %}{{ blocks.body_class|default:model_verbose_name_plural|lower }}{% endblock body_class %}
+{% block page_name %}{{ blocks.page_name|default:model_verbose_name_plural }}{% endblock %}
+{% block page_description %}{% if blocks.page_description %}{{ blocks.page_description }}{% else %}{% trans "Detail of" %} {{ object }}{% endif %}{% endblock %}
 
 
 {% block content %}
