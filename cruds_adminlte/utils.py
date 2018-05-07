@@ -42,18 +42,32 @@ def get_fields(model, include=None):
     fields = OrderedDict()
     info = model._meta
     if include:  # self.model._meta.get_field(fsm_field_name)
-        try:
-            selected = [info.get_field_by_name(name)[0] for name in include]
-        except:
-            selected = [info.get_field(name) for name in include]
+        selected = {}
+        for name in include:
+            if '__' in name:
+                related_model, field_name = name.split('__', maxsplit=1)
+                try:
+                    selected[name] = \
+                        info.get_field_by_name(related_model)[0].related_model._meta.get_field_by_name(name)[0]
+                except:
+                    selected[name] = info.get_field(related_model).related_model._meta.get_field(field_name)
+            else:
+                try:
+                    selected[name] = info.get_field_by_name(name)[0]
+                except:
+                    selected[name] = info.get_field(name)
     else:
-        selected = [field for field in info.fields if field.editable]
-    for field in selected:
+        try:
+            selected = {field.name: field for field in info.fields if field.editable}
+        except:
+            # Python < 2.7
+            selected = dict((field.name, field) for field in info.fields if field.editable)
+    for name, field in selected.items():
         if field.__class__.__name__ == 'ManyToOneRel':
             field.verbose_name = field.related_name
-        fields[field.name] = [
-            field.verbose_name,
-            model._meta.get_field(field.name).get_internal_type]
+        fields[name] = [
+            field.verbose_name.title(),
+            field.get_internal_type]
     return fields
 
 
