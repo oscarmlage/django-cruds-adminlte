@@ -45,12 +45,14 @@ def get_fields(model, include=None):
         selected = {}
         for name in include:
             if '__' in name:
-                related_model, field_name = name.split('__', maxsplit=1)
+                related_model, field_name = name.split('__', 1)
                 try:
                     selected[name] = \
-                        info.get_field_by_name(related_model)[0].related_model._meta.get_field_by_name(name)[0]
+                        info.get_field_by_name(related_model)[0].\
+                        related_model._meta.get_field_by_name(name)[0]
                 except:
-                    selected[name] = info.get_field(related_model).related_model._meta.get_field(field_name)
+                    selected[name] = info.get_field(related_model).\
+                            related_model._meta.get_field(field_name)
             else:
                 try:
                     selected[name] = info.get_field_by_name(name)[0]
@@ -58,10 +60,12 @@ def get_fields(model, include=None):
                     selected[name] = info.get_field(name)
     else:
         try:
-            selected = {field.name: field for field in info.fields if field.editable}
+            selected = {field.name: field for field in info.fields
+                        if field.editable}
         except:
             # Python < 2.7
-            selected = dict((field.name, field) for field in info.fields if field.editable)
+            selected = dict((field.name, field) for field in info.fields
+                            if field.editable)
     for name, field in selected.items():
         if field.__class__.__name__ == 'ManyToOneRel':
             field.verbose_name = field.related_name
