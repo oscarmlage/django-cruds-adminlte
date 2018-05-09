@@ -67,6 +67,9 @@ def format_value(obj, field_name):
 
     If value is model instance returns link to detail view if exists.
     """
+    if '__' in field_name:
+        related_model, field_name = field_name.split('__', maxsplit=1)
+        obj = getattr(obj, related_model)
     display_func = getattr(obj, 'get_%s_display' % field_name, None)
     if display_func:
         return display_func()
