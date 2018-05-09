@@ -9,7 +9,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = '0.0.11'
+version = open('VERSION').read()
+readme = open('README.rst').read()
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist')
@@ -17,8 +18,6 @@ if sys.argv[-1] == 'publish':
     print("  git tag -a %s -m 'version %s'" % (version, version))
     print("  git push --tags")
     sys.exit()
-
-readme = open('README.rst').read()
 
 setup(
     name='django-cruds-adminlte',
@@ -32,7 +31,6 @@ setup(
     packages=[
         'cruds_adminlte',
         'cruds_adminlte.templatetags',
-
     ],
     include_package_data=True,
     install_requires=[

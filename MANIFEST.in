@@ -3,6 +3,7 @@ include CHANGELOG
 include CONTRIBUTING.rst
 include LICENSE
 include README.rst
+include VERSION
 recursive-include cruds_adminlte *.css *.eot *.gif *.html *.jpg *.js *.json *.map *.md *.otf *.png *.py *.rst *.svg *.ttf *.txt *.woff *.woff2
 
 graft cruds_adminlte/static

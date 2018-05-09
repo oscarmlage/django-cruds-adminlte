@@ -2,6 +2,27 @@
 Changelog
 =========
 
+0.0.12
+------
+
+* ''28abf93'' (HEAD -> master, origin/master, origin/HEAD) Fixes maxsplit issue + some pep8 cosmetic changes
+* ''b30b425'' Merge pull request #78 from mbourqui/dev/crud/relatedmodelfields
+* ''04cd359'' Merge pull request #77 from mbourqui/dev/crud/templateblocks
+* ''286f633'' Support overriding blocks in CRUD views
+* ''da359d6'' Support fields from related models in CRUD views
+* ''c07eafb'' PEP8 Cosmetics (tests.py partially fixed)
+* ''6b5061b'' PEP8 Cosmetics
+* ''9b438c7'' Merge branch 'master' of https://github.com/oscarmlage/django-cruds-adminlte
+* ''ce6b0c4'' Merge pull request #64 from luisza/perm_function
+* ''968f608'' Merge pull request #67 from migue56/testing_django2_0
+* ''8c5f8f8'' cleaning tests and comments
+* ''a26935d'' adding comment on on test.py
+* ''52e402d'' adding test to post without user log
+* ''b6ffea3'' adding test to login/ out login views
+* ''42dfd86'' testing delete url actions
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.11...master
+
 0.0.11
 ------
 
