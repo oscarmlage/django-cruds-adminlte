@@ -38,17 +38,9 @@ class CustomerCRUD(CRUDView):
     views_available = ['create', 'list', 'delete', 'update', 'detail']
     fields = ['name', 'email']
     related_fields = ['invoice']
-    custom_forms = {
-        'add_customer': CustomerForm,
-        'update_customer': CustomerForm,
-        'add_invoice': InvoiceForm,
-        'update_invoice': InvoiceForm,
-        'add_line': LineForm,
-        'update_line': LineForm,
-        'add_addresses': AddressesForm,
-        'update_addresses': AddressesForm,
-    }
-    modelforms = custom_forms
+
+    add_form = CustomerForm
+    update_form = CustomerForm
     inlines = [Invoice_AjaxCRUD]
 
 
@@ -59,6 +51,8 @@ class LineCRUD(CRUDView):
     check_perms = True
     fields = '__all__'
     cruds_url = 'lte'
+    #add_form = LineForm
+    #update_line = LineForm
     related_fields = ['invoice']
     views_available = ['create', 'list', 'delete', 'update', 'detail']
 
@@ -77,8 +71,8 @@ class Address_AjaxCRUD(InlineAjaxCRUD):
     model = Addresses
     base_model = Autor
     inline_field = 'autor'
-    # add_form = AddressesForm
-    # update_form = AddressesForm
+    add_form = AddressesForm
+    update_form = AddressesForm
     fields = ['address', 'city']
     title = _("Addresses")
 

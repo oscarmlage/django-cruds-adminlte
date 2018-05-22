@@ -492,10 +492,10 @@ class CRUDView(object):
                                 else:
                                     sfilter |= Q(**{field: qsearch})
                     if sfilter is not None:
-                            query = query.filter(sfilter)
+                        query = query.filter(sfilter)
 
                 if self.related_fields:
-                        query = query.filter(**self.context_rel)
+                    query = query.filter(**self.context_rel)
                 return query
 
             def get_success_url(self):
@@ -608,11 +608,16 @@ class CRUDView(object):
         return ns
 
     def check_create_perm(self, applabel, name):
-        model, created = ContentType.objects.get_or_create(
-            app_label=applabel, model=name)
-        if not Permission.objects.filter(content_type=model,
-                                         codename="view_%s" % (name,)
-                                         ).exists():
+        notfollow = False
+        try:
+            model, created = ContentType.objects.get_or_create(
+                app_label=applabel, model=name)
+        except:
+            notfollow = True
+        if not notfollow and not Permission.objects.filter(content_type=model,
+                                                           codename="view_%s" % (
+                                                               name,)
+                                                           ).exists():
             Permission.objects.create(
                 content_type=model,
                 codename="view_%s" % (name,),
