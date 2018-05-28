@@ -29,7 +29,6 @@ customercrud = CustomerCRUD()
 linecrud = LineCRUD()
 addresscrud = AddressCRUD()
 
-ns = crud_for_app('testapp', check_perms=True, namespace="ns")
 
 urlpatterns = [
     url(r'^$', IndexView.as_view()),

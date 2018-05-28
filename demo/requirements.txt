@@ -1,0 +1,1 @@
+django-image-cropping
