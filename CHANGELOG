@@ -2,6 +2,16 @@
 Changelog
 =========
 
+0.0.13
+------
+
+* ''ac96520'' (HEAD -> master, origin/master, origin/HEAD) PEP8 cosmetics
+* ''11b1444'' Merge branch 'master' of https://github.com/oscarmlage/django-cruds-adminlte
+* ''58346ee'' Merge pull request #81 from luisza/support2x
+* ''a7e9f4f'' demo site fixed and prevent error on migrate with empty db
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.12...master
+
 0.0.12
 ------
 
