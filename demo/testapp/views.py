@@ -51,8 +51,8 @@ class LineCRUD(CRUDView):
     check_perms = True
     fields = '__all__'
     cruds_url = 'lte'
-    #add_form = LineForm
-    #update_line = LineForm
+    # add_form = LineForm
+    # update_line = LineForm
     related_fields = ['invoice']
     views_available = ['create', 'list', 'delete', 'update', 'detail']
 

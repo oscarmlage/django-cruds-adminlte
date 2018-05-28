@@ -615,9 +615,8 @@ class CRUDView(object):
         except:
             notfollow = True
         if not notfollow and not Permission.objects.filter(content_type=model,
-                                                           codename="view_%s" % (
-                                                               name,)
-                                                           ).exists():
+                                                           codename="view_%s" %
+                                                           (name, )).exists():
             Permission.objects.create(
                 content_type=model,
                 codename="view_%s" % (name,),
