@@ -72,6 +72,8 @@ def get_fields(model, include=None):
         fields[name] = [
             field.verbose_name.title(),
             field.get_internal_type]
+    if include:
+        fields = OrderedDict((key, fields[key]) for key in include)
     return fields
 
 
