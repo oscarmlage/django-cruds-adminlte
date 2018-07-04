@@ -163,7 +163,8 @@ class CRUDMixin(object):
         if getparams:
             self.getparams = "&".join(getparams)
         for perm in self.perms:
-            if not self.validate_user_perms(request.user, perm, self.view_type):
+            if not self.validate_user_perms(request.user, perm,
+                                            self.view_type):
                 return HttpResponseForbidden()
         return View.dispatch(self, request, *args, **kwargs)
 
