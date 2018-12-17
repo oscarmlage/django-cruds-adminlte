@@ -6,14 +6,14 @@
             <table class="table table-bordered">
                 <tr>
                     <th>#</th>
-                    <th>页面URL</th>
-                    <th>操作</th>
+                    <th>URL</th>
+                    <th>Action</th>
                 </tr>
                 {% for page in pager.items %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a target="_blank" href="{% url 'adminlte.example.pages' page_id=page.id %}">{{ page.title }}</a></td>
-                        <td><a href="{% url 'adminlte.example.page.edit' page_id=page.id %}">编辑</a></td>
+                        <td><a href="{% url 'adminlte.example.page.edit' page_id=page.id %}">Edit</a></td>
                     </tr>
                 {% endfor %}
             </table>

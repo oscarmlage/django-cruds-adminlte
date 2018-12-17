@@ -11,7 +11,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
                    login_required=False, check_perms=False,
                    add_form=None,
                    update_form=None, views=None, cruds_url=None,
-                   list_fields=None):
+                   list_fields=None, related_fields=None):
     """
     Returns list of ``url`` items to CRUD a model.
     """
@@ -23,6 +23,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
     myupdate_form = update_form
     mycruds_url = cruds_url
     mylist_fields = list_fields
+    myrelated_fields = related_fields
 
     class NOCLASS(CRUDView):
         model = mymodel
@@ -35,6 +36,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
         views_available = views
         cruds_url = mycruds_url
         list_fields = mylist_fields
+        related_fields = myrelated_fields
 
     nc = NOCLASS()
     return nc.get_urls()
@@ -64,11 +66,16 @@ def crud_for_app(app_label, urlprefix=None, namespace=None,
         if 'list_' + name in modelforms:
             list_fields = modelforms['list_' + name]
 
+        related_fields = None
+        if 'related_' + name in modelforms:
+            related_fields = modelforms['related_' + name]
+
         urls += crud_for_model(model, urlprefix,
                                namespace, login_required, check_perms,
                                add_form=add_form,
                                update_form=update_form,
                                views=views,
                                cruds_url=cruds_url,
-                               list_fields=list_fields)
+                               list_fields=list_fields,
+                               related_fields=related_fields)
     return urls
