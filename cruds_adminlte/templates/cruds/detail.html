@@ -9,33 +9,40 @@
 
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        {% if url_list and 'list' in views_available and crud_perms.list %}
+            <a href="{{ url_list }}{{getparams}}">
+                <i class="fa fa-angle-double-left"></i>
+                {% trans "Back to" %} {{ model_verbose_name_plural|lower }}
+            </a>
+        {% endif %}
+        <br /><br />
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">{% trans "Detail of" %} {{ object }}</h3>
+            </div>
 
-  {% if url_update and 'update' in views_available and crud_perms.update %}
-  <div class="box-header">
-      <a href="{{ url_update }}{{getparams}}" class="btn btn-primary" >{% trans "Edit" %}</a>
-  </div>
-  {% endif %}
-<div class="box-body">
-<div class="table-responsive">
-  <table class="table">
-    <thead>
-      <th>{% trans 'Label' %}</th><th>{% trans 'Value' %}</th>
-    </thead>
-    <tbody>
-      {% crud_fields object fields %}
-    </tbody>
-  </table>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <th>{% trans 'Label' %}</th><th>{% trans 'Value' %}</th>
+                        </thead>
+                        <tbody>
+                            {% crud_fields object fields %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if url_update and 'update' in views_available and crud_perms.update %}
+            <div class="box-header">
+                <a href="{{ url_update }}{{getparams}}" class="btn btn-primary" >{% trans "Edit" %}</a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
 </div>
-</div>
-  {% if url_list and 'list' in views_available and crud_perms.list %}
-    <div class="box-footer">
-      <a href="{{ url_list }}{{getparams}}" class="btn btn-primary">{% trans "Back to list" %}</a>
-   </div>
-  {% endif %}
-  </div>
-  </div>
-  </div>
 {% endblock %}

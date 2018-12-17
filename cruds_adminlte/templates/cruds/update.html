@@ -10,7 +10,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-    	{% if crud_perms.list %}
+        {% if crud_perms.list %}
         <a href="{{ url_list }}{{getparams}}">
             <i class="fa fa-angle-double-left"></i>
             {% trans "Back to" %} {{ model_verbose_name_plural|lower }}
@@ -21,6 +21,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">{% trans "Edit" %} {{ model_verbose_name }}</h3>
             </div>
+
             {% include "cruds/_form.html" with action='update' %}
 
           {% if inlines%}
