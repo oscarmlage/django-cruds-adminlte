@@ -34,6 +34,9 @@ class CRUDMixin(object):
                                 self.model.__name__.lower())
         dev.append(base_name + self.template_name)
         dev.append(self.template_name)
+        base = self.template_name.split("/")[-1]
+        dev.append("cruds/" + base)
+
         return dev
 
     def get_search_fields(self, context):
