@@ -15,7 +15,6 @@ from django.urls.exceptions import NoReverseMatch
 from django.views import View
 from django.views.generic import (ListView, CreateView, DeleteView,
                                   UpdateView, DetailView)
-from django.shortcuts import render
 from cruds_adminlte import utils
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -23,6 +22,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
 from cruds_adminlte.filter import get_filters
+from django.template.loader import render_to_string
 import types
 
 
@@ -165,7 +165,7 @@ class CRUDMixin(object):
         for perm in self.perms:
             if not self.validate_user_perms(request.user, perm,
                                             self.view_type):
-                return HttpResponseForbidden(render(request, 'HttpResponse/403.html'))
+                return HttpResponseForbidden(render_to_string('HttpResponse/403.html', request=request))
         return View.dispatch(self, request, *args, **kwargs)
 
 
