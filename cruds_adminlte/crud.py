@@ -165,7 +165,7 @@ class CRUDMixin(object):
         for perm in self.perms:
             if not self.validate_user_perms(request.user, perm,
                                             self.view_type):
-                return HttpResponseForbidden(render_to_string('HttpResponse/403.html', request=request))
+                return HttpResponseForbidden(render_to_string('cruds/403.html', request=request))
         return View.dispatch(self, request, *args, **kwargs)
 
 
