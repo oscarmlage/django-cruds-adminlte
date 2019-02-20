@@ -1,0 +1,13 @@
+{% extends 'cruds/base.html' %}
+{% load i18n %}
+
+
+{% block title %}{% trans "Error 403" %}{% endblock %}
+{% block page_name %} {% trans "Error 403" %} {% endblock %}
+{% block content %}
+
+<h1> You are not authorized to view this page</h1>
+
+<a class="btn btn-success" href="/">{% trans "Return to Main Page" %} </a>
+
+{% endblock %}
