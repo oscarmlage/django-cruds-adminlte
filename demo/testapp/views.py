@@ -75,6 +75,7 @@ class Address_AjaxCRUD(InlineAjaxCRUD):
     update_form = AddressesForm
     fields = ['address', 'city']
     title = _("Addresses")
+   # template_name_base = "cruds/ajax"
 
 
 class AutorCRUD(CRUDView):
