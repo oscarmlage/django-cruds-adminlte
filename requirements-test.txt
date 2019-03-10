@@ -1,4 +1,4 @@
-django>=1.4.2,<=1.11
+django >= 1.11.18
 coverage
 coveralls
 mock>=1.0.1
