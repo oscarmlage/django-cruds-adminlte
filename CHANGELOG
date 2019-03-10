@@ -2,6 +2,28 @@
 Changelog
 =========
 
+0.0.14
+------
+
+* ''fd0181e'' (HEAD -> master, origin/master, origin/HEAD) Reviewed BSD-3 License
+* ''615d046'' Addded new contributors
+* ''379a885'' Merge pull request #95 from miguelmendez17/Issue#89
+* ''5b8aeb9'' Merge pull request #92 from alegambo/pasante
+* ''e95e425'' Change in requirements (ajax) and solving Issue #89
+* ''9d4f88a'' change the directory of the 403.html template from HttpRespnse/403.html to cruds/403.html
+* ''8804b8c'' Working on Changes of Issue 75
+* ''edf2e50'' HTML cosmetics in detail/update
+* ''d00b5e8'' FIX: You can add/define related_fields by model to not mess up things while saving models with FK fields
+* ''18fcc53'' FIX: You can add/define list_fields by model to see only the fields you want in the list view, not all of them
+* ''705d1d6'' Working on issue #75
+* ''d3c0c6a'' PEP8 cosmetics
+* ''ae306bd'' Merge branch 'master' of https://github.com/oscarmlage/django-cruds-adminlte
+* ''1939cd8'' Merge pull request #85 from luisza/permcheck
+* ''2ef9cc3'' fixed forbiden error
+* ''7836ba4'' Merge pull request #83 from poipoii/master
+* ''b19c2b0'' Re-order List View fields
+
+
 0.0.13
 ------
 
