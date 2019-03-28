@@ -4,17 +4,24 @@ from __future__ import unicode_literals
 from django.apps import apps
 
 
-from .crud import CRUDView
+from .crud import CRUDView, CRUDMixin
 
 
 def crud_for_model(model, urlprefix=None, namespace=None,
                    login_required=False, check_perms=False,
                    add_form=None,
                    update_form=None, views=None, cruds_url=None,
-                   list_fields=None, related_fields=None):
+                   list_fields=None, related_fields=None,
+                   mixin=None):
     """
     Returns list of ``url`` items to CRUD a model.
+    @param mixin=none -- mixin to be used as a base.
     """
+    if mixin and not issubclass(mixin, CRUDMixin):
+        raise ValueError(
+            'Mixin needs to be a subclass of <%s>', CRUDMixin.__name__
+        )
+
     mymodel = model
     myurlprefix = urlprefix
     mynamespace = namespace
@@ -24,6 +31,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
     mycruds_url = cruds_url
     mylist_fields = list_fields
     myrelated_fields = related_fields
+    mymixin = mixin
 
     class NOCLASS(CRUDView):
         model = mymodel
@@ -37,6 +45,7 @@ def crud_for_model(model, urlprefix=None, namespace=None,
         cruds_url = mycruds_url
         list_fields = mylist_fields
         related_fields = myrelated_fields
+        mixin = mymixin
 
     nc = NOCLASS()
     return nc.get_urls()
@@ -44,14 +53,24 @@ def crud_for_model(model, urlprefix=None, namespace=None,
 
 def crud_for_app(app_label, urlprefix=None, namespace=None,
                  login_required=False, check_perms=False,
-                 modelforms={}, views=None, cruds_url=None):
+                 modelforms={}, views=None, cruds_url=None,
+                 mixin=None):
     """
     Returns list of ``url`` items to CRUD an app.
+    @param mixin=none -- mixin to be used for all the CRUD views that can be
+                            customized to allow custom "get_context_data"
+                            variables for all the views.
     """
 #     if urlprefix is None:
 #         urlprefix = app_label + '/'
     app = apps.get_app_config(app_label)
     urls = []
+
+    if mixin and not issubclass(mixin, CRUDMixin):
+        raise ValueError(
+            'Mixin needs to be a subclass of <%s>', CRUDMixin.__name__
+        )
+
     for modelname, model in app.models.items():
         name = model.__name__.lower()
         add_form = None
@@ -77,5 +96,6 @@ def crud_for_app(app_label, urlprefix=None, namespace=None,
                                views=views,
                                cruds_url=cruds_url,
                                list_fields=list_fields,
-                               related_fields=related_fields)
+                               related_fields=related_fields,
+                               mixin=mixin)
     return urls
