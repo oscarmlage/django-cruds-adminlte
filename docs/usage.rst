@@ -55,7 +55,7 @@ turn off with
         check_login = False
         check_perms = False
 
-You also can defined extra perms in two ways as django perm string or like a function 
+You also can defined extra perms in two ways as django perm string or like a function
 
 
 .. code:: python
@@ -442,4 +442,31 @@ this extra parameters
         model = Autor
         inlines = [Address_AjaxCRUD]
 
+======================
+CRUDMixin Usage
+======================
 
+CRUDMixin is a mixin-like class that all the views inherit from. It provides a
+convenient way of customizing your views, requiring of no additional changes.
+You can access that class when calling the functions "crud_for_app" or
+"crud_for_models", passing the reference to your custom CRUDMixin object as a
+new parameter to any of these functions.
+
+The following example uses the class "MyMixin" to customize the object called
+"context_data" for all the views. This way, all the templates will have a new
+object called "cars" available.
+
+.. code:: python
+
+    class MyMixin(CRUDMixin):
+        def get_context_data(self, *args, **kwargs):
+            context = super(Mixin, self).get_context_data(*args, **kwargs)
+            context['cars'] = MyModel.objects.all()
+            return context
+
+    urlpatterns += crud_for_app('myapp', login_required=True, mixin=MyMixin)
+
+.. warning::
+
+    The class "MyMixin" needs to inherit from "CRUDMixin"; otherwise an
+    exception is raised.
