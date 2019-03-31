@@ -457,7 +457,6 @@ The following example uses the class "MyMixin" to customize the object called
 object called "cars" available.
 
 .. code:: python
-
     class MyMixin(CRUDMixin):
         def get_context_data(self, *args, **kwargs):
             context = super(Mixin, self).get_context_data(*args, **kwargs)
@@ -467,6 +466,5 @@ object called "cars" available.
     urlpatterns += crud_for_app('myapp', login_required=True, mixin=MyMixin)
 
 .. warning::
-
     The class "MyMixin" needs to inherit from "CRUDMixin"; otherwise an
     exception is raised.
