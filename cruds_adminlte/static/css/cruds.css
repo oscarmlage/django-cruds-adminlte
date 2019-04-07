@@ -2,6 +2,10 @@
     color: #fff !important;
 }
 
+.user-footer > div > a {
+  color: black !important;
+}
+
 .nav-tabs>li {
     margin-bottom: -2px;
 }

@@ -168,7 +168,9 @@ class CRUDMixin(object):
         for perm in self.perms:
             if not self.validate_user_perms(request.user, perm,
                                             self.view_type):
-                return HttpResponseForbidden(render_to_string('cruds/403.html', request=request))
+                return HttpResponseForbidden(render_to_string(
+                    'cruds/403.html', request=request
+                ))
         return View.dispatch(self, request, *args, **kwargs)
 
 
@@ -307,6 +309,7 @@ class CRUDView(object):
     split_space_search = False
     related_fields = None
     list_filter = None
+    mixin = CRUDMixin
 
     """
     It's obligatory this structure
@@ -350,7 +353,7 @@ class CRUDView(object):
     def get_create_view(self):
         CreateViewClass = self.get_create_view_class()
 
-        class OCreateView(CRUDMixin, CreateViewClass):
+        class OCreateView(self.mixin, CreateViewClass):
             namespace = self.namespace
             perms = self.perms['create']
             all_perms = self.perms
@@ -386,7 +389,7 @@ class CRUDView(object):
     def get_detail_view(self):
         ODetailViewClass = self.get_detail_view_class()
 
-        class ODetailView(CRUDMixin, ODetailViewClass):
+        class ODetailView(self.mixin, ODetailViewClass):
             namespace = self.namespace
             perms = self.perms['detail']
             all_perms = self.perms
@@ -413,7 +416,7 @@ class CRUDView(object):
     def get_update_view(self):
         EditViewClass = self.get_update_view_class()
 
-        class OEditView(CRUDMixin, EditViewClass):
+        class OEditView(self.mixin, EditViewClass):
             namespace = self.namespace
             perms = self.perms['update']
             form_class = self.update_form
@@ -450,7 +453,7 @@ class CRUDView(object):
     def get_list_view(self):
         OListViewClass = self.get_list_view_class()
 
-        class OListView(CRUDMixin, OListViewClass):
+        class OListView(self.mixin, OListViewClass):
             namespace = self.namespace
             perms = self.perms['list']
             all_perms = self.perms
@@ -522,7 +525,7 @@ class CRUDView(object):
     def get_delete_view(self):
         ODeleteClass = self.get_delete_view_class()
 
-        class ODeleteView(CRUDMixin, ODeleteClass):
+        class ODeleteView(self.mixin, ODeleteClass):
             namespace = self.namespace
             perms = self.perms['delete']
             all_perms = self.perms
@@ -647,21 +650,26 @@ class CRUDView(object):
             self.perms['list'].append("%s.view_%s" % (applabel, name))
             self.perms['detail'].append("%s.view_%s" % (applabel, name))
 
-    def inicialize_views_available(self):
+    def initialize_views_available(self):
         if self.views_available is None:
             self.views_available = [
                 'create', 'list', 'delete', 'update', 'detail']
 
-    def __init__(self, namespace=None, model=None, template_name_base=None):
+    def __init__(
+        self, namespace=None, model=None, template_name_base=None,
+        mixin=None
+    ):
         if namespace:
             self.namespace = namespace
         if model:
             self.model = model
         if template_name_base:
             self.template_name_base = template_name_base
+        if mixin:
+            self.mixin = mixin
 
         basename = self.get_base_name()
-        self.inicialize_views_available()
+        self.initialize_views_available()
         self.initialize_perms()
         if 'create' in self.views_available:
             self.initialize_create(basename + '/create.html')
