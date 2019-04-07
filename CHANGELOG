@@ -2,6 +2,19 @@
 Changelog
 =========
 
+0.0.15
+------
+
+* ''76a6913'' (HEAD -> master, origin/master, origin/HEAD) Little improvement in the demo documentation
+* ''fd9fe2b'' Merge pull request #97 from rtubio/master
+* ''3067e63''  django-ajax fixed to point to the right min.js file
+* ''8f31118'' Fixing security alerts from github
+* ''e3bf5a6'' Added missed link in CHANGELOG
+* ''dcab42d'' (tag: 0.0.14) New version 0.0.14
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.14...master
+
+
 0.0.14
 ------
 
