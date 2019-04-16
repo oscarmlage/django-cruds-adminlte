@@ -33,8 +33,8 @@ addresscrud = AddressCRUD()
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
 
-    url(r'^accounts/login/$', auth_views.LoginView, name='login'),
-    url(r'^logout/$', auth_views.LogoutView, name='logout'),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^admin/', admin.site.urls),
     url(r'^select2/', include('django_select2.urls')),
     url('^namespace/', include('testapp.urls')),
