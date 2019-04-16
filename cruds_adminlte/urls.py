@@ -45,7 +45,9 @@ def crud_for_model(model, urlprefix=None, namespace=None,
         cruds_url = mycruds_url
         list_fields = mylist_fields
         related_fields = myrelated_fields
-        mixin = mymixin
+        # mixin = mymixin  # @FIXME TypeError: metaclass conflict: the metaclass
+        # of a derived class must be a (non-strict) subclass of the metaclasses
+        # of all its bases
 
     nc = NOCLASS()
     return nc.get_urls()
