@@ -1,4 +1,4 @@
-django >= 1.11.18
+-r requirements.txt
 coverage
 coveralls
 mock>=1.0.1
