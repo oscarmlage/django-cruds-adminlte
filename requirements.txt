@@ -1,5 +1,2 @@
-django>=1.11.18
-django-crispy-forms==1.7.2
 django-select2==6.0.2
 easy-thumbnails==2.5
-djangoajax==2.3.7
