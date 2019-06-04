@@ -29,6 +29,6 @@ jobs:
       #    path: tests/reports
 workflows:
   version: 2
-  build-deploy:
+  build:
     jobs:
       - build
