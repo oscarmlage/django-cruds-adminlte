@@ -3,14 +3,18 @@
 
 import os
 import sys
+from codecs import open
+import subprocess
+
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
-version = open('VERSION').read()
+version = open('VERSION').read().replace('\n', '')
 readme = open('README.rst').read()
+
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist')
@@ -18,6 +22,12 @@ if sys.argv[-1] == 'publish':
     print("  git tag -a %s -m 'version %s'" % (version, version))
     print("  git push --tags")
     sys.exit()
+else:
+    if os.path.exists(os.path.join(os.path.dirname(__file__), '.git')):
+        cmd = 'git rev-parse --verify --short HEAD'.split(' ')
+        git_hash = subprocess.check_output(cmd).decode().replace('\n', '')
+        version = "%s+git.%s" % (version, git_hash)
+
 
 setup(
     name='django-cruds-adminlte',
