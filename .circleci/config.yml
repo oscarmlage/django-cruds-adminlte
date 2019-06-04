@@ -18,6 +18,9 @@ jobs:
             - "~/repo/.eggs"
       - run:
           command: |
+            pip install coverage tox
+      - run:
+          command: |
             tox
       - store_artifacts:
           path: tests/reports/coverage-html
