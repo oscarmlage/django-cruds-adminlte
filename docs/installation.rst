@@ -39,8 +39,8 @@ Requirements
 
 The django-cruds-adminlte works thanks to:
 
-* Python 2.7+
-* Django >=1.8
+* Python 3.7+
+* Django >=2.2
 * django-crispy-forms
 * django-image-cropping and easy-thumbnails (optional if you want to crop)
 * djangoajax (for the inlines stuff)
