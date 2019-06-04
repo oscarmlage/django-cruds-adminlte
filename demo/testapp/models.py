@@ -17,7 +17,7 @@ class Autor(models.Model):
 
     class Meta:
         ordering = ('pk',)
-        permissions = (
+        default_permissions = (
             ("view_author", "Can see available Authors"),
         )
 
@@ -32,9 +32,6 @@ class Addresses(models.Model):
 
     class Meta:
         ordering = ('pk',)
-        permissions = (
-            ("view_addresses", "Can see available Addresses"),
-        )
 
 
 class Customer(models.Model):
@@ -52,7 +49,7 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ('pk',)
-        permissions = (
+        default_permissions = (
             ("view_customer", "Can see available customers"),
         )
 
@@ -99,7 +96,7 @@ class Invoice(models.Model, InvoicePresentation):
         ordering = ('pk',)
         verbose_name = _('Invoice')
         verbose_name_plural = _('Invoices')
-        permissions = (
+        default_permissions = (
             ("view_invoice", "Can see available Invoices"),
         )
 
@@ -122,6 +119,6 @@ class Line(models.Model):
         ordering = ('pk',)
         verbose_name = _('Line')
         verbose_name_plural = _('Lines')
-        permissions = (
+        default_permissions = (
             ("view_line", "Can see available lines"),
         )
