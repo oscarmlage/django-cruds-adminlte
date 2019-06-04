@@ -9,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = open('VERSION').read()
+version = open('VERSION').read().replace('\n', '')
 readme = open('README.rst').read()
 
 if sys.argv[-1] == 'publish':
