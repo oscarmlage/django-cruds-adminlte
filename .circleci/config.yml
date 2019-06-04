@@ -1,0 +1,31 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7-stretch-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: packages-cache-{{ checksum "requirements-test.lock" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install with poetry and freeze
+          command: |
+            tox --notest
+      - save_cache:
+          key: packages-cache-{{ checksum "requirements-test.lock" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+          paths:
+            - "~/repo/.tox"
+            - "~/repo/.eggs"
+      - run:
+          command: |
+            tox
+      - store_artifacts:
+          path: tests/reports/coverage-html
+          destination: coverage
+      #- store_test_results:
+      #    path: tests/reports
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build

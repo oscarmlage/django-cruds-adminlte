@@ -173,8 +173,10 @@ Parameters you can set in `cruds_for_app` method call:
 
 * login_required (boolean): Check if the login is required, need to activate
   'login' and 'logout' urls, for example: ::
+
     url(r'^accounts/login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
+
 * check_perms (boolean): Check if the user has the proper permissions.
 * cruds_url (string): Put all the generated cruds in a common url, instead of
   'app_one/model/list' and 'app_two/model/list' we can set it to 'myadmin' and
