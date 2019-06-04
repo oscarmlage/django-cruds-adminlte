@@ -51,8 +51,6 @@ class LineCRUD(CRUDView):
     check_perms = True
     fields = '__all__'
     cruds_url = 'lte'
-    # add_form = LineForm
-    # update_line = LineForm
     related_fields = ['invoice']
     views_available = ['create', 'list', 'delete', 'update', 'detail']
 
@@ -63,7 +61,6 @@ class AddressCRUD(CRUDView):
     check_login = True
     check_perms = True
     fields = '__all__'
-    cruds_url = 'lte'
     views_available = ['create', 'list', 'delete', 'update', 'detail']
 
 
@@ -98,12 +95,12 @@ class Lines_AjaxCRUD(InlineAjaxCRUD):
                    'amount']
 
 
-class LineForm(forms.Form):
+class LineFormFilter(forms.Form):
     line = forms.ModelMultipleChoiceField(queryset=Line.objects.all())
 
 
 class filterAddress(FormFilter):
-    form = LineForm
+    form = LineFormFilter
 
 
 class InvoiceCRUD(CRUDView):

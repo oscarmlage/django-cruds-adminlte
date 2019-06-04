@@ -4,6 +4,7 @@
 *.so
 
 # Packages
+.eggs
 *.egg
 *.egg-info
 /dist
@@ -24,6 +25,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+tests/reports
 
 # Translations
 *.mo
@@ -40,3 +42,7 @@ output/*/index.html
 # Sphinx
 docs/_build
 .settings/
+
+# editors
+.vscode/*
+
