@@ -5,20 +5,24 @@ jobs:
       - image: circleci/python:3.7-stretch-browsers
     steps:
       - checkout
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
+      - run:
+          command: |
+            pip install --user coverage tox
       - restore_cache:
-          key: packages-cache-{{ checksum "requirements-test.lock" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+          key: packages-cache-{{ checksum "requirements-test.txt" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
       - run:
           name: Install with poetry and freeze
           command: |
             tox --notest
       - save_cache:
-          key: packages-cache-{{ checksum "requirements-test.lock" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+          key: packages-cache-{{ checksum "requirements-test.txt" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
           paths:
             - "~/repo/.tox"
             - "~/repo/.eggs"
-      - run:
-          command: |
-            pip install coverage tox
       - run:
           command: |
             tox
