@@ -29,8 +29,8 @@ jobs:
           command: |
             tox
       - store_artifacts:
-          path: tests/reports/coverage-html
-          destination: coverage
+          path: tests/reports/
+          destination: pytest
       #- store_test_results:
       #    path: tests/reports
 workflows:
