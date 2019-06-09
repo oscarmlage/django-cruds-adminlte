@@ -46,3 +46,4 @@ docs/_build
 # editors
 .vscode/*
 
+tests/reports/
