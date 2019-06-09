@@ -1,5 +1,6 @@
 """ Test the urls of a basic crud app.
 
+<<<<<<< HEAD
 Note that we use live_server and admin_browser when it looks like it
 would not be needed. We do so to capture screenshots of those pages.
 """
