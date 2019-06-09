@@ -28,11 +28,11 @@ jobs:
           name: Run tests
           command: |
             tox
+      - store_test_results:
+          path: tests/reports/py37-django22/pytest.xml
       - store_artifacts:
           path: tests/reports/
-          destination: pytest
-      #- store_test_results:
-      #    path: tests/reports
+          destination: reports
 workflows:
   version: 2
   build:
