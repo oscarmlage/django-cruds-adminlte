@@ -29,7 +29,7 @@ jobs:
           command: |
             tox
       - store_test_results:
-          path: tests/reports/py37-django22/pytest.xml
+          path: tests/reports/
       - store_artifacts:
           path: tests/reports/
           destination: reports
