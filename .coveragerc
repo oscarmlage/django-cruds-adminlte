@@ -11,3 +11,4 @@ source =
 [report]
 show_missing = false
 precision = 2
+
