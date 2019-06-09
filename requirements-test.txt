@@ -4,4 +4,15 @@ mock
 flake8
 tox
 
+sphinx>=2.1,<3.0
+factory-boy>=2.11,<3.0
+pytest-django>=3.4,<4.0
+pytest-cov>=2.6,<3.0
+django-coverage-plugin>=1.6,<2.0
+pytest-html>=1.20,<2.0
+pytest-selenium>=1.16,<2.0
+pytest-mock>=1.10,<2.0
+pytest-pythonpath==0.7.3
+dj-inmemorystorage>=1.4,<2.0
+
 # Additional test requirements go here
