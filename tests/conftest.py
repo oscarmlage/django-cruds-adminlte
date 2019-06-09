@@ -17,7 +17,7 @@ def media_storage(settings, tmpdir):
     """ Set the media root to a temporary folder. """
     settings.MEDIA_ROOT = tmpdir.strpath
     yield
-    shutil.rmtree(tmpdir)
+    shutil.rmtree(tmpdir.strpath)
 
 
 @pytest.fixture
