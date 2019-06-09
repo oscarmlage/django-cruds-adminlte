@@ -1,0 +1,40 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7-stretch-browsers
+    steps:
+      - checkout
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: Install dependencies
+          command: |
+            pip install --user coverage tox
+      - restore_cache:
+          key: packages-cache-{{ checksum "requirements-test.txt" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+      - run:
+          name: Setup tox environments
+          command: |
+            tox --notest
+      - save_cache:
+          key: packages-cache-{{ checksum "requirements-test.txt" }}-{{ checksum "requirements.txt" }}-{{ checksum "setup.py" }}
+          paths:
+            - "~/project/.tox/"
+            - "~/project/.eggs/"
+      - run:
+          name: Run tests
+          command: |
+            tox
+      - store_artifacts:
+          path: tests/reports/coverage-html
+          destination: coverage
+      #- store_test_results:
+      #    path: tests/reports
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
