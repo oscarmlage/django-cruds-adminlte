@@ -8,7 +8,10 @@ from django.utils.encoding import python_2_unicode_compatible
 @python_2_unicode_compatible
 class Author(models.Model):
     name = models.CharField(max_length=100)
-    birthday = models.DateTimeField(auto_now_add=True)
+    birthday = models.DateField()
+
+    class Meta:
+        ordering = ['-name', ]
 
     def __str__(self):
         return self.name

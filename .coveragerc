@@ -1,0 +1,14 @@
+[paths]
+source =
+    cruds_adminlte
+
+[run]
+branch = true
+parallel = true
+source =
+    cruds_adminlte
+
+[report]
+show_missing = false
+precision = 2
+
