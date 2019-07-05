@@ -47,3 +47,6 @@ docs/_build
 .vscode/*
 
 tests/reports/
+
+.idea/
+*.sqlite3
