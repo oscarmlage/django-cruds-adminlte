@@ -46,6 +46,10 @@ class CRUDMixin(object):
             context['search'] = False
         if self.view_type == 'list' and 'q' in self.request.GET:
             context['q'] = self.request.GET.get('q', '')
+            
+            if self.getparams:
+                self.getparams += "&"
+            self.getparams += "q=" + context['q']
 
     def get_filters(self, context):
         filter_params = []
