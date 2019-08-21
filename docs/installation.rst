@@ -182,7 +182,7 @@ Parameters you can set in `cruds_for_app` method call:
   'app_one/model/list' and 'app_two/model/list' we can set it to 'myadmin' and
   then the urls will be 'myadmin/app_one/model/list' and
   'myadmin/app_two/model/list'.
-* modelforms: Load custom forms for the cruds of the model.
+* modelconfig: Load custom model configs for the cruds of the model.
 
 Different samples: ::
 
@@ -192,12 +192,17 @@ Different samples: ::
                                 check_perms=True, cruds_url='myadmin')
 
     from testapp.forms import CustomerForm, InvoiceForm
-    custom_forms = {
-        'add_customer': CustomerForm,
-        'update_customer': CustomerForm,
-        'add_invoice': InvoiceForm,
-        'update_invoice': InvoiceForm,
+    model_config = {
+    'add_customer': CustomerForm,	        'customer': {
+    'update_customer': CustomerForm,	            'add_form': CustomerForm,
+    'add_invoice': InvoiceForm,	            'update_form': CustomerForm,
+    'update_invoice': InvoiceForm,	            'display_fields': ['name', 'information', 'email', 'image'],
+        'search_fields': ['name__icontains', 'email__icontains'],
+    },
+    'invoice': {
+        'add_form': InvoiceForm,
+        'update_form': InvoiceForm,
     }
     urlpatterns += crud_for_app('app_three', login_required=True,
                                 check_perms=True, cruds_url='myadmin',
-                                modelforms=custom_forms)
+                                modelconfig=model_config)
