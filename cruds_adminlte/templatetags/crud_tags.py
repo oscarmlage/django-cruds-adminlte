@@ -12,7 +12,6 @@ from django.utils import six
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
-
 register = template.Library()
 if hasattr(register, 'assignment_tag'):
     register_tag = register.assignment_tag
@@ -45,7 +44,6 @@ def crud_url(obj, action, namespace=None):
 
 @register_tag
 def crud_inline_url(obj, inline, action, namespace=None):
-
     try:
         nurl = utils.crud_url_name(type(inline), action)
         if namespace:
@@ -75,6 +73,9 @@ def format_value(obj, field_name):
         return display_func()
     value = getattr(obj, field_name)
 
+    if value.__class__.__name__ == 'ManyRelatedManager':
+        return format_many_values(obj, field_name)
+
     if isinstance(value, models.fields.files.FieldFile):
         if value:
             return mark_safe('<a href="%s">%s</a>' % (
@@ -95,6 +96,27 @@ def format_value(obj, field_name):
     if value is None:
         value = ""
     return value
+
+
+@register.simple_tag
+def format_many_values(obj, field_name, separator=', '):
+    objects = getattr(obj, field_name).all()
+    result = []
+
+    for v in objects:
+        url = crud_url(v, utils.ACTION_UPDATE)
+        if url:
+            res = mark_safe('<a href="%s">%s</a>' % (url, escape(str(v))))
+        elif hasattr(v, 'get_absolute_url'):
+            url = getattr(v, 'get_absolute_url')()
+            res = mark_safe('<a href="%s">%s</a>' % (url, escape(str(v))))
+        else:
+            res = escape(str(v))
+
+        result.append(res)
+
+    all_values = mark_safe(separator.join(result))
+    return all_values
 
 
 @register.inclusion_tag('cruds/templatetags/crud_fields.html')
