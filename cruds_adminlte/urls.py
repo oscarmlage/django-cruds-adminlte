@@ -148,13 +148,17 @@ def crud_for_app(app_label,
             display_fields = modelconfig[name].get('display_fields')
             search_fields = modelconfig[name].get('search_fields')
             list_filter = modelconfig[name].get('list_filter')
-            template_name_base = modelconfig[name].get('template_name_base', template_name_base)
+            template_name_base = modelconfig[name].get('template_name_base',
+                                                       template_name_base)
             template_blocks = modelconfig[name].get('template_blocks')
             fields = modelconfig[name].get('fields', fields)
             paginate_by = modelconfig[name].get('paginate_by', paginate_by)
-            paginate_template = modelconfig[name].get('paginate_template', paginate_template)
-            template_father = modelconfig[name].get('template_father', template_father)
-            split_space_search = modelconfig[name].get('split_space_search', split_space_search)
+            paginate_template = modelconfig[name].get('paginate_template',
+                                                      paginate_template)
+            template_father = modelconfig[name].get('template_father',
+                                                    template_father)
+            split_space_search = modelconfig[name].get('split_space_search',
+                                                       split_space_search)
 
         urls += crud_for_model(model,
                                urlprefix,
