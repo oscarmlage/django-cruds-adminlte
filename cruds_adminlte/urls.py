@@ -124,7 +124,7 @@ def crud_for_app(app_label,
         modelforms = {}
     else:
         warnings.warn("modelforms will be deprecated in favor of modelconfig",
-                      DeprecationWarning)
+                      Warning)
 
     if mixin and not issubclass(mixin, CRUDMixin):
         raise ValueError(
