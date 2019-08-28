@@ -57,7 +57,6 @@ class LineCRUD(CRUDView):
 
 class AddressCRUD(CRUDView):
     model = Addresses
-    namespace = 'testapp'
     check_login = True
     check_perms = True
     fields = '__all__'
