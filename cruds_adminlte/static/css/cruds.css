@@ -49,3 +49,16 @@ select:focus, .vTextField:focus {
 .td-fieldtype-booleanfield .false i{
     color: red;
 }
+
+.filters {
+    margin: 10px 0 0 0;
+}
+
+.filters .select2 {
+    width: 100% !important;
+}
+
+.filter {
+    padding: 6px 12px !important;
+    border: 1px solid #6ab1e8 !important;
+}

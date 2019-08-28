@@ -14,7 +14,7 @@
             <div class="box">
 
                 <div class="box-header">
-                  <div class="row">
+                  <div class="row create">
                     {% if url_create %}
                     <div class="col-lg-6">
                         {% crud_url object "create" namespace as url %}
@@ -25,7 +25,7 @@
                     </div>
                     {% endif %}
                     {% if search %}
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 search">
                         <form action="" method="get">
                             <div class="input-group">
                                 <input type="text" name="q" value="{{q}}" class="form-control" placeholder="{% trans 'Search for...' %}">
@@ -41,37 +41,33 @@
                 </div>
 
                 {% if filters %}
-                <br />
 
-                <div class="box box-warning collapsed-box">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">{% trans 'Filters' %}</h3>
-                        <div class="box-tools pull-right">
-                            <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
-                                <i class="fa fa-plus"></i>
-                            </button>
+                <div class="filters">
+                    <div class="box box-warning collapsed-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{% trans 'Filters' %}</h3>
+                            <div class="box-tools pull-right">
+                                <button data-widget="collapse" class="btn btn-box-tool btn-success" type="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
-                        <!-- /.box-tools -->
+                        <div class="box-body" style="">
+                            <form action="" method="get">
+                                <table class="table">
+                                    {% for filter in filters %}
+                                    {{filter.render }}
+                                    {% endfor %}
+                                </table>
+                                <input type="submit" class="btn btn-info filter" value="{% trans 'Filter' %}" />
+                                <a class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
+                            </form>
+                        </div>
                     </div>
-                    <!-- /.box-header -->
-                    <div class="box-body" style="">
-                        <form action="" method="get">
-                            <table class="table">
-                                {% for filter in filters %}
-                                {{filter.render }}
-                                {% endfor %}
-                    </div></div>
-
-                            </table>
-                            <input type="submit" class="btn btn-info" value="{% trans 'Filter' %}" />
-                            <a  class="btn btn-warning" href="?"> {% trans 'Clean filter' %} </a>
-                        </form>
                 </div>
-                <!-- /.box-body -->
-            </div>
-                    {% endif%}
+                {% endif%}
 
-                  <div class="box-body">
+                <div class="box-body">
                     <table id="datatable" class="table table-bordered table-hover">
                 <div class="box-body">
                 {% if paginate_position == 'Up' or paginate_position == 'Both' %}
