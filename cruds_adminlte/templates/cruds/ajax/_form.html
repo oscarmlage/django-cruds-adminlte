@@ -5,15 +5,7 @@
     {{ form.media }}
 {% endif %}
 
-<form
-    id="{{name}}_{{object.pk}}_addedit"
-    action="{% crud_inline_url base_model inline_model action namespace %}"
-    method="POST" enctype="multipart/form-data"
-    data-replace-inner="#{{name}}_editList"
-    data-ajax-submit=""
-    data-refresh-inner="#{{name}}_myList"
-    data-success="success"
-    onsubmit="return false;">
+<form id="{{name}}_{{object.pk}}_addedit">
     {% csrf_token %}
     <div class="box-body row">
         <div class="col-md-12">
@@ -30,13 +22,13 @@
         <div class="form-group">
             <div class="controls">
                 <button
-                    id="{{name}}_{{object.pk}}_addedit_submit"
-                    type="submit"
-                    class="btn btn-primary">{% trans "Submit" %}</button>
+                        id="{{ name }}_{{ object.pk }}_addedit_submit"
+                        type="submit"
+                        class="btn btn-primary">{% trans "Submit" %}</button>
                 <a href="javascript::void(0);"
-                    onclick="$('#{{name}}_editList').html('');"
-                    class="btn btn-danger"
-                    data-dismiss="modal">{% trans "Cancel" %}</a>
+                   onclick="$('#{{ name }}_editList').html('');"
+                   class="btn btn-danger"
+                   data-dismiss="modal">{% trans "Cancel" %}</a>
             </div>
         </div>
     </div>
@@ -45,8 +37,8 @@
 
 <script>
     {% if form.helper %}
-    $(".modal select:first").val(1).trigger('change.select2');
-    $(".modal select:first").parent().parent().hide();
+        $(".modal select:first").val(1).trigger('change.select2');
+        $(".modal select:first").parent().parent().hide();
     {% endif %}
 
     function success() {
@@ -55,4 +47,27 @@
 
     $('.modal #submit-id-submit').parent().parent().remove(); // FIXME: Remove the crispy buttons
     $('#edit_modal').modal('show');
+
+    $("#{{ name }}_{{ object.pk }}_addedit").submit(function (e) {
+        e.preventDefault();
+
+        var formdata = new FormData(this);
+
+        $.ajax({
+            url: "{% crud_inline_url base_model inline_model action namespace %}",
+            type: "POST",
+            data: formdata,
+            mimeTypes: "multipart/form-data",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                ajaxGet($('#{{name}}_myList').data('refresh-url'), function(content) {
+                    $('#{{name}}_myList').html(content)
+                });
+                $('#edit_modal').modal('hide');
+            }
+        });
+    });
+
 </script>
