@@ -46,4 +46,6 @@ docs/_build
 # editors
 .vscode/*
 
+demo/db.sqlite3
+demo/demo-venv
 tests/reports/
