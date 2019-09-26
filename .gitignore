@@ -47,4 +47,5 @@ docs/_build
 .vscode/*
 
 demo/db.sqlite3
+demo/demo-venv
 tests/reports/
