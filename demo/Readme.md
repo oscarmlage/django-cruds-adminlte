@@ -10,7 +10,7 @@ cruds_adminlte from the source tree, not from the PyPi package.
 ```
 # From the `demo` directory.
 $ python -m venv demo-venv
-$ source demo/bin/activate
+$ source demo-venv/bin/activate
 (demo-venv) $ pip install -r requirements.txt
 ```
 
