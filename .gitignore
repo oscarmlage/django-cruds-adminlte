@@ -49,3 +49,5 @@ docs/doctrees
 .vscode/*
 tests/demo_project/db.sqlite3
 tests/reports/
+
+TODO.md
