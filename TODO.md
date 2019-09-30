@@ -2,6 +2,12 @@
 
 * Request for collaborators
 
+* Document settings to change by user:
+  - context processors
+  - add site urls
+  - CRUDView.icon
+  - CRUDView.index
+  
 ## Temporal python3 installation instructions
 
 ```

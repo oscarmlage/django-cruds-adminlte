@@ -47,7 +47,5 @@ docs/doctrees
 
 # editors
 .vscode/*
-
-demo/db.sqlite3
-demo/demo-venv
+tests/demo_project/db.sqlite3
 tests/reports/
