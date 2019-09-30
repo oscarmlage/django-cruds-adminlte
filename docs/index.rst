@@ -48,6 +48,7 @@ Thanks
 
 .. toctree::
 
+   contributing
    thanks
 
 Changelog
