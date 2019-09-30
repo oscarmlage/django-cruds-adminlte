@@ -78,7 +78,7 @@ class AuthorCRUD(CRUDView):
     model = Author
     check_login = True
     check_perms = True
-    fields = ['name']
+    fields = ['name', 'birthday']
     list_fields = ['name']
     display_fields = ['name']
     inlines = [Address_AjaxCRUD]

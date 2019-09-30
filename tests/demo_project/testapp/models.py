@@ -11,7 +11,7 @@ from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
 class Author(models.Model):
     name = models.CharField(max_length=200)
-    birthday = models.DateField()
+    birthday = models.DateField(null=True)
 
     def __str__(self):
         return self.name
