@@ -35,6 +35,7 @@ Components
 
    components
    usage
+   demo
 
 Screenshots
 -----------
