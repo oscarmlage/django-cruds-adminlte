@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'cruds_adminlte',
     'django_ajax',
     'testapp',
+    'demo',
 ]
 
 MIDDLEWARE = [

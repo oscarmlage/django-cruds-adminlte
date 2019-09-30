@@ -51,7 +51,7 @@ it like you would run any other project:
 .. code-block:: bash
 
     (venv)$ ./tests/demo_project/manage.py migrate
-    (venv)$ ./tests/demo_project/manage.py showmigrations
+    /venv)$ ./tests/demo_project/manage.py createdemodata
     (venv)$ ./tests/demo_project/manage.py runserver --settings=demo_project.settings 0.0.0.0:4444
     Starting development server at http://0.0.0.0:4444/
     Quit the server with CONTROL-C.
