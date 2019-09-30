@@ -49,3 +49,6 @@ docs/_build
 demo/db.sqlite3
 demo/demo-venv
 tests/reports/
+
+.idea/
+*.sqlite3
