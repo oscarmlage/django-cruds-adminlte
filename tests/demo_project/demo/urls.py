@@ -7,8 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from cruds_adminlte.urls import crud_for_app
-from testapp.views import (AuthorCRUD, InvoiceCRUD, IndexView, CustomerCRUD,
-                           LineCRUD, AddressCRUD)
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 
@@ -24,29 +22,14 @@ def hello_page(request):
     return HttpResponse(text, content_type='text/plain')
 
 
-authorcrud = AuthorCRUD()
-invoicecrud = InvoiceCRUD()
-customercrud = CustomerCRUD()
-linecrud = LineCRUD()
-addresscrud = AddressCRUD()
-
-
 urlpatterns = [
-    url(r'^$', IndexView.as_view()),
-    path('hello', hello_page, name='hello_page'),
     path('', lambda r: render(r, template_name="homepage.html"), name="home"),
-    path('ta/', include('testapp.urls')),
-
+    path('hello', hello_page, name='hello_page'),
+    url(r'^ta/', include('testapp.urls')),
+    url(r'^admin/', admin.site.urls),
     url(r'^accounts/login/$', auth_views.LoginView.as_view(), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
-    url(r'^admin/', admin.site.urls),
     url(r'^select2/', include('django_select2.urls')),
-    url('^namespace/', include('testapp.urls')),
-    url(r'', include(authorcrud.get_urls())),
-    url(r'', include(invoicecrud.get_urls())),
-    url(r'', include(customercrud.get_urls())),
-    url(r'', include(linecrud.get_urls())),
-    url(r'', include(addresscrud.get_urls())),
 ]
 
 
