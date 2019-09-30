@@ -80,7 +80,7 @@ class AuthorCRUD(CRUDView):
     check_perms = True
     fields = ['name', 'birthday']
     list_fields = ['name']
-    display_fields = ['name']
+    display_fields = ['name', 'birthday']
     inlines = [Address_AjaxCRUD]
 
 
