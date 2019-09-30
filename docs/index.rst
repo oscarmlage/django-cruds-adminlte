@@ -12,47 +12,14 @@ Welcome to django-cruds-adminlte's documentation!
 .. toctree::
 
    presentation
-
-Installation
-------------
-
-.. toctree::
-
+   screenshots
    installation
-
-
-Templates and templatetags
---------------------------
-
-.. toctree::
-
    templates
-
-Components
-----------
-
-.. toctree::
-
    components
    usage
-
-Screenshots
------------
-
-.. toctree::
-
-   screenshots
-
-Thanks
-------
-
-.. toctree::
-
    contributing
    thanks
 
-Changelog
----------
 
 .. toctree::
 
@@ -61,7 +28,6 @@ Changelog
 
 Indices and tables
 ==================
-
 
 If you can’t find the information you’re looking for, have a look at the
 index or try to find it using the search function:
