@@ -28,6 +28,8 @@ Useful links:
 
 - Github main repository: https://github.com/oscarmlage/django-cruds-adminlte/
 
+.. contents:: :local:
+
 Report Bugs and propose features
 --------------------------------
 
