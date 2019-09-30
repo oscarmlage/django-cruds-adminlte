@@ -15,7 +15,7 @@ Prepare the environment
 -----------------------
 
 The demo project can be run using the same python environment used for
-development as it's dependencies are the same. 
+development as it's dependencies are the same.
 
 If you have not setup such environment you can either:
 
