@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 import os
 import sys
+from pathlib import Path
 
 if __name__ == "__main__":
-    crud_install = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # We add ourselves into the python path, so we can find
+    # the package later.
+    demo_root =os.path.dirname(os.path.abspath(__file__))
+    crud_install = os.path.dirname(os.path.dirname(demo_root))
+
     sys.path.insert(0, crud_install)
+    os.chdir(demo_root)
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
     try:
         from django.core.management import execute_from_command_line
