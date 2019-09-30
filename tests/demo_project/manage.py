@@ -10,6 +10,7 @@ if __name__ == "__main__":
     crud_install = os.path.dirname(os.path.dirname(demo_root))
 
     sys.path.insert(0, crud_install)
+    sys.path.insert(0, demo_root)
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo.settings")
     try:
