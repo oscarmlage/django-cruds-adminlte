@@ -2,6 +2,75 @@
 Changelog
 =========
 
+0.0.17
+------
+
+* ''082ac1b'' Revert "Add getparams for search parameters"
+* ''39d10d0'' Merge pull request #109 from BnFSoftware/master
+* ''4ea8ea3'' Add getparams for search parameters
+* ''2c128b3'' Merge pull request #108 from telenieko/tests-behold-circleci
+* ''a31627c'' Merge pull request #107 from telenieko/tests-behold
+* ''323cebe'' Merge branch 'tests-behold' into tests-behold-circleci
+* ''3b83177'' Bring python3.5 back to tox.ini
+* ''6a547a4'' Merge branch 'tests-behold' into tests-behold-circleci
+* ''442c892'' Update CONTRIBUTING.rst to explain how to run tests.
+* ''6186cca'' Merge branch 'master' into tests-behold-circleci
+* ''160f96d'' Merge branch 'tests-behold' into tests-behold-circleci
+* ''768b1d8'' More on testing (tox fixes)
+* ''f033e5f'' circleci says that should be directory, not a file path
+* ''3e9126d'' Updates to tox and circleci.
+* ''7be1239'' Revert "idea files of pycharm (shared ones)"
+* ''bf5d8a5'' idea files of pycharm (shared ones)
+* ''f48b980'' Merge branch 'tests-behold-circleci'
+* ''08a0482'' Merge remote-tracking branch 'oscarmlage/master'
+* ''07e0dc0'' continue with circleci
+* ''030c756'' Change circleci store_artifacts
+* ''149fb75'' Merge branch 'add-circleci-support' into tests-behold-circleci
+* ''e78aff8'' Merge remote-tracking branch 'oscarmlage/master' into tests-behold
+* ''79f84f7'' Refactor of test infrastructure.
+* ''703be9d'' Added Marc as collaborator
+* ''ff2f6aa'' Merge remote-tracking branch 'oscarmlage/master'
+* ''15b1664'' Merge pull request #104 from telenieko/changes-to-tox
+* ''bcc913e'' Merge branch 'python3' into changes-to-tox
+* ''b70e04d'' Merge pull request #106 from telenieko/versioning
+* ''6664f0c'' Use git commit for versioning builds
+* ''b30765b'' Remove blank line from VERSION file when reading
+* ''a8a2bff'' Merge branch 'add-circleci-support'
+* ''579ee74'' Merge branch 'changes-to-tox' into add-circleci-support
+* ''03ade52'' Closes #103, Make python 3.7+ and django 2.2+ the minimal reqs.
+* ''575ad84'' Add .circleci
+* ''baac21c'' ci fixes
+* ''0a02332'' Remove py36 from tox.
+* ''d39ac4c'' Remove py36 from tox.
+* ''54162fd'' ci fixes
+* ''90965ea'' Rename circleci workflow
+* ''7d3e4fe'' circleci: install tox and coverage
+* ''78296d7'' Merge tox + circleci into master.
+* ''c8860d7'' coverage working on tox
+* ''4011c85'' Add .eggs/ to .gitignore
+* ''fc68e3b'' Refs #103, change pypi classifiers regarding python versions.
+* ''5f90844'' Properly set html_static_path in sphinx
+* ''5fe3e0b'' Fix syntax error in docs/usage.rst
+* ''222f513'' Fixes to tox.ini
+* ''d20e8a4'' Improve requirements-test.txt
+* ''cd40ae8'' Reorg dependencies.
+* ''adafaa0'' Fix indentation error in docs/installation.rst
+* ''678a06c'' Force call to sys.exit() on run_tests
+* ''6c61ec8'' Fix test_views which would never pass previously
+* ''8ffd335'' Fix (temporary) conflict with mixin and mymixin in NOCLASS that gives a metaclass TypeError that makes unusable the crud
+* ''e42ad2b'' (origin/python3, python3) Demo testapp updates to fit python3 & django2.2
+* ''1916af6'' Fix (temporary) conflict with mixin and mymixin in NOCLASS that gives a metaclass TypeError that makes unusable the crud
+* ''ffa7125'' Python3 branch created.
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.16...master
+
+0.0.16
+------
+
+* ''0aab3e2'' Merge branch 'master' of https://github.com/oscarmlage/django-cruds-adminlte
+
+https://github.com/oscarmlage/django-cruds-adminlte/compare/0.0.15...master
+
 0.0.15
 ------
 

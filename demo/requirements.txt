@@ -3,3 +3,5 @@ django-image-cropping==1.2.0
 django-select2==7.0.5
 djangoajax==3.1
 easy-thumbnails==2.6
+-e ../
+-r ../requirements-test.txt
