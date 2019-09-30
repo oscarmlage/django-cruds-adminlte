@@ -158,7 +158,7 @@ class AddressesForm(forms.ModelForm):
         self.helper.form_tag = False
 
         self.helper.layout = Layout(
-            Field('autor', wrapper_class="col-md-4"),
+            Field('author', wrapper_class="col-md-4"),
             Field('address', wrapper_class="col-md-4"),
             Field('city', wrapper_class="col-md-4"),
         )

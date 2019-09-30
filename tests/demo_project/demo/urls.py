@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from cruds_adminlte.urls import crud_for_app
-from testapp.views import (AutorCRUD, InvoiceCRUD, IndexView, CustomerCRUD,
+from testapp.views import (AuthorCRUD, InvoiceCRUD, IndexView, CustomerCRUD,
                            LineCRUD, AddressCRUD)
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
@@ -24,7 +24,7 @@ def hello_page(request):
     return HttpResponse(text, content_type='text/plain')
 
 
-authorcrud = AutorCRUD()
+authorcrud = AuthorCRUD()
 invoicecrud = InvoiceCRUD()
 customercrud = CustomerCRUD()
 linecrud = LineCRUD()

@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html
 
 from image_cropping import ImageCropField, ImageRatioField
 
 
 # Create your models here.
-class Autor(models.Model):
+class Author(models.Model):
     name = models.CharField(max_length=200)
     birthday = models.DateField()
 
@@ -24,7 +25,7 @@ class Autor(models.Model):
 
 
 class Addresses(models.Model):
-    autor = models.ForeignKey(Autor, related_name="Autor",
+    author = models.ForeignKey(Author, related_name="Author",
                               on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)

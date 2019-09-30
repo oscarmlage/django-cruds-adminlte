@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from cruds_adminlte.crud import CRUDView
 from cruds_adminlte.inline_crud import InlineAjaxCRUD
 
-from .models import Autor, Addresses, Line, Invoice, Customer
+from .models import Author, Addresses, Line, Invoice, Customer
 
 from django.views.generic.base import TemplateView
 from django import forms
@@ -65,8 +65,8 @@ class AddressCRUD(CRUDView):
 
 class Address_AjaxCRUD(InlineAjaxCRUD):
     model = Addresses
-    base_model = Autor
-    inline_field = 'autor'
+    base_model = Author
+    inline_field = 'author'
     add_form = AddressesForm
     update_form = AddressesForm
     fields = ['address', 'city']
@@ -74,8 +74,8 @@ class Address_AjaxCRUD(InlineAjaxCRUD):
    # template_name_base = "cruds/ajax"
 
 
-class AutorCRUD(CRUDView):
-    model = Autor
+class AuthorCRUD(CRUDView):
+    model = Author
     check_login = True
     check_perms = True
     fields = ['name']
