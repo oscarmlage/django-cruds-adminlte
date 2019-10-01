@@ -56,6 +56,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             str(DEMO_ROOT / 'demo' / 'templates'),
+            str(DEMO_ROOT / 'project_templates'),
         ],
         'OPTIONS': {
             'context_processors': [
