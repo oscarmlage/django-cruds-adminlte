@@ -57,7 +57,6 @@ TEMPLATES = [
         'DIRS': [
             str(DEMO_ROOT / 'demo' / 'templates'),
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -65,7 +64,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
+            'loaders': [
+                'cruds_adminlte.template_loader.Loader',
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        }
     },
 ]
 
