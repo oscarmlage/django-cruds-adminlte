@@ -40,7 +40,8 @@ import os
 class Loader(BaseLoader):
     # List of templates on which rendering we intervene.
     templates = ['adminlte/base.html', 
-                 r'^adminlte/lib/.*'
+                 r'^adminlte/lib/.*',
+                 r'^cruds/.*',
                  ]
 
     def __init__(self, engine, templates=None):
