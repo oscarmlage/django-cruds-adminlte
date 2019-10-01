@@ -60,6 +60,8 @@ class Loader(BaseLoader):
     def get_template_sources(self, template_name):
         if self.check_intervene(template_name):
             for loader in self.loaders:
+                if isinstance(loader, self.__class__):
+                    continue
                 yield from loader.get_template_sources(template_name)
 
     def get_contents(self, origin):
