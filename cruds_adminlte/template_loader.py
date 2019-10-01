@@ -62,10 +62,14 @@ class Loader(BaseLoader):
             for loader in self.loaders:
                 if isinstance(loader, self.__class__):
                     continue
-                yield from loader.get_template_sources(template_name)
+                for t in loader.get_template_sources(template_name):
+                    t.wrapped_loader = t.loader
+                    t.loader = self
+                    yield t
 
     def get_contents(self, origin):
-        content = origin.loader.get_contents(origin)
+        loader = origin.wrapped_loader
+        content = loader.get_contents(origin)
         content = process_template_content(content)
         return content
 
