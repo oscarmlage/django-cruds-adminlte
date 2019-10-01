@@ -17,3 +17,11 @@ def test_get_loaders():
     assert "templates/cruds/base.html" in tpl_base2.origin.name    
     base_content = tpl_base2.render()
     assert "fa-address-book-o" in base_content
+
+    # Now we ask for a template that is outside of the library,
+    # but extends the library
+    tpl = loader.get_template('homepage.html')
+    assert "templates/homepage.html" in tpl.origin.name
+    tpl_content = tpl.render()
+    assert "Hello." in tpl_content
+    assert "fa-address-book-o" in tpl_content
