@@ -49,7 +49,6 @@ class Loader(BaseLoader):
             self.templates = templates
         self.engine = engine
         #self.loaders = engine.get_template_loaders(loaders)
-        self.loaders = self.get_loaders()
         super().__init__(engine)
 
     def check_intervene(self, template_name):
@@ -68,18 +67,24 @@ class Loader(BaseLoader):
         content = process_template_content(content)
         return content
 
-    def get_loaders(self):
-        template_source_loaders = self.engine.loaders
-        myname = self.__class__.__module__ + '.' + self.__class__.__qualname__
-        template_source_loaders.remove(myname)
+    _loaders = None
+
+    @property
+    def loaders(self):
+        if self._loaders:
+            return self._loaders
+        template_source_loaders = self.engine.loaders[:]
         template_source_loaders = self.engine.get_template_loaders(template_source_loaders)
         loaders = []
         # Unwrap the loaders inside the CachedTemplateLoader if applicable.
         for loader in template_source_loaders:
+            if isinstance(loader, self.__class__):
+                continue
             if hasattr(loader, 'loaders'):
                 loaders.extend(loader.loaders)
             else:
                 loaders.append(loader)
+        self._loaders = loaders
         return loaders
 
     def get_template(self, template_name, skip=None):
