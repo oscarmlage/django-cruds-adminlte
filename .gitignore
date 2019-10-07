@@ -41,11 +41,13 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+docs/html
+docs/doctrees
 .settings/
 
 # editors
 .vscode/*
-
-demo/db.sqlite3
-demo/demo-venv
+tests/demo_project/db.sqlite3
 tests/reports/
+
+TODO.md

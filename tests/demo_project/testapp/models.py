@@ -3,27 +3,29 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import format_html
 
 from image_cropping import ImageCropField, ImageRatioField
-from testapp.presentation import InvoicePresentation
 
 
 # Create your models here.
-class Autor(models.Model):
+class Author(models.Model):
     name = models.CharField(max_length=200)
+    birthday = models.DateField(null=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ('pk',)
+        ordering = ('-name',)
+
         default_permissions = (
             ("view_author", "Can see available Authors"),
         )
 
 
 class Addresses(models.Model):
-    autor = models.ForeignKey(Autor, related_name="Autor",
+    author = models.ForeignKey(Author, related_name="Author",
                               on_delete=models.CASCADE)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -62,7 +64,7 @@ def last_number():
         return 1
 
 
-class Invoice(models.Model, InvoicePresentation):
+class Invoice(models.Model):
 
     customer = models.ForeignKey(Customer, related_name="customer",
                                  on_delete=models.CASCADE)
@@ -99,6 +101,12 @@ class Invoice(models.Model, InvoicePresentation):
         default_permissions = (
             ("view_invoice", "Can see available Invoices"),
         )
+
+    def get_description1_display(self):
+        return format_html(self.description1)
+
+    def get_description2_display(self):
+        return format_html(self.description2)
 
 
 class Line(models.Model):

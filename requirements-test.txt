@@ -14,5 +14,6 @@ pytest-selenium>=1.16,<2.0
 pytest-mock>=1.10,<2.0
 pytest-pythonpath==0.7.3
 dj-inmemorystorage>=1.4,<2.0
+django-image-cropping==1.2.0
 
 # Additional test requirements go here
