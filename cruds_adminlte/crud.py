@@ -734,7 +734,12 @@ class CRUDView(object):
         dev = []
         if self.inlines:
             for i, inline in enumerate(self.inlines):
-                klass = inline()
+                klass = inline
+                if isinstance(klass, type):
+                    # FIXME: This is a dirty hack to act on repeated calls to get_urls()
+                    #        as those mean that inline is a type instance not a class from
+                    #        the second run onwars.
+                    klass = klass()
                 self.inlines[i] = klass
                 if self.namespace:
                     dev.append(

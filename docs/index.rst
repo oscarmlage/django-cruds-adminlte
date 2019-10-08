@@ -17,6 +17,7 @@ Welcome to django-cruds-adminlte's documentation!
    templates
    components
    usage
+   demo
    contributing
    thanks
 
