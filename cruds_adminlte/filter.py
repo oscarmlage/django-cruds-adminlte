@@ -7,6 +7,9 @@ from django.db import models
 class FormFilter:
     form = None
 
+    # If true will check the fields with icontains instead of exact matching
+    chk_with_icontains = False
+
     def __init__(self, request, form=None):
         if form:
             self.form = form
@@ -28,6 +31,8 @@ class FormFilter:
                         data_value = data_value.first()
                     elif '__in' not in value:
                         value = value + '__in'
+                elif self.chk_with_icontains and self.form_instance.instance.__class__._meta.get_field( value ).get_internal_type() in ( models.CharField, models.TextField, models.EmailField ) :
+                    value = value + "__icontains"
                 values[value] = data_value
         return values
 
