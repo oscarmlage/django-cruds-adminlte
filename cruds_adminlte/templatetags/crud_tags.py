@@ -8,9 +8,9 @@ from django import template
 
 from django.urls import (reverse, NoReverseMatch)  # django2.0
 from django.db import models
-from django.utils import six
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
+import six
 
 register = template.Library()
 if hasattr(register, 'assignment_tag'):
